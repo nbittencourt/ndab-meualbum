@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "descricao": "Seed de inicialização — entidade TipoAlbum",
+    "fonte": "Panini / FIFA World Cup 2026 (oficial)",
+    "data_geracao": "2026-05-19"
+  },
+  "tipo_albums": [
+    {
+      "id": 1,
+      "nome": "FIFA World Cup 2026™",
+      "total_figurinhas": 980
+    }
+  ]
+}

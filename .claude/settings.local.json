@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Select-String \"test\")",
+      "Bash(npm run *)",
+      "Bash(Get-Date -Format \"yyyyMMdd_HHmmss\")",
+      "Bash(python3 -c \"import json; data = json.load\\(open\\('C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/tests/_seed/seed_figurinhas.json'\\)\\); figs = data['figurinhas']; print\\('Total:', len\\(figs\\)\\); print\\('First 5 numbers:', [f['numero'] for f in figs[:5]]\\)\")",
+      "Bash(Get-ChildItem client\\\\src\\\\components -Name)",
+      "Bash(npx playwright *)",
+      "Bash(powershell -Command \"Get-Date -Format 'yyyyMMdd_HHmmss'\")"
+    ]
+  }
+}
