@@ -2,9 +2,7 @@ import { Router } from 'express';
 import { randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const archiver = require('archiver') as typeof import('archiver');
+import { ZipArchive } from 'archiver';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 import { sendEmailAlteracaoEmail } from '../lib/email.js';
 import { logger, maskEmail } from '../lib/logger.js';
@@ -26,10 +24,11 @@ const passwordPolicy = (p: string) =>
 
 function issueToken(userId: string, tokenVersao: number, res: import('express').Response) {
   const token = jwt.sign({ sub: userId, tokenVersao }, process.env.JWT_SECRET!, { expiresIn: '30d' });
-  res.cookie('token', token, {
+  const isProd = process.env.NODE_ENV === 'production';
+  res.cookie('__session', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 }
@@ -240,7 +239,7 @@ router.get('/exportar', requireAuth, async (req: AuthRequest, res) => {
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', 'attachment; filename="meus-dados.zip"');
 
-  const archive = archiver('zip');
+  const archive = new ZipArchive();
   archive.pipe(res);
 
   const toCsv = (rows: string[][], header: string[]) =>
@@ -326,7 +325,8 @@ router.delete('/', requireAuth, async (req: AuthRequest, res) => {
     user.deleteOne(),
   ]);
 
-  res.clearCookie('token');
+  const isProd = process.env.NODE_ENV === 'production';
+  res.clearCookie('__session', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
   logger.info('profile:account-deleted', { publicId });
   res.json({ ok: true });
 });

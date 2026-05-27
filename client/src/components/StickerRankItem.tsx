@@ -9,7 +9,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
   const isFirst = rank === 1;
 
   return (
-    <div
+    <li
       style={{
         display: 'grid',
         gridTemplateColumns: '24px 56px 1fr auto',
@@ -17,6 +17,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
         alignItems: 'center',
         padding: '10px 0',
         borderBottom: '1px solid rgba(10,9,7,0.08)',
+        listStyle: 'none',
       }}
     >
       {/* Rank */}
@@ -98,6 +99,6 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
           {item.quantidade}
         </span>
       </div>
-    </div>
+    </li>
   );
 }

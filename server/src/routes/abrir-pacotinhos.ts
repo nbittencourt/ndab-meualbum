@@ -4,6 +4,7 @@ import { Types } from 'mongoose';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 import { PilhaDaSessao } from '../models/PilhaDaSessao.js';
 import { Sticker } from '../models/Sticker.js';
+import { TipoAlbum } from '../models/TipoAlbum.js';
 import { Album } from '../models/Album.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
@@ -44,17 +45,24 @@ router.post('/pilha', requireAuth, async (req: AuthRequest, res) => {
   }
 
   const sticker = await Sticker.findOne({ number: figurinhaNumero }).lean();
+  if (!sticker) {
+    const tipo = await TipoAlbum.findById(tipoAlbumId).lean();
+    const nomeAlbum = (tipo as any)?.nome ?? 'álbum';
+    res.status(404).json({ error: `Figurinha ${figurinhaNumero} não encontrada no álbum ${nomeAlbum}. Verifique o número e tente novamente.` });
+    return;
+  }
+
   const item = await PilhaDaSessao.create({
     usuarioId,
     tipoAlbumId: new Types.ObjectId(tipoAlbumId),
-    figurinhaId: sticker?._id ?? null,
+    figurinhaId: sticker._id,
     figurinhaNumero,
-    figurinhaNome: sticker ? (sticker as any).subject : null,
+    figurinhaNome: (sticker as any).subject,
     origem,
     statusDestino: 'PENDENTE',
   });
 
-  res.status(201).json({ item, conhecida: !!sticker });
+  res.status(201).json({ item, conhecida: true });
 });
 
 const colarSchema = z.object({
@@ -131,6 +139,21 @@ router.delete('/pilha', requireAuth, async (req: AuthRequest, res) => {
     filtro.tipoAlbumId = new Types.ObjectId(tipoAlbumId as string);
   }
   await PilhaDaSessao.deleteMany(filtro);
+  res.json({ ok: true });
+});
+
+router.delete('/pilha/:itemId', requireAuth, async (req: AuthRequest, res) => {
+  const usuarioId = new Types.ObjectId(req.userId);
+  const { itemId } = req.params;
+  if (!Types.ObjectId.isValid(itemId)) {
+    res.status(400).json({ error: 'ID inválido' });
+    return;
+  }
+  const item = await PilhaDaSessao.findOneAndDelete({ _id: itemId, usuarioId, statusDestino: 'PENDENTE' });
+  if (!item) {
+    res.status(404).json({ error: 'Item não encontrado na pilha' });
+    return;
+  }
   res.json({ ok: true });
 });
 

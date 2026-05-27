@@ -7,7 +7,23 @@
       "Bash(python3 -c \"import json; data = json.load\\(open\\('C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/tests/_seed/seed_figurinhas.json'\\)\\); figs = data['figurinhas']; print\\('Total:', len\\(figs\\)\\); print\\('First 5 numbers:', [f['numero'] for f in figs[:5]]\\)\")",
       "Bash(Get-ChildItem client\\\\src\\\\components -Name)",
       "Bash(npx playwright *)",
-      "Bash(powershell -Command \"Get-Date -Format 'yyyyMMdd_HHmmss'\")"
+      "Bash(powershell -Command \"Get-Date -Format 'yyyyMMdd_HHmmss'\")",
+      "Bash(node -e \"import\\('archiver'\\).then\\(m => console.log\\(Object.keys\\(m\\)\\)\\)\")",
+      "Bash(node -e \"import\\('archiver'\\).then\\(m => { console.log\\(JSON.stringify\\(Object.keys\\(m\\)\\)\\); const a = m.default; console.log\\('default:', typeof a\\); }\\)\")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const require = createRequire\\(import.meta.url\\); const archiver = require\\('archiver'\\); console.log\\(typeof archiver\\);\")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const require = createRequire\\(import.meta.url\\); const archiver = require\\('archiver'\\); const a = archiver\\('zip'\\); console.log\\(typeof a\\);\")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const require = createRequire\\(import.meta.url\\); const archiver = require\\('archiver'\\); console.log\\(Object.keys\\(archiver\\)\\); \")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const require = createRequire\\(import.meta.url\\); const archiver = require\\('archiver'\\); console.log\\(JSON.stringify\\(archiver, null, 2\\)\\);\")",
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ const p=JSON.parse\\(d\\); console.log\\('main:', p.main, 'exports:', JSON.stringify\\(p.exports, null, 2\\), 'version:', p.version\\); }\\)\")",
+      "Bash(node --loader ts-node/esm server/src/index.ts)",
+      "Bash(curl -s http://localhost:3000/api/v1/health)",
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{ const p=JSON.parse\\(d\\); console.log\\('scripts:', JSON.stringify\\(p.scripts, null, 2\\)\\); }\\)\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(curl -s http://localhost:3000/api/health)",
+      "Bash(curl -s http://localhost:3000/api/v1/test/tipo-album-id)",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(typeof a, typeof a.create\\);\")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(typeof a, JSON.stringify\\(Object.keys\\(a\\)\\)\\);\")",
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\), typeof a.Archiver, typeof a.default\\);\")"
     ]
   }
 }

@@ -1,8 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { usuarioAtivo, criarAlbum, adicionarEstoque, getTipoAlbumId } from '../support/helpers';
-
-// ⚠️ RN-CF01 declara apenas status=ATIVO — diverge dos demais fluxos (EMAIL_PENDENTE permitido).
-// Aguardar resolução da spec antes de finalizar casos de EMAIL_PENDENTE.
+import { test, expect } from '../support/fixtures';
+import {
+  usuarioAtivo,
+  criarUsuario,
+  confirmarEmail,
+  criarAlbum,
+  adicionarEstoque,
+  getTipoAlbumId,
+  arquivarAlbum,
+} from '../support/helpers';
 
 test.describe('Colar Figurinhas', () => {
 
@@ -13,7 +18,20 @@ test.describe('Colar Figurinhas', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test.skip('deve permitir acesso a usuário EMAIL_PENDENTE – aguardar resolução de RN-CF01', async () => {});
+  test('deve permitir acesso a usuário EMAIL_PENDENTE (RN-CF01)', async ({ page, request }) => {
+    const { dados, identificador } = await criarUsuario(request);
+    await confirmarEmail(request, identificador);
+    await request.post('/api/v1/test/iniciar-alteracao-email', {
+      data: { identificador, email_novo: `novo+${Date.now()}@exemplo.com` },
+    });
+    await page.goto('/');
+    await page.getByLabel('Email').fill(dados.email as string);
+    await page.getByRole('textbox', { name: 'Senha' }).fill(dados.password as string);
+    await page.getByRole('button', { name: /entrar/i }).click();
+    await page.waitForURL(/\/home/);
+    await page.goto('/colar');
+    await expect(page).not.toHaveURL('/');
+  });
 
   // ── CF0: Seleção de álbum ─────────────────────────────────────────────────────
 
@@ -23,20 +41,45 @@ test.describe('Colar Figurinhas', () => {
       await usuarioAtivo(page, request);
       await criarAlbum(request, await getTipoAlbumId(request), 'BROCHURA');
       await page.goto('/colar');
-      await expect(page.getByText(/escolha um álbum/i)).toBeVisible();
+      await expect(page.getByText('Escolha um álbum', { exact: true })).toBeVisible();
     });
 
     test('deve pular CF0 quando album_id está na URL (entradas A/B, RN-CF02)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const album = await criarAlbum(request, await getTipoAlbumId(request), 'BROCHURA');
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      await expect(page.getByText(/escolha um álbum/i)).not.toBeVisible();
+      await expect(page.getByText('Escolha um álbum', { exact: true })).not.toBeVisible();
     });
 
     test('deve exibir estado vazio com CTA de Cadastro de Álbum (RN-CF04)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/colar');
-      // TODO: verificar mensagem de estado vazio e link/botão para cadastro de álbum
+      await expect(page.getByText(/nenhum álbum|criar álbum/i).first()).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /novo álbum|criar álbum/i }).or(
+          page.getByRole('button', { name: /novo álbum|criar álbum/i })
+        )
+      ).toBeVisible();
+    });
+
+    test('botão "Cancelar" na CF0 retorna para tela de origem', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      await criarAlbum(request, await getTipoAlbumId(request), 'BROCHURA');
+      await page.goto('/home');
+      await page.goto('/colar');
+      await page.getByRole('button', { name: /cancelar/i }).click();
+      await expect(page).toHaveURL(/\/home/);
+    });
+
+    test('álbum arquivado não aparece na lista de seleção (RN-AL03)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const albumArquivado = await criarAlbum(request, tipoId, 'BROCHURA');
+      await arquivarAlbum(request, albumArquivado._id ?? albumArquivado.id);
+      await criarAlbum(request, tipoId, 'CAPA_DURA');
+      await page.goto('/colar');
+      await expect(page.getByRole('button', { name: /Brochura/i })).not.toBeVisible();
+      await expect(page.getByRole('button', { name: /Capa Dura/i })).toBeVisible();
     });
   });
 
@@ -50,7 +93,16 @@ test.describe('Colar Figurinhas', () => {
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await adicionarEstoque(request, identificador, 'ESP-01', 1);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      // TODO: verificar que figurinha do tipo correto aparece; adicionar de tipo diferente e verificar ausência
+      await expect(page.getByText('ESP-01')).toBeVisible();
+    });
+
+    test('deve exibir estado vazio do estoque e manter botão MFN disponível', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await expect(page.getByText(/nenhuma figurinha|estoque vazio/i)).toBeVisible();
+      await expect(page.getByRole('button', { name: /figurinha não registrada/i })).toBeVisible();
     });
 
     test('deve exibir % conclusão e atualizar após colagem (RN-CF15)', async ({ page, request }) => {
@@ -59,17 +111,29 @@ test.describe('Colar Figurinhas', () => {
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await adicionarEstoque(request, identificador, 'ESP-01', 1);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      // TODO: capturar % antes, colar figurinha, verificar % atualizado sem reload
+      const percentualAntes = await page.getByText(/0,0\s*%|0%/).first().textContent();
+      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await expect(page.getByText(/colada/i)).toBeVisible();
+      const completoEl = page.locator('p').filter({ hasText: 'completo' });
+      await expect(completoEl).not.toHaveText(/^0%/);
+      const percentualDepois = await completoEl.textContent();
+      expect(percentualDepois).not.toBe(percentualAntes);
     });
 
     test('deve exigir confirmação para colar sobre figurinha já colada (RN-CF09)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      // TODO: criar estado com figurinha já colada no álbum
+      await adicionarEstoque(request, identificador, 'ESP-01', 2);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      // TODO: expandir lista secundária, clicar em "Colar" e verificar alerta
+      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await page.reload();
+      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await expect(page.getByText(/já está colada|substituir/i).first()).toBeVisible();
+      await expect(page.getByRole('button', { name: /confirmar/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: /cancelar/i })).toBeVisible();
     });
 
     test('deve decrementar estoque ao colar figurinha do estoque (RN-CF10)', async ({ page, request }) => {
@@ -78,26 +142,84 @@ test.describe('Colar Figurinhas', () => {
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await adicionarEstoque(request, identificador, 'ESP-01', 2);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      // TODO: colar figurinha e verificar decremento de quantidade no item
+      const esp01Row = page.getByText('ESP-01').locator('..');
+      await expect(esp01Row.getByText('2', { exact: true })).toBeVisible();
+      await esp01Row.getByRole('button', { name: /colar/i }).click();
+      await expect(esp01Row.getByText('1', { exact: true })).toBeVisible();
     });
 
     test('não deve alterar estoque ao colar via MFN (RN-CF11)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await adicionarEstoque(request, identificador, 'ESP-02', 1);
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      const esp02Row = page.getByText('ESP-02').locator('..');
+      const qtdAntes = await esp02Row.locator('span.font-mono').last().textContent();
+      await page.getByRole('button', { name: /figurinha não registrada/i }).click();
+      await page.getByRole('dialog').getByRole('textbox').fill('ESP-01');
+      await page.getByRole('dialog').getByRole('button', { name: /^colar$/i }).click();
+      const qtdDepois = await esp02Row.locator('span.font-mono').last().textContent();
+      expect(qtdDepois).toBe(qtdAntes);
+    });
+
+    test('deve trocar álbum ativo sem desfazer colagens anteriores (RN-CF14)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album1 = await criarAlbum(request, tipoId, 'BROCHURA');
+      const album2 = await criarAlbum(request, tipoId, 'CAPA_DURA');
+      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await page.goto(`/colar?albumId=${album1._id ?? album1.id}`);
+      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+
+      await page.getByRole('button', { name: /trocar álbum|selecionar álbum/i }).click();
+      await page.getByText(/Capa Dura/i).click();
+
+      const res = await page.request.get(`/api/v1/albums/${album1._id ?? album1.id}/faltantes`);
+      expect(res.ok()).toBeTruthy();
+      const data = await res.json();
+      const faltantes = data.faltantes ?? [];
+      expect(faltantes.some((f: { numero?: string }) => f.numero === 'ESP-01')).toBe(false);
+      void album2;
+    });
+  });
+
+  // ── Modal de Figurinha Não Registrada (MFN) ───────────────────────────────────
+
+  test.describe('Modal de Figurinha Não Registrada – MFN', () => {
+
+    test('deve exibir mensagem amigável para figurinha não encontrada (RN-CF25)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       await page.getByRole('button', { name: /figurinha não registrada/i }).click();
-      // TODO: digitar número válido, confirmar e verificar que estoque não mudou
+      await page.getByRole('dialog').getByRole('textbox').fill('INEXISTENTE-999');
+      await page.getByRole('dialog').getByRole('button', { name: /^colar$/i }).click();
+      await expect(page.getByText('Figurinha INEXISTENTE-999 não encontrada neste álbum. Verifique o número e tente novamente.', { exact: true })).toBeVisible();
+      await expect(page.getByRole('textbox')).toBeVisible();
     });
 
-    test('deve trocar álbum ativo sem desfazer colagens anteriores (RN-CF14)', async ({ page, request }) => {
+    test('deve manter modal aberto e limpar campo com "Colar e Outra" (RN-CF26)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
-      const album1 = await criarAlbum(request, tipoId, 'BROCHURA');
-      const album2 = await criarAlbum(request, tipoId, 'CAPA_DURA');
-      await page.goto(`/colar?albumId=${album1._id ?? album1.id}`);
-      // TODO: trocar para album2 e verificar que colagens do album1 permanecem
-      expect(album2).toBeTruthy();
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.getByRole('button', { name: /figurinha não registrada/i }).click();
+      await page.getByRole('dialog').getByRole('textbox').fill('ESP-01');
+      await page.getByRole('dialog').getByRole('button', { name: /colar e outra/i }).click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+      await expect(page.getByRole('dialog').getByRole('textbox')).toHaveValue('');
+    });
+
+    test('câmera não ativa automaticamente ao abrir MFN — requer ação explícita (RN-CF27)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.getByRole('button', { name: /figurinha não registrada/i }).click();
+      await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
+      await expect(page.locator('video')).not.toBeVisible();
     });
   });
 });

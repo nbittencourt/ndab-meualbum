@@ -22,22 +22,34 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState('');
   const [maioridade, setMaioridade] = useState(false);
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const canSubmit = name.trim().length >= 2 && email.includes('@') && maioridade;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const canSubmit = name.trim().length >= 2 && !!email && maioridade;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
     setError('');
+    setEmailError('');
+
+    if (!emailRegex.test(email)) {
+      setEmailError('Email inválido. Verifique o formato.');
+      return;
+    }
+
     setLoading(true);
     try {
       await authApi.register(name.trim(), email, password, true);
       setSuccess(true);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        setError('Este email já está cadastrado.');
+        setError('Este email já está em uso.');
+      } else if (err instanceof ApiError && err.status === 400) {
+        const body = err.body as any;
+        setError(typeof body?.error === 'string' ? body.error : 'Senha não atende aos requisitos mínimos de segurança.');
       } else {
         setError('Erro ao criar conta. Tente novamente.');
       }
@@ -102,9 +114,10 @@ export default function RegisterPage() {
               type="email"
               placeholder="seuemail@exemplo.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
               autoComplete="email"
               required
+              error={emailError || undefined}
             />
             <div className="flex flex-col gap-1">
               <PasswordInput

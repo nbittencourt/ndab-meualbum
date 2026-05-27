@@ -10,6 +10,7 @@ import { PilhaDaSessao } from '../models/PilhaDaSessao.js';
 import { Sticker } from '../models/Sticker.js';
 import { TipoAlbum } from '../models/TipoAlbum.js';
 import { Secao } from '../models/Secao.js';
+import { Album } from '../models/Album.js';
 import { randomUUID } from 'crypto';
 
 const router = Router();
@@ -115,16 +116,20 @@ router.post('/popular-pilha', async (req, res) => {
     const u = await User.findOne({ publicId: identificador }).lean();
     usuarioId = (u as any)?._id;
   }
-  const stickers = await Sticker.find().limit(quantidade as number).lean();
-  const docs = stickers.map((s) => ({
-    usuarioId,
-    tipoAlbumId: tipo_album_id,
-    figurinhaId: s._id,
-    figurinhaNumero: (s as any).number,
-    figurinhaNome: (s as any).subject,
-    origem: 'DIGITACAO',
-    statusDestino: 'PENDENTE',
-  }));
+  const allStickers = await Sticker.find().lean();
+  if (allStickers.length === 0) { res.status(400).json({ error: 'Nenhuma figurinha no catálogo' }); return; }
+  const docs = Array.from({ length: quantidade as number }, (_, i) => {
+    const s = allStickers[i % allStickers.length] as any;
+    return {
+      usuarioId,
+      tipoAlbumId: tipo_album_id,
+      figurinhaId: s._id,
+      figurinhaNumero: s.number,
+      figurinhaNome: s.subject,
+      origem: 'DIGITACAO',
+      statusDestino: 'PENDENTE',
+    };
+  });
   await PilhaDaSessao.insertMany(docs);
   res.json({ ok: true, criados: docs.length });
 });
@@ -158,6 +163,13 @@ router.post('/popular-estoque', async (req, res) => {
     { $inc: { quantidade } },
     { upsert: true }
   );
+  res.json({ ok: true });
+});
+
+router.post('/arquivar-album', async (req, res) => {
+  const { albumId } = req.body;
+  if (!albumId) { res.status(400).json({ error: 'albumId obrigatório' }); return; }
+  await Album.findByIdAndUpdate(albumId, { arquivadoEm: new Date() });
   res.json({ ok: true });
 });
 

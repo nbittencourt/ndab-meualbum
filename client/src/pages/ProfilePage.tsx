@@ -32,14 +32,18 @@ export default function ProfilePage() {
   // Nome
   const [nomeEdit, setNomeEdit] = useState(false);
   const [nomeVal, setNomeVal] = useState(user?.name ?? '');
+  const [nomeError, setNomeError] = useState('');
   const nomeMut = useMutation({
     mutationFn: (nome: string) => profileApi.alterarNome(nome),
     onSuccess: (data) => {
       useAuthStore.getState().setUser(data.user);
       setNomeEdit(false);
-      showToast('Nome atualizado.', 'success');
+      showToast('Nome salvo com sucesso.', 'success');
     },
-    onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro ao alterar nome.', 'error'),
+    onError: (err) => {
+      const msg = err instanceof ApiError ? err.message : 'Erro ao alterar nome.';
+      setNomeError(msg);
+    },
   });
 
   // Email
@@ -146,17 +150,23 @@ export default function ProfilePage() {
 
       <Section title="Nome">
         {nomeEdit ? (
-          <form onSubmit={(e) => { e.preventDefault(); nomeMut.mutate(nomeVal.trim()); }} className="flex flex-col gap-3">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const trimmed = nomeVal.trim();
+            if (trimmed.length > 100) { setNomeError('Máximo de 100 caracteres.'); return; }
+            setNomeError('');
+            nomeMut.mutate(trimmed);
+          }} className="flex flex-col gap-3">
             <Input
               label="Nome completo"
               value={nomeVal}
-              onChange={(e) => setNomeVal(e.target.value)}
-              maxLength={100}
+              onChange={(e) => { setNomeVal(e.target.value); setNomeError(''); }}
               autoFocus
+              error={nomeError || undefined}
             />
             <div className="flex gap-2">
               <Button type="submit" size="sm" loading={nomeMut.isPending} disabled={!nomeVal.trim() || nomeVal.trim() === (user?.name ?? '')} data-testid="salvar-nome">Salvar</Button>
-              <Button type="button" size="sm" variant="secondary" onClick={() => { setNomeEdit(false); setNomeVal(user?.name ?? ''); }}>Cancelar</Button>
+              <Button type="button" size="sm" variant="secondary" onClick={() => { setNomeEdit(false); setNomeVal(user?.name ?? ''); setNomeError(''); }}>Cancelar</Button>
             </div>
           </form>
         ) : (
@@ -236,25 +246,29 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-3">
           <div>
             <p className="text-xs font-body text-ink/60 mb-2">
-              Exporte todos os seus dados em formato CSV (LGPD, Art. 18).
+              Exporte todos os seus dados em formato ZIP (LGPD, Art. 18).
             </p>
             <Button
               size="sm"
               variant="secondary"
               loading={exportLoading}
+              disabled={exportLoading}
               aria-busy={exportLoading ? 'true' : undefined}
               onClick={handleExportar}
             >
               Exportar meus dados
             </Button>
           </div>
-          <div className="border-t border-ink/10 pt-3 flex gap-4 text-xs font-body">
+          <div className="border-t border-ink/10 pt-3 flex flex-col gap-2 text-xs font-body">
             <a href="/privacidade" className="text-ink underline hover:brightness-75">
               Política de Privacidade
             </a>
+            <a href="/privacidade#direitos" className="text-ink underline hover:brightness-75">
+              Exercer direitos de privacidade
+            </a>
             <button
               type="button"
-              className="text-ink underline hover:brightness-75"
+              className="text-ink underline hover:brightness-75 text-left"
               onClick={() => {
                 document.dispatchEvent(new CustomEvent('abrir-cookie-banner'));
               }}
@@ -291,7 +305,7 @@ export default function ProfilePage() {
         <Input
           label="Identificador"
           value={excluirIdentificador}
-          onChange={(e) => { setExcluirIdentificador(e.target.value); setExcluirError(''); }}
+          onChange={(e) => { setExcluirIdentificador(e.target.value.toUpperCase()); setExcluirError(''); }}
           placeholder="Identificador"
           autoComplete="off"
         />

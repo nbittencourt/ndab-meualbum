@@ -1,4 +1,4 @@
-import { useState, useId } from 'react';
+import { useState, useId, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { colarFigurinhasApi, albumsApi, ApiError } from '@/lib/api';
@@ -11,6 +11,12 @@ import { StickerStatusBadge } from '@/components/StickerStatusBadge';
 
 type ToastVariant = 'success' | 'error' | 'info';
 type ToastState = { message: string; variant: ToastVariant } | null;
+
+const VARIANT_LABELS: Record<string, string> = {
+  BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
+  CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
+};
+function variantLabel(v: string) { return VARIANT_LABELS[v] ?? v; }
 
 export default function ColarFigurinhasPage() {
   const [searchParams] = useSearchParams();
@@ -25,6 +31,7 @@ export default function ColarFigurinhasPage() {
   const [showMfnModal, setShowMfnModal] = useState(false);
   const [mfnNumero, setMfnNumero] = useState('');
   const [mfnError, setMfnError] = useState('');
+  const mfnKeepOpenRef = useRef(false);
 
   const resultsId = useId();
 
@@ -56,6 +63,7 @@ export default function ColarFigurinhasPage() {
       colarFigurinhasApi.colar(estoqueId, albumIdTarget),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque', albumId] });
+      queryClient.invalidateQueries({ queryKey: ['albums'] });
       showToast('Figurinha colada!', 'success');
     },
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro ao colar.', 'error'),
@@ -66,18 +74,28 @@ export default function ColarFigurinhasPage() {
       colarFigurinhasApi.colarDireta(numero, albumIdTarget),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque', albumId] });
-      setShowMfnModal(false);
-      setMfnNumero('');
-      showToast('Figurinha colada diretamente!', 'success');
+      if (mfnKeepOpenRef.current) {
+        setMfnNumero('');
+        setMfnError('');
+        mfnKeepOpenRef.current = false;
+      } else {
+        setShowMfnModal(false);
+        setMfnNumero('');
+        showToast('Figurinha colada diretamente!', 'success');
+      }
     },
-    onError: (err) => setMfnError(err instanceof ApiError ? err.message : 'Erro ao colar.'),
+    onError: (err) => {
+      mfnKeepOpenRef.current = false;
+      setMfnError(err instanceof ApiError ? err.message : 'Erro ao colar.');
+    },
   });
 
   if (!albumId || albumsLoading || !albumSelecionado) {
     return (
       <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4">
-        <header>
+        <header className="flex items-center justify-between">
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
+          <Button size="sm" variant="secondary" onClick={() => navigate(-1)}>Cancelar</Button>
         </header>
         {albumsLoading ? (
           <div className="flex justify-center py-12" aria-busy="true" aria-label="Carregando álbuns">
@@ -85,25 +103,29 @@ export default function ColarFigurinhasPage() {
           </div>
         ) : (
           <>
-            <p className="text-sm font-body text-ink/70">Escolha um álbum:</p>
+            <p className="text-sm font-body text-ink/70">Escolha um álbum</p>
             {ativos.length === 0 ? (
               <div className="border-2 border-dashed border-ink/20 p-6 text-center">
                 <p className="text-sm font-body text-ink/50 mb-3">Nenhum álbum ativo.</p>
                 <Button size="sm" onClick={() => navigate('/albums/novo')}>Criar álbum</Button>
               </div>
             ) : (
-              <div className="flex flex-col gap-2">
+              <ul className="flex flex-col gap-2">
                 {ativos.map((album) => (
-                  <button
-                    key={album._id}
-                    className="text-left p-4 bg-white border-2 border-ink [box-shadow:3px_3px_0_#0A0907] font-body text-sm text-ink hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                    onClick={() => setAlbumId(album._id)}
-                  >
-                    <span className="font-bold">{album.nomePersonalizado || album.tipoAlbum.nome}</span>
-                    <span className="block text-xs text-ink/50 mt-0.5">{album.percentualConclusao}% completo</span>
-                  </button>
+                  <li key={album._id}>
+                    <button
+                      className="w-full text-left p-4 bg-white border-2 border-ink [box-shadow:3px_3px_0_#0A0907] font-body text-sm text-ink hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                      onClick={() => setAlbumId(album._id)}
+                    >
+                      <span className="font-bold">{album.nomePersonalizado || album.tipoAlbum?.nome}</span>
+                      {album.variante && (
+                        <span className="block text-xs text-ink/60 mt-0.5">{variantLabel(album.variante)}</span>
+                      )}
+                      <span className="block text-xs text-ink/50 mt-0.5">{album.percentualConclusao}% completo</span>
+                    </button>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </>
         )}
@@ -117,9 +139,10 @@ export default function ColarFigurinhasPage() {
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
           <p className="text-xs font-body text-ink/50 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
+          <p className="text-xs font-mono text-ink/60 mt-0.5">{albumSelecionado?.percentualConclusao ?? 0}% completo</p>
         </div>
         {ativos.length > 1 && (
-          <Button size="sm" variant="secondary" onClick={() => setAlbumId('')}>Trocar</Button>
+          <Button size="sm" variant="secondary" onClick={() => setAlbumId('')}>Trocar álbum</Button>
         )}
       </header>
 
@@ -198,7 +221,7 @@ export default function ColarFigurinhasPage() {
           error={mfnError || undefined}
           autoFocus
         />
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-4 flex-wrap">
           <Button
             loading={mfnMut.isPending}
             disabled={!mfnNumero.trim()}
@@ -206,7 +229,23 @@ export default function ColarFigurinhasPage() {
           >
             Colar
           </Button>
+          <Button
+            variant="secondary"
+            loading={mfnMut.isPending}
+            disabled={!mfnNumero.trim()}
+            onClick={() => {
+              mfnKeepOpenRef.current = true;
+              mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId });
+            }}
+          >
+            Colar e Outra
+          </Button>
           <Button variant="secondary" onClick={() => { setShowMfnModal(false); setMfnError(''); }}>Cancelar</Button>
+        </div>
+        <div className="mt-3 pt-3 border-t border-ink/10">
+          <Button size="sm" variant="secondary" onClick={() => {}}>
+            Abrir câmera
+          </Button>
         </div>
       </Modal>
 
@@ -224,27 +263,54 @@ function StickerRow({
   onColar: () => void;
   loading: boolean;
 }) {
-  const canPaste = item.elegibilidade === 'PODE_COLAR';
+  const [confirmar, setConfirmar] = useState(false);
+  const canPaste = item.elegibilidade === 'PODE_COLAR' || item.elegibilidade === 'JA_COLADA';
+
+  function handleColarClick() {
+    if (item.elegibilidade === 'JA_COLADA') {
+      setConfirmar(true);
+    } else {
+      onColar();
+    }
+  }
 
   return (
     <article
-      className="bg-white border-2 border-ink p-3 flex items-center justify-between gap-2"
+      className="bg-white border-2 border-ink p-3"
       aria-label={`Figurinha ${item.figurinha.number}${item.figurinha.subject ? `, ${item.figurinha.subject}` : ''}, ${item.quantidade} no estoque`}
     >
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2">
         <span className="font-mono font-bold text-sm text-ink shrink-0">{item.figurinha.number}</span>
         {item.figurinha.subject && (
-          <span className="text-xs font-body text-ink/60 truncate">{item.figurinha.subject}</span>
+          <span className="text-xs font-body text-ink/60 flex-1 truncate">{item.figurinha.subject}</span>
         )}
         <StickerStatusBadge status={item.elegibilidade} />
-        {item.quantidade > 1 && (
-          <span className="text-xs font-mono text-ink/50 shrink-0">×{item.quantidade}</span>
+        <span className="text-xs font-mono text-ink/50 shrink-0">{item.quantidade}</span>
+        {canPaste && !confirmar && (
+          <Button size="sm" variant="primary" loading={loading} onClick={handleColarClick}>
+            Colar
+          </Button>
         )}
       </div>
-      {canPaste && (
-        <Button size="sm" variant="primary" loading={loading} onClick={onColar}>
-          Colar
-        </Button>
+      {confirmar && (
+        <div className="mt-2 pt-2 border-t border-ink/10">
+          <p className="text-xs font-body text-ink/70 mb-2">
+            Esta figurinha já está colada. Deseja substituí-la?
+          </p>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="primary"
+              loading={loading}
+              onClick={() => { setConfirmar(false); onColar(); }}
+            >
+              Confirmar
+            </Button>
+            <Button size="sm" variant="secondary" onClick={() => setConfirmar(false)}>
+              Cancelar
+            </Button>
+          </div>
+        </div>
       )}
     </article>
   );

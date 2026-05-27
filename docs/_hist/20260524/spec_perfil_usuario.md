@@ -12,7 +12,6 @@
 | 1.0 | inicial | Versão original |
 | 1.1 | red team | **C1** — troca de senha invalida todas as sessões ativas exceto a corrente via `token_versao`; RN-P22 atualizado; RN-P22a adicionado. **C4** — cooldown de 5 minutos estendido para cobrir também novas solicitações de alteração de email, não apenas reenvio (RN-P12 atualizado). **M7** — cooldown de usuário `PENDENTE` explicitado como uso de `ultimo_envio_em`, não `ultimo_envio_email_pendente_em` (RN-P16 atualizado). **B3** — seção de exclusão de conta adicionada (seção 8, RN-P24 a RN-P28) |
 | 1.2 | LGPD + WCAG | Seção 8 (Exportar Dados) adicionada; Seção de Excluir Conta renumerada para 9. Link "Exercer direitos de privacidade" adicionado (RN-P29, RN-P30). Requisitos de acessibilidade adicionados (RN-P31 a RN-P38). |
-| 1.3 | revisão de RNs implícitas | **RN-P39** — botão "Salvar" do nome entra em estado de carregamento durante requisição. **RN-P40** — o novo email não pode ser igual ao `email_pendente` já em espera. **RN-P41** — confirmação de alteração de email invalida qualquer sessão ativa se o email for usado como credencial implícita. **RN-P42** — campos de nova senha e confirmação são limpos após alteração bem-sucedida; campo de senha atual também é limpo. **RN-P43** — o campo de identificador na confirmação de exclusão converte entrada para maiúsculas em tempo real. **RN-P44** — a exportação de dados é síncrona com spinner; o botão não pode ser acionado múltiplas vezes simultaneamente. **RN-P45** — a Tela P2 não é acessível diretamente por URL sem token válido. |
 
 ---
 
@@ -59,14 +58,12 @@ A entidade `TokenOperacao` (definida em spec_login_recuperacao_senha) é utiliza
   Seção: Nome
   Seção: Email
   Seção: Senha
-  Seção: Exportar Dados
   Seção: Excluir conta
         │
         ├── [Link no email de confirmação de alteração de email]
         │         │
         │         ▼
         │   [Tela P2 — Confirmação de Alteração de Email]
-        │   (somente via token válido — RN-P45)
         │
         └── [Link "Esqueci minha senha" na seção Senha]
                   │
@@ -99,7 +96,6 @@ O campo é somente leitura. O identificador é imutável conforme RN-01 de spec_
 
 **Comportamento:**
 - O botão "Salvar" fica habilitado somente quando o valor do campo difere do nome armazenado e não está vazio
-- Ao acionar "Salvar", o botão entra em estado de carregamento durante a requisição (RN-P39)
 - Ao salvar com sucesso: atualiza o nome exibido no header global da sessão atual e exibe confirmação inline
 
 ---
@@ -127,7 +123,6 @@ O comportamento desta seção varia conforme o `status` do usuário.
   Sistema valida:
     - formato de email válido?
     - email diferente do email atual?
-    - email diferente do email_pendente já em espera (quando aplicável)? (RN-P40)
     - email não está em uso por outro usuário?
         │
         ├── INVÁLIDO ou DUPLICADO → mensagem de erro inline; sem alteração de estado
@@ -273,8 +268,7 @@ Botão "Alterar senha" — habilitado somente quando: campo de senha atual está
   Sistema emite novo JWT com token_versao atualizado para a sessão corrente
         │
         ▼
-  Campos de senha (atual, nova e confirmação) são limpos (RN-P42)
-  Confirmação de sucesso exibida inline
+  Campos limpos; confirmação de sucesso exibida inline
 ```
 
 ---
@@ -306,7 +300,6 @@ Campos de chave interna (IDs de banco) são omitidos sempre que o dado puder ser
   Botão "Exportar meus dados"
         │
         ▼
-  Botão entra em estado de carregamento (desabilitado) durante a geração — RN-P44
   Sistema gera o arquivo ZIP com todos os CSVs sincronamente
   (spinner inline no botão durante geração; demais seções da tela permanecem interativas)
         │
@@ -320,7 +313,7 @@ Campos de chave interna (IDs de banco) são omitidos sempre que o dado puder ser
 
 1. Texto descritivo: "Baixe uma cópia de todos os seus dados armazenados na plataforma em formato CSV."
 2. Link "Saiba mais sobre seus direitos de privacidade" — redireciona para a Política de Privacidade (nova aba)
-3. Botão "Exportar meus dados" — estado loading com spinner durante geração; não pode ser acionado novamente enquanto em andamento (RN-P44)
+3. Botão "Exportar meus dados" — estado loading com spinner durante geração
 
 ---
 
@@ -343,7 +336,7 @@ Exclusão permanente e irreversível da conta e de todos os dados associados ao 
   Texto: "Esta ação é permanente e não pode ser desfeita. Todos os seus dados serão
           removidos: álbuns, figurinhas, estoque e histórico. Para confirmar, digite
           seu identificador abaixo."
-  Campo: identificador (6 chars, texto simples — convertido para maiúsculas em tempo real, RN-P43)
+  Campo: identificador (6 chars, texto simples)
   Botão "Confirmar exclusão" — desabilitado até que o identificador digitado coincida
                                exatamente com o identificador do usuário autenticado
   Botão "Cancelar"
@@ -363,6 +356,43 @@ Exclusão permanente e irreversível da conta e de todos os dados associados ao 
         ▼
   Redireciona para a landing page com mensagem: "Sua conta foi excluída."
 ```
+
+---
+
+## 9. Detalhamento Visual
+
+### Tela P1 — Perfil / Configurações de Conta
+
+**Layout:** coluna central, largura máxima ~600 px, verticalizada, responsiva.
+
+**Estrutura (de cima para baixo):**
+
+1. Título: "Minha conta"
+2. **Bloco: Identificador** — rótulo, código em destaque monospace, botão "Copiar", texto auxiliar
+3. **Seção: Nome** — label, campo pré-preenchido, botão "Salvar", área de feedback inline
+4. **Seção: Email** — label, campo pré-preenchido, botão "Salvar"; aviso de pendência condicional; área de feedback inline
+5. **Seção: Senha** — campo "Senha atual", link "Esqueci minha senha", campo "Nova senha", checklist, campo "Confirmar nova senha", botão "Alterar senha", área de feedback inline
+6. **Seção: Exportar Dados** — texto descritivo, link "Saiba mais sobre seus direitos de privacidade", botão "Exportar meus dados"
+7. **Link: "Exercer direitos de privacidade"** — link de texto, abaixo da seção de exportação, que redireciona para o canal de contato da Política de Privacidade
+8. **Seção: Excluir conta** — separador visual, botão destrutivo "Excluir minha conta", expansão de confirmação (condicional)
+
+---
+
+### Tela P2 — Confirmação de Alteração de Email
+
+Acessada exclusivamente via link recebido no novo endereço.
+
+**Estado de sucesso:**
+1. Ícone de confirmação
+2. Título: "Email atualizado"
+3. Texto: "Seu novo email foi confirmado e já está ativo na sua conta."
+4. Botão primário: "Acessar a aplicação"
+
+**Estado de erro (token inválido ou expirado):**
+1. Ícone de alerta
+2. Título: "Link inválido ou expirado"
+3. Texto: "Este link de confirmação não é mais válido. Links expiram em 2 horas e só podem ser usados uma vez. Acesse seu perfil para solicitar um novo envio."
+4. Botão primário: "Ir para o perfil"
 
 ---
 
@@ -399,13 +429,6 @@ Exclusão permanente e irreversível da conta e de todos os dados associados ao 
 | RN-P26 | A exclusão de conta executa **hard delete** em cascata dos seguintes dados: `Usuário`, `EstoqueFigurinha`, `FigurinhaColada`, `Álbum`, entradas da Pilha da Sessão (Abrir Pacotinhos), `TokenOperacao` e `TokenConfirmacaoCadastro` associados ao usuário |
 | RN-P27 | Após exclusão bem-sucedida, a sessão é encerrada e o usuário é redirecionado para a landing page com mensagem de confirmação |
 | RN-P28 | Usuários com `status = PENDENTE` podem excluir a conta normalmente, desde que acessem a Tela P1 via link disponível na Tela 2 de Confirmação de Email |
-| RN-P39 | O botão "Salvar" da seção Nome entra em **estado de carregamento** (desabilitado, com indicador visual) imediatamente após o clique, enquanto a requisição ao servidor estiver em andamento. Retorna ao estado habilitado em caso de erro |
-| RN-P40 | O novo email informado na seção Email não pode ser igual ao `email_pendente` já em espera (quando `status = EMAIL_PENDENTE`). Nesse caso, exibe mensagem de erro inline: "Este email já está aguardando confirmação" |
-| RN-P41 | A confirmação de alteração de email (Tela P2) **não** incrementa `token_versao` nem invalida sessões ativas. O email é apenas atualizado como credencial; sessões já autenticadas permanecem válidas, pois o JWT não carrega o email como campo de validação de sessão — apenas `token_versao` |
-| RN-P42 | Após alteração bem-sucedida de senha, **todos os três campos de senha** (atual, nova e confirmação) são limpos. O foco retorna ao campo "Senha atual". Nenhuma mensagem de sucesso retém o valor anterior nos campos |
-| RN-P43 | O campo de digitação do identificador no diálogo de confirmação de exclusão **converte a entrada para maiúsculas em tempo real** (conforme RN-04 de spec_cadastro_usuarios). O usuário não precisa digitar em maiúsculas; a conversão é automática e visível no campo |
-| RN-P44 | A geração do arquivo de exportação de dados é síncrona. O botão "Exportar meus dados" entra em **estado de carregamento** (desabilitado, com spinner) durante a geração e **não pode ser acionado novamente** enquanto uma exportação estiver em andamento. Isso evita geração duplicada de arquivos |
-| RN-P45 | A Tela P2 (Confirmação de Alteração de Email) **não é acessível diretamente por URL** sem um token `ALTERACAO_EMAIL` válido na query string. Tentativas de acesso sem token ou com token inválido/expirado exibem o estado de erro da Tela P2 |
 
 ---
 
@@ -435,7 +458,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 
 ---
 
-## 13. Estados de Carregamento e Erro
+## 11. Estados de Carregamento e Erro
 
 | Situação | Comportamento |
 |---|---|
@@ -445,12 +468,11 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | Falha no servidor ao salvar email | Mensagem de erro inline na seção; nenhum estado é alterado |
 | Falha no servidor ao alterar senha | Mensagem de erro genérica abaixo do botão; campos não são limpos |
 | Falha no servidor ao excluir conta | Mensagem de erro inline na seção de exclusão; nenhum dado é alterado |
-| Falha na exportação de dados | Mensagem de erro inline na seção; botão retorna ao estado habilitado |
 | Sessão expirada (JWT inválido) | Redireciona automaticamente para a tela de Login |
 
 ---
 
-## 14. Fluxos Relacionados (fora do escopo desta spec)
+## 12. Fluxos Relacionados (fora do escopo desta spec)
 
 | Fluxo | Gatilho nesta spec |
 |---|---|

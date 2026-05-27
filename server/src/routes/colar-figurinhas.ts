@@ -104,7 +104,7 @@ router.post('/colar/direta', requireAuth, async (req: AuthRequest, res) => {
 
   const sticker = await Sticker.findOne({ number: figurinhaNumero }).lean();
   if (!sticker) {
-    res.status(404).json({ error: 'FIGURINHA_NAO_ENCONTRADA', message: 'Número não está no catálogo.' });
+    res.status(404).json({ error: `Figurinha ${figurinhaNumero} não encontrada neste álbum. Verifique o número e tente novamente.` });
     return;
   }
 

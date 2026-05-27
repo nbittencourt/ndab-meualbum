@@ -33,12 +33,12 @@ export default function CadastroAlbumPage() {
       return albumsApi.create(tipoSelecionado._id, varianteSelecionada, nomePersonalizado.trim() || undefined);
     },
     onSuccess: (data) => {
-      setAlbumCriadoId(data.album._id);
-      if (data.temEstoque) {
-        setShowPropostaModal(true);
-      } else {
+      if (!data.temEstoque) {
         navigate('/home');
+        return;
       }
+      setAlbumCriadoId(data.album._id);
+      setShowPropostaModal(true);
     },
     onError: (err) => {
       setError(err instanceof ApiError ? err.message : 'Erro ao criar álbum.');
@@ -79,6 +79,14 @@ export default function CadastroAlbumPage() {
                 ))}
               </div>
             </fieldset>
+          )}
+
+          {tipoSelecionado && (
+            <div className="border border-ink/20 p-3 bg-white text-sm font-body text-ink/70">
+              <span className="font-semibold text-ink">{tipoSelecionado.nome}</span>
+              {' — '}
+              <span>Total de figurinhas: {tipoSelecionado.totalFigurinhas}</span>
+            </div>
           )}
 
           <fieldset

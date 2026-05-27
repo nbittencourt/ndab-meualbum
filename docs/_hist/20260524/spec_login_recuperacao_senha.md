@@ -11,7 +11,6 @@
 | 1.2 | revisão | `TokenRecuperacao` renomeado para `TokenOperacao`; campos `tipo` e `email_novo` adicionados; `EMAIL_PENDENTE` incluído nos redirecionamentos pós-login (RN-L02, RN-L03) e pós-recuperação (RN-L11); requisito de número adicionado à política de senha (RN-L08); checklist da Tela L3 atualizado |
 | 1.3 | red team | **C1** — troca de senha invalida todas as sessões ativas exceto a corrente, via incremento de `token_versao` (RN-L15). **C3** — rate limiting referenciado explicitamente nos endpoints sensíveis (RN-L16). **A3** — fluxo e regras de logout adicionados (seção 4, RN-L17, RN-L18) |
 | 1.4 | LGPD + WCAG | Seção de banner de cookies adicionada (RN-L19) com referência a spec_privacidade_lgpd. Requisitos de acessibilidade adicionados (RN-L20 a RN-L26). |
-| 1.5 | revisão de RNs implícitas | **RN-L27** — o campo de email é normalizado para minúsculas antes da validação. **RN-L28** — o botão "Entrar" entra em estado de carregamento durante a requisição. **RN-L29** — a sessão anterior do mesmo usuário é encerrada ao fazer novo login. **RN-L30** — o campo de email na Tela L2 é pré-preenchido quando há contexto disponível. **RN-L31** — o link de redefinição de senha só pode ser usado para o usuário específico ao qual pertence o token. **RN-L32** — a Tela L3 não é acessível diretamente por URL sem token válido. |
 
 ---
 
@@ -63,13 +62,11 @@ Utilizada pelo fluxo de Recuperação de Senha e pelo fluxo de Alteração de Em
   Usuário preenche: email, senha
         │
         ▼
-  Sistema normaliza email para minúsculas antes da validação (RN-L27)
   Sistema valida campos (formato básico; campos obrigatórios)
         │
         ├── ERRO de validação local → mensagem inline, sem chamada ao servidor
         │
         ▼
-  Botão "Entrar" entra em estado de carregamento (RN-L28)
   Sistema verifica credenciais:
     - email existe no cadastro?
     - hash da senha confere?
@@ -83,10 +80,8 @@ Utilizada pelo fluxo de Recuperação de Senha e pelo fluxo de Alteração de Em
         ├── status = PENDENTE → redireciona para Tela 2 de Confirmação de Email
         │   (sem reenvio automático; usuário usa o botão "Reenviar email" já existente)
         │
-        └── status = ATIVO ou EMAIL_PENDENTE →
-              Se houver sessão ativa do mesmo usuário neste dispositivo: encerra silenciosamente (RN-L29)
-              Emite novo JWT com token_versao atual
-              Redireciona para Home da aplicação
+        └── status = ATIVO ou EMAIL_PENDENTE → emite JWT com token_versao atual,
+                                               redireciona para Home da aplicação
 ```
 
 **Emissão do JWT:**
@@ -99,10 +94,8 @@ Utilizada pelo fluxo de Recuperação de Senha e pelo fluxo de Alteração de Em
 ```
 [Tela Esqueci a Senha]
   Usuário informa o email cadastrado
-  (Campo pré-preenchido quando há contexto disponível — RN-L30)
         │
         ▼
-  Sistema normaliza email para minúsculas antes da verificação (RN-L27)
   Sistema verifica se email existe
         │
         ├── Email não encontrado → exibe a MESMA mensagem de sucesso (não revelar existência de contas)
@@ -126,7 +119,7 @@ Utilizada pelo fluxo de Recuperação de Senha e pelo fluxo de Alteração de Em
         ├── INVÁLIDO ou EXPIRADO → exibe tela de erro com link para solicitar novo email
         │
         ▼
-[Tela Redefinição de Senha — acessível somente via token válido, não por URL direta (RN-L32)]
+[Tela Redefinição de Senha]
   Usuário preenche: Nova senha + Confirmação de senha
         │
         ▼
@@ -173,8 +166,9 @@ Utilizada pelo fluxo de Recuperação de Senha e pelo fluxo de Alteração de Em
 | Evento | Ação sobre token_versao | Efeito |
 |---|---|---|
 | Cadastro | Inicializado em `1` | — |
+| Login | Não alterado | Sessão emitida com versão atual |
 | Logout | Incrementado em +1 | Todos os JWTs anteriores tornam-se inválidos |
-| Troca de senha (Perfil) | Incrementado em +1 | Todas as sessões em outros dispositivos tornam-se inválidas; sessão corrente mantida com novo JWT |
+| Troca de senha (Perfil) | Incrementado em +1 | Todas as sessões exceto a corrente tornam-se inválidas; novo JWT emitido para a sessão corrente |
 | Troca de senha (Recuperação) | Incrementado em +1 | Todas as sessões tornam-se inválidas; novo JWT emitido ao final do fluxo |
 
 ---
@@ -224,7 +218,7 @@ A validação no servidor **replica exatamente** as mesmas regras — a validaç
 3. Campo: Email (label acima, placeholder `seuemail@exemplo.com`, validação inline)
 4. Campo: Senha (label acima, password com toggle mostrar/ocultar)
 5. Link secundário: "Esqueci a senha" — alinhado à direita, abaixo do campo de senha
-6. Botão primário: "Entrar" — largura total do formulário; entra em estado de carregamento durante a requisição (RN-L28)
+6. Botão primário: "Entrar" — largura total do formulário
 7. Link secundário: "Não tem conta? Criar conta"
 
 **Mensagem de erro de credenciais:** exibida abaixo do botão: *"Email ou senha incorretos"*
@@ -238,7 +232,7 @@ A validação no servidor **replica exatamente** as mesmas regras — a validaç
 1. Ícone: cadeado ou chave (outline)
 2. Título: "Recuperar senha"
 3. Texto: "Informe o email cadastrado. Se ele existir em nossa base, você receberá um link para redefinir sua senha."
-4. Campo: Email (pré-preenchido quando há contexto disponível — RN-L30)
+4. Campo: Email
 5. Botão primário: "Enviar link"
 6. Link: "← Voltar ao login"
 
@@ -296,12 +290,6 @@ A validação no servidor **replica exatamente** as mesmas regras — a validaç
 | RN-L16 | **Rate limiting:** todos os endpoints aplicam o limite global de 100 requisições por IP por minuto definido em RN-18 de spec_cadastro_usuarios. Os endpoints de login e "esqueci a senha" são particularmente sensíveis a abuso; parâmetros adicionais de throttling (ex.: bloqueio por email após N tentativas falhas) são decisão de implementação do backend |
 | RN-L17 | **Logout:** ao acionar logout, `Usuário.token_versao` é incrementado em +1, invalidando todos os JWTs emitidos anteriormente para aquele usuário em qualquer dispositivo. A sessão corrente é encerrada (cookie removido / token descartado client-side) |
 | RN-L18 | **Redirecionamento pós-logout:** após o logout, o usuário é redirecionado para a página inicial da aplicação (landing page / tela de Login). Não há confirmação prévia de logout |
-| RN-L27 | O endereço de email é normalizado para **minúsculas** antes de qualquer validação ou consulta ao banco — tanto no login quanto no formulário de recuperação. Garante consistência com RN-34 de spec_cadastro_usuarios |
-| RN-L28 | O botão "Entrar" entra em **estado de carregamento** (desabilitado, com indicador visual) imediatamente após o clique, enquanto a requisição ao servidor estiver em andamento. Retorna ao estado habilitado em caso de erro de credenciais ou de servidor |
-| RN-L29 | Se o usuário já possui uma sessão ativa no mesmo dispositivo (mesmo cookie/token) e realiza novo login com as mesmas credenciais, a sessão anterior é **substituída silenciosamente** pela nova. Não há mensagem de aviso; o comportamento é transparente para o usuário |
-| RN-L30 | O campo de email da Tela L2 é **pré-preenchido** quando o contexto de origem fornece o endereço (ex.: link "Esqueci a senha" acionado a partir do campo de email já preenchido na Tela L1). Quando não há contexto, o campo inicia vazio |
-| RN-L31 | O token de recuperação é vinculado a um `usuario_identificador` específico. O sistema valida que o token pertence ao usuário antes de exibir a Tela L3. Tokens de outros usuários são tratados como inválidos mesmo que tecnicamente não expirados |
-| RN-L32 | A Tela L3 (Redefinição de Senha) **não é acessível diretamente por URL** sem um token válido na query string. Tentativas de acesso sem token ou com token inválido/expirado redirecionam para a Tela L4 |
 
 ---
 

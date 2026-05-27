@@ -23,6 +23,10 @@ import testRouter from './routes/test.routes.js';
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
 
+// Cloud Run sits behind Firebase Hosting (and GCP load balancer), which sets X-Forwarded-For.
+// Without this, express-rate-limit cannot identify clients and throws ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
@@ -57,9 +61,10 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   }
 });
 
-connectDB()
-  .then(() => {
-    const server = app.listen(PORT, () => logger.info('server:started', { port: PORT }));
-    process.on('SIGTERM', () => server.close(() => process.exit(0)));
-  })
-  .catch((err) => { logger.error('db:fatal', { err: err?.message }); process.exit(1); });
+const server = app.listen(PORT, () => logger.info('server:started', { port: PORT }));
+process.on('SIGTERM', () => server.close(() => process.exit(0)));
+
+connectDB().catch((err) => {
+  logger.error('db:fatal', { err: err?.message });
+  process.exit(1);
+});

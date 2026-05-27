@@ -78,7 +78,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
   });
 
   return (
-    <div
+    <article
       style={{
         background: style.background,
         border: style.border,
@@ -86,8 +86,8 @@ export function AlbumCard({ album }: AlbumCardProps) {
         padding: '20px',
         transition: 'transform 0.15s ease',
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.transform = ''; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ''; }}
     >
       {/* Header row: tag + date */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -209,6 +209,6 @@ export function AlbumCard({ album }: AlbumCardProps) {
           Colar figurinhas →
         </button>
       </Link>
-    </div>
+    </article>
   );
 }

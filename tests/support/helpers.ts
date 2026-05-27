@@ -30,10 +30,18 @@ export async function loginPorUI(page: Page, email: string, password: string) {
 export async function usuarioAtivo(page: Page, request: APIRequestContext) {
   const { dados, identificador } = await criarUsuario(request);
   await confirmarEmail(request, identificador);
-  await loginPorUI(page, dados.email as string, dados.password as string);
+  // Single login via request context; share cookie with page to avoid double-login
+  // (double-login would increment tokenVersao twice, invalidating the first session)
   await request.post('/api/v1/auth/login', {
     data: { email: dados.email, password: dados.password },
   });
+  const storage = await request.storageState();
+  const sessionCookie = storage.cookies.find((c) => c.name === '__session');
+  if (sessionCookie) {
+    await page.context().addCookies([{ ...sessionCookie, domain: 'localhost' }]);
+  }
+  await page.goto('/home');
+  await page.waitForURL(/\/home/);
   return { ...dados, identificador };
 }
 
@@ -62,4 +70,8 @@ export async function adicionarEstoque(
 
 export async function expirarToken(request: APIRequestContext, token: string) {
   await request.post('/api/v1/test/expirar-token', { data: { token } });
+}
+
+export async function arquivarAlbum(request: APIRequestContext, albumId: string) {
+  await request.post('/api/v1/test/arquivar-album', { data: { albumId } });
 }

@@ -42,6 +42,7 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
               totalFigurinhas: tipo.totalFigurinhas,
             }
           : null,
+        variante: (album as any).variante ?? null,
         nomePersonalizado: album.nomePersonalizado ?? null,
         criadoEm: (album as any).criadoEm,
         percentualConclusao: percentual,

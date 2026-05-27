@@ -176,7 +176,8 @@ router.post('/login', async (req, res) => {
     res.status(400).json({ error: parsed.error.flatten() });
     return;
   }
-  const { email, password } = parsed.data;
+  const { email: emailRaw, password } = parsed.data;
+  const email = emailRaw.toLowerCase();
   const user = await User.findOne({ email });
   if (!user || !(await (user as any).comparePassword(password))) {
     logger.warn('login:failed', { email: maskEmail(email) });
@@ -193,9 +194,12 @@ router.post('/login', async (req, res) => {
     });
     return;
   }
+  // Increment tokenVersao to invalidate all previous sessions (RN-L29)
+  const updated = await User.findByIdAndUpdate(user.id, { $inc: { tokenVersao: 1 } }, { new: true });
+  const newVersao = (updated as any)?.tokenVersao ?? ((user as any).tokenVersao as number) + 1;
   logger.info('login:success', { email: maskEmail(email) });
-  issueToken(user.id as string, (user as any).tokenVersao as number, res);
-  res.json({ user: serializeUser(user) });
+  issueToken(user.id as string, newVersao, res);
+  res.json({ user: serializeUser(updated ?? user) });
 });
 
 router.post('/logout', requireAuth, async (req: AuthRequest, res) => {

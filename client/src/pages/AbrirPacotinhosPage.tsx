@@ -59,8 +59,21 @@ export default function AbrirPacotinhosPage() {
   const pilha = pilhaData?.itens ?? [];
   const pendentes = pilha.filter((i) => i.statusDestino === 'PENDENTE');
 
+  const { data: albumsData } = useQuery({
+    queryKey: ['albums'],
+    queryFn: albumsApi.list,
+    enabled: tipoId !== null,
+    staleTime: 0,
+  });
+  const temAlbumsAtivos = (albumsData?.ativos?.length ?? 0) > 0;
+
   // Há retomada quando há itens pendentes e o usuário ainda não está em AP1
   const temRetomada = pendentes.length > 0 && !retomadaDescartada && tipoId === null;
+
+  const [addError, setAddError] = useState('');
+  const [descartarItemId, setDescartarItemId] = useState<string | null>(null);
+  const [showCameraPanel, setShowCameraPanel] = useState(false);
+  const [cameraAtiva, setCameraAtiva] = useState(false);
 
   const addMut = useMutation({
     mutationFn: (figurinhaNumero: string) =>
@@ -68,9 +81,12 @@ export default function AbrirPacotinhosPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pilha'] });
       setNumero('');
+      setAddError('');
       inputRef.current?.focus();
     },
-    onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro ao adicionar.', 'error'),
+    onError: (err) => {
+      setAddError(err instanceof ApiError ? err.message : 'Erro ao adicionar.');
+    },
   });
 
   const colarMut = useMutation({
@@ -91,6 +107,16 @@ export default function AbrirPacotinhosPage() {
       showToast('Figurinha marcada como repetida.', 'info');
     },
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
+  });
+
+  const descartarItemMut = useMutation({
+    mutationFn: (itemId: string) => abrirPacotinhosApi.descartarItem(itemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      setDescartarItemId(null);
+      showToast('Figurinha descartada.', 'info');
+    },
+    onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro ao descartar.', 'error'),
   });
 
   const descartarMut = useMutation({
@@ -208,14 +234,21 @@ export default function AbrirPacotinhosPage() {
   }
 
   // ── AP1 – Entrada de figurinhas ───────────────────────────────────────────────
+  const tipoAtual = tipos.find((t) => t._id === tipoId);
+
   return (
     <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4 pb-24">
       <header className="flex items-center justify-between">
-        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
+        <div>
+          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
+          {tipoAtual && (
+            <p className="font-body text-sm text-ink/70 mt-0.5">{tipoAtual.nome}</p>
+          )}
+        </div>
         <div className="flex gap-2">
           {pendentes.length > 0 && (
             <Button size="sm" variant="secondary" onClick={() => setShowDescartar(true)}>
-              Descartar pilha
+              Limpar pilha
             </Button>
           )}
           <Button
@@ -223,7 +256,7 @@ export default function AbrirPacotinhosPage() {
             variant="secondary"
             onClick={async () => { await logout(); window.location.href = '/'; }}
           >
-            Sair
+            Sair da conta
           </Button>
         </div>
       </header>
@@ -235,12 +268,34 @@ export default function AbrirPacotinhosPage() {
         className="sr-only"
       />
 
+      {showCameraPanel && (
+        <div className="bg-white border-2 border-ink p-4 flex flex-col gap-3">
+          {cameraAtiva ? (
+            <>
+              <video autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
+              <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
+                Fechar câmera
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-body text-ink/60">A câmera não ativa automaticamente. Clique no botão abaixo para iniciar.</p>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => setCameraAtiva(true)}>Abrir câmera</Button>
+                <Button size="sm" variant="secondary" onClick={() => setShowCameraPanel(false)}>Cancelar</Button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           if (!numero.trim()) return;
+          setAddError('');
           if (pendentes.length >= MAX_PENDENTE) {
-            showToast(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido.`, 'error');
+            setAddError(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido. Cole ou descarte antes de continuar.`);
             return;
           }
           addMut.mutate(numero.trim());
@@ -256,20 +311,29 @@ export default function AbrirPacotinhosPage() {
             inputMode="numeric"
             pattern="[0-9A-Za-z]+"
             value={numero}
-            onChange={(e) => setNumero(e.target.value.toUpperCase())}
+            onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
             placeholder="Ex.: 42 ou BR01"
             autoComplete="off"
             aria-label="Número da figurinha para adicionar à pilha"
+            error={addError || undefined}
           />
         </div>
-        <div className="flex items-end pb-0.5">
+        <div className="flex items-end pb-0.5 gap-1">
           <Button type="submit" loading={addMut.isPending} disabled={!numero.trim()}>
             +
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            aria-label="Fotografar"
+            onClick={() => { setShowCameraPanel(true); setCameraAtiva(false); }}
+          >
+            Fotografar
           </Button>
         </div>
       </form>
 
-      {pendentes.length >= MAX_PENDENTE && (
+      {pendentes.length >= MAX_PENDENTE && !addError && (
         <p role="alert" className="text-xs text-red font-body">
           ⚠ Limite de {MAX_PENDENTE} itens pendentes atingido. Cole ou descarte antes de continuar.
         </p>
@@ -300,11 +364,27 @@ export default function AbrirPacotinhosPage() {
                   )}
                   <StatusLabel status={item.statusDestino} />
                 </div>
-                {item.statusDestino === 'PENDENTE' && (
+                {item.statusDestino === 'PENDENTE' && descartarItemId === (item._id as string) ? (
                   <div className="flex gap-1">
-                    <Button size="sm" variant="primary" onClick={() => setColarItem(item)}>
-                      Colar
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      loading={descartarItemMut.isPending}
+                      onClick={() => descartarItemMut.mutate(item._id as string)}
+                    >
+                      Confirmar
                     </Button>
+                    <Button size="sm" variant="secondary" onClick={() => setDescartarItemId(null)}>
+                      Cancelar
+                    </Button>
+                  </div>
+                ) : item.statusDestino === 'PENDENTE' ? (
+                  <div className="flex gap-1">
+                    {temAlbumsAtivos && (
+                      <Button size="sm" variant="primary" onClick={() => setColarItem(item)}>
+                        Colar
+                      </Button>
+                    )}
                     <Button
                       size="sm"
                       variant="secondary"
@@ -313,8 +393,15 @@ export default function AbrirPacotinhosPage() {
                     >
                       Repetida
                     </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setDescartarItemId(item._id as string)}
+                    >
+                      Descartar
+                    </Button>
                   </div>
-                )}
+                ) : null}
               </article>
             ))}
           </div>
@@ -331,7 +418,7 @@ export default function AbrirPacotinhosPage() {
       <Modal
         open={showDescartar}
         onClose={() => setShowDescartar(false)}
-        title="Descartar pilha"
+        title="Limpar pilha"
         variant="alertdialog"
       >
         <p className="text-sm font-body text-ink/70 mb-6">
@@ -416,6 +503,11 @@ function ColarModal({
     else setAlbumId('');
   }, [item]);
 
+  const varianteLabel: Record<string, string> = {
+    BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
+    CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
+  };
+
   return (
     <Modal open={!!item} onClose={onClose} title="Colar figurinha">
       {item && (
@@ -426,25 +518,28 @@ function ColarModal({
           {ativos.length === 0 ? (
             <p className="text-sm font-body text-red">Nenhum álbum ativo. Crie um álbum primeiro.</p>
           ) : (
-            <div className="flex flex-col gap-2 mb-4" role="listbox" aria-label="Selecionar álbum">
+            <div className="flex flex-col gap-2 mb-4" role="radiogroup" aria-label="Selecionar álbum">
               {ativos.map((album) => (
                 <button
                   key={album._id}
-                  role="option"
-                  aria-selected={albumId === album._id}
+                  role="radio"
+                  aria-checked={albumId === album._id}
                   className={`text-left p-3 border-2 font-body text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
                     albumId === album._id ? 'border-ink bg-ink text-white' : 'border-ink/30 bg-white text-ink hover:border-ink'
                   }`}
                   onClick={() => setAlbumId(album._id)}
                 >
-                  {album.nomePersonalizado || album.tipoAlbum.nome}
+                  <span>{album.nomePersonalizado || album.tipoAlbum.nome}</span>
+                  {!album.nomePersonalizado && album.variante && (
+                    <span className="block text-xs opacity-70">{varianteLabel[album.variante] ?? album.variante}</span>
+                  )}
                 </button>
               ))}
             </div>
           )}
           <div className="flex gap-2">
             <Button loading={loading} disabled={!albumId} onClick={() => onColar(albumId)}>
-              Colar
+              Confirmar colagem
             </Button>
             <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           </div>

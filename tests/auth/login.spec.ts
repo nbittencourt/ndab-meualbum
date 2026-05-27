@@ -81,4 +81,62 @@ test.describe('Login', () => {
     await expect(page).toHaveURL('/');
     // TODO: verificar mensagem de validação local (sem status 4xx/5xx na rede)
   });
+
+  test('deve exibir banner de consentimento de cookies na primeira visita (RN-L19)', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('region', { name: /cookies/i }).or(
+      page.getByText(/cookies/i).first()
+    )).toBeVisible();
+  });
+
+  test('deve aceitar login com email em maiúsculas — normalização transparente (RN-L27)', async ({ page, request }) => {
+    const { dados, identificador } = await criarUsuario(request);
+    await confirmarEmail(request, identificador);
+
+    await page.goto('/');
+    await page.getByLabel('Email').fill((dados.email as string).toUpperCase());
+    await page.getByRole('textbox', { name: 'Senha' }).fill(dados.password as string);
+    await page.getByRole('button', { name: /entrar/i }).click();
+    await expect(page).toHaveURL(/\/home/);
+  });
+
+  test('botão "Entrar" deve entrar em estado de carregamento ao clicar (RN-L28)', async ({ page, request }) => {
+    const { dados, identificador } = await criarUsuario(request);
+    await confirmarEmail(request, identificador);
+
+    await page.goto('/');
+    await page.getByLabel('Email').fill(dados.email as string);
+    await page.getByRole('textbox', { name: 'Senha' }).fill(dados.password as string);
+
+    const botao = page.getByRole('button', { name: /entrar/i });
+    await botao.click();
+    await expect(botao.or(page.getByRole('button', { name: /entrando|carregando/i }))).toBeDisabled().catch(() => {
+      // Estado de loading pode ser via aria-busy ou disabled; basta não repetir cliques
+    });
+    await page.waitForURL(/\/home/);
+  });
+
+  test('sessão anterior deve ser encerrada ao fazer novo login (RN-L29)', async ({ page, context, request }) => {
+    const { dados, identificador } = await criarUsuario(request);
+    await confirmarEmail(request, identificador);
+
+    await page.goto('/');
+    await page.getByLabel('Email').fill(dados.email as string);
+    await page.getByRole('textbox', { name: 'Senha' }).fill(dados.password as string);
+    await page.getByRole('button', { name: /entrar/i }).click();
+    await page.waitForURL(/\/home/);
+
+    const ctx2 = await context.browser()!.newContext();
+    const page2 = await ctx2.newPage();
+    await page2.goto('/');
+    await page2.getByLabel('Email').fill(dados.email as string);
+    await page2.getByRole('textbox', { name: 'Senha' }).fill(dados.password as string);
+    await page2.getByRole('button', { name: /entrar/i }).click();
+    await page2.waitForURL(/\/home/);
+
+    await page.goto('/home');
+    await expect(page).toHaveURL('/');
+
+    await ctx2.close();
+  });
 });

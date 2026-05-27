@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../support/fixtures';
 import { criarUsuario, confirmarEmail } from '../support/helpers';
 
 test.describe('Recuperação de Senha', () => {
@@ -6,6 +6,12 @@ test.describe('Recuperação de Senha', () => {
   // ── Tela L2 ──────────────────────────────────────────────────────────────────
 
   test.describe('Tela L2 – Solicitar link', () => {
+
+    test('deve pré-preencher campo Email quando há contexto da Tela L1 (RN-L30)', async ({ page }) => {
+      const email = 'contexto@exemplo.com';
+      await page.goto(`/forgot-password?email=${encodeURIComponent(email)}`);
+      await expect(page.getByLabel('Email')).toHaveValue(email);
+    });
 
     test('deve exibir formulário com campo Email e link de voltar', async ({ page }) => {
       await page.goto('/forgot-password');
@@ -132,6 +138,15 @@ test.describe('Recuperação de Senha', () => {
       await page.goto('/redefinir-senha?token=token-inexistente');
       await page.getByRole('button', { name: /solicitar novo link/i }).click();
       await expect(page).toHaveURL(/\/forgot-password/);
+    });
+
+    test('deve redirecionar ou exibir erro ao acessar /redefinir-senha sem token (RN-L32)', async ({ page }) => {
+      await page.goto('/redefinir-senha');
+      await expect(
+        page.getByText(/link inválido ou expirado/i).or(page.getByText(/token/i))
+      ).toBeVisible().catch(async () => {
+        await expect(page).toHaveURL('/');
+      });
     });
 
     test('deve exibir erro para token já utilizado (RN-L06)', async ({ page, request }) => {

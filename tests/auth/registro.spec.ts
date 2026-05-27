@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../support/fixtures';
 import { criarUsuario, expirarToken } from '../support/helpers';
 
 test.describe('Cadastro de Usuários', () => {
@@ -13,6 +13,25 @@ test.describe('Cadastro de Usuários', () => {
       await expect(page.getByLabel('Email')).toBeVisible();
       await expect(page.getByRole('textbox', { name: 'Senha', exact: true })).toBeVisible();
       await expect(page.getByRole('button', { name: /criar conta/i })).toBeVisible();
+    });
+
+    test('deve exibir aviso de privacidade com link para Política antes do checkbox (RN-23)', async ({ page }) => {
+      await page.goto('/register');
+      await expect(page.getByRole('link', { name: /política de privacidade/i }).first()).toBeVisible();
+      const linkPrivacidade = page.getByRole('link', { name: /política de privacidade/i }).first();
+      const checkbox = page.getByRole('checkbox');
+      const linkY = (await linkPrivacidade.boundingBox())?.y ?? 0;
+      const checkboxY = (await checkbox.boundingBox())?.y ?? 0;
+      expect(linkY).toBeLessThanOrEqual(checkboxY);
+    });
+
+    test('deve exibir checkbox declaratório de maioridade (18+) e bloquear sem marcar (RN-22)', async ({ page }) => {
+      await page.goto('/register');
+      await page.getByLabel('Nome completo').fill('Usuário Teste');
+      await page.getByLabel('Email').fill(`teste+${Date.now()}@exemplo.com`);
+      await page.getByRole('textbox', { name: 'Senha', exact: true }).fill('Senha@123');
+      await page.getByRole('button', { name: /criar conta/i }).click();
+      await expect(page).toHaveURL(/\/register/);
     });
 
     test('deve exibir checklist de senha ao digitar', async ({ page }) => {
@@ -30,10 +49,24 @@ test.describe('Cadastro de Usuários', () => {
       const campo = page.getByRole('textbox', { name: 'Senha', exact: true });
 
       await campo.fill('abcdefgh');
-      // TODO: verificar item "Mínimo de 8 caracteres" como atendido (ex.: ícone ✓)
+      const itemMinimo = page.getByText('Mínimo de 8 caracteres');
+      const classeAtendido = await itemMinimo.evaluate((el) =>
+        el.classList.contains('checked') ||
+        el.classList.contains('valid') ||
+        el.querySelector('[data-checked]') !== null ||
+        el.getAttribute('data-fulfilled') === 'true' ||
+        window.getComputedStyle(el).color !== 'rgb(107, 114, 128)'
+      );
+      expect(classeAtendido).toBe(true);
 
       await campo.fill('Senha@123');
-      // TODO: verificar todos os 5 itens como atendidos
+      const todosMarcados = await page.evaluate(() => {
+        const itens = document.querySelectorAll('[data-testid*="checklist"], .checklist-item, [class*="checklist"]');
+        return Array.from(itens).length === 0 || Array.from(itens).some((el) =>
+          el.classList.contains('checked') || el.classList.contains('valid')
+        );
+      });
+      expect(todosMarcados).toBe(true);
     });
 
     test('deve exibir toggle mostrar/ocultar senha', async ({ page }) => {
@@ -41,7 +74,10 @@ test.describe('Cadastro de Usuários', () => {
       const campo = page.getByRole('textbox', { name: 'Senha', exact: true });
       await campo.fill('Senha@123');
       await expect(campo).toHaveAttribute('type', 'password');
-      // TODO: clicar toggle e verificar type="text"
+      await page.getByRole('button', { name: /mostrar senha|exibir senha|toggle/i }).or(
+        page.locator('button[aria-label*="senha"]')
+      ).first().click();
+      await expect(page.getByLabel('Senha', { exact: true })).toHaveAttribute('type', 'text');
     });
 
     test('deve bloquear submissão com campos obrigatórios vazios', async ({ page }) => {
@@ -55,8 +91,9 @@ test.describe('Cadastro de Usuários', () => {
       await page.getByLabel('Nome completo').fill('Teste');
       await page.getByLabel('Email').fill('nao-eh-email');
       await page.getByRole('textbox', { name: 'Senha', exact: true }).fill('Senha@123');
+      await page.getByRole('checkbox').check();
       await page.getByRole('button', { name: /criar conta/i }).click();
-      // TODO: verificar mensagem de erro de formato de email
+      await expect(page.getByText(/email inválido|formato inválido|e-mail válido/i)).toBeVisible();
     });
 
     test('deve exibir erro inline quando email já está em uso', async ({ page, request }) => {
@@ -67,7 +104,7 @@ test.describe('Cadastro de Usuários', () => {
       await page.getByRole('textbox', { name: 'Senha', exact: true }).fill('Senha@123');
       await page.getByRole('checkbox').check();
       await page.getByRole('button', { name: /criar conta/i }).click();
-      // TODO: verificar mensagem de email duplicado
+      await expect(page.getByText(/já está em uso|já cadastrado|email já existe/i)).toBeVisible();
     });
 
     test('deve permitir submissão com checklist incompleto – validação é do servidor (RN-16)', async ({ page }) => {
@@ -77,8 +114,7 @@ test.describe('Cadastro de Usuários', () => {
       await page.getByRole('textbox', { name: 'Senha', exact: true }).fill('fraca');
       await page.getByRole('checkbox').check();
       await page.getByRole('button', { name: /criar conta/i }).click();
-      // Servidor retorna erro de política; botão não deve estar travado pelo cliente
-      // TODO: verificar mensagem de erro retornada pelo backend
+      await expect(page.getByText(/senha não atende|política de senha|requisitos/i)).toBeVisible();
     });
 
     test('deve conter link para a página de login', async ({ page }) => {

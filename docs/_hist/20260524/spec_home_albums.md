@@ -14,7 +14,6 @@
 | 1.2 | revisão | RN-H01 atualizado: acesso permitido também para `EMAIL_PENDENTE` |
 | 1.3 | red team | **B2** — `variante` passa a ser obrigatório (não nulo), com valor padrão `BROCHURA`; RN-H16 atualizado. **M8** — `TipoAlbum.total_figurinhas` e `Secao.total_figurinhas` definidos como desnormalizados com regra de invalidação de cache (RN-H17, RN-H18) |
 | 1.4 | WCAG | Links externos do footer atualizados com indicador de nova aba. Requisitos de acessibilidade adicionados (RN-H19 a RN-H26). |
-| 1.5 | ajustes UX | **RN-H27** — recarga obrigatória da seção "Meus Álbuns" ao acessar a Home. **RN-H28** — recarga obrigatória ao retornar do fluxo de Cadastro de Álbum. **RN-H29** — identidade visual do card reflete a variante do álbum. Header e footer globais tornados obrigatórios em todas as telas da aplicação (alinhamento com demais specs). |
 
 ---
 
@@ -107,8 +106,8 @@ A página também contém header global (navegação de perfil e logout) e rodap
 [Usuário autenticado — status = ATIVO ou EMAIL_PENDENTE]
         │
         ▼
-[Acesso à Home — qualquer origem: login, retorno de fluxo, navegação direta]
-  Sistema SEMPRE recarrega os dados da seção "Meus Álbuns" (ver RN-H27, RN-H28):
+[GET /home]
+  Sistema carrega, para o usuário autenticado:
     A. Lista de álbuns ativos (arquivado_em IS NULL), paginada, 5 por página
        - Para cada álbum: nome_personalizado, tipo_album.nome, variante,
          criado_em, percentual_conclusao
@@ -148,16 +147,13 @@ A página também contém header global (navegação de perfil e logout) e rodap
 | RN-H16 | A `variante` é obrigatória e sempre preenchida (valor padrão `BROCHURA`); é exibida por extenso no card para identificação do álbum físico |
 | RN-H17 | `TipoAlbum.total_figurinhas` é um campo **desnormalizado** mantido em sincronia com `COUNT(Figurinha WHERE tipo_album_id = X)`. Deve ser recalculado e atualizado sempre que figurinhas forem adicionadas ou removidas do catálogo desse `TipoAlbum`. Operações de catálogo são administrativas e ocorrem fora dos fluxos de usuário |
 | RN-H18 | `Secao.total_figurinhas` (definido em spec_albums) segue a mesma política de desnormalização de RN-H17: recalculado sempre que figurinhas forem adicionadas ou removidas da seção correspondente |
-| RN-H27 | Ao acessar a Home — seja por login, navegação direta ou retorno de qualquer fluxo — a seção "Meus Álbuns" e a seção "Figurinhas Repetidas" DEVEM ser sempre recarregadas do backend. Cache local dessas seções não é permitido entre navegações |
-| RN-H28 | Ao retornar do fluxo de Cadastro de Álbum para a Home, o sistema DEVE recarregar a seção "Meus Álbuns" antes de renderizar o conteúdo, garantindo que o álbum recém-criado apareça no topo da lista (`criado_em DESC`) |
-| RN-H29 | O card de cada álbum DEVE aplicar identidade visual correspondente à sua `variante`: cada valor do enum possui tratamento visual distinto (ex.: paleta de cores, borda, selo ou elemento gráfico característico). A definição dos atributos visuais por variante é responsabilidade do processo de design, mas a **associação entre `variante` e tratamento visual é obrigatória** — cards de variantes diferentes não podem ter aparência idêntica |
 
 ---
 
 ## 5. Conteúdo da Página
 
 **Header global**
-Nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout. Presente em todas as telas da aplicação (ver RN-GL01 em spec_privacidade_lgpd ou definição global de layout).
+Nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout.
 
 **CTA: Abrir Pacotinhos**
 Bloco de destaque permanente. Hierarquia visual superior às demais seções.
@@ -166,7 +162,7 @@ Bloco de destaque permanente. Hierarquia visual superior às demais seções.
 Título da seção, ação "Novo álbum" e ação secundária "Ver todos os álbuns" (navega para tela AL0 de spec_albums).
 
 - **Estado vazio:** mensagem informativa e CTA para criação do primeiro álbum.
-- **Estado com álbuns:** grade de cards. Cada card expõe: tipo do álbum, variante por extenso, nome personalizado quando preenchido, data de criação, percentual de conclusão com representação visual de progresso, botão "Colar figurinhas", e identidade visual da variante (RN-H29).
+- **Estado com álbuns:** grade de cards. Cada card expõe: tipo do álbum, variante por extenso, nome personalizado quando preenchido, data de criação, percentual de conclusão com representação visual de progresso, e botão "Colar figurinhas".
 - **Paginação:** exibida somente quando há mais de 5 álbuns ativos.
 
 **Seção: Figurinhas Repetidas**
@@ -215,4 +211,3 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-H24 | O ranking de figurinhas repetidas DEVE ser lista ordenada com cada item descrevendo posição, número da figurinha, nome e quantidade em texto legível por TA |
 | RN-H25 | Os links externos do footer (FIFA, Panini) DEVEM indicar abertura em nova aba via `aria-label` (ex.: "Copa do Mundo 2026 — site oficial (abre em nova aba)") e atributos `target="_blank" rel="noopener noreferrer"` |
 | RN-H26 | O header global DEVE conter um link "Pular para o conteúdo principal" como primeiro elemento focável da página, para que usuários de teclado possam pular a navegação repetida a cada tela |
-| RN-H30 | A identidade visual da variante (RN-H29) DEVE ser comunicada também por texto acessível no card — não apenas por cor ou elemento gráfico — garantindo leitura por tecnologias assistivas |

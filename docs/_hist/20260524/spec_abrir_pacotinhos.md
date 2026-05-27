@@ -14,7 +14,6 @@
 | 1.2 | revisão | RN-AP00a adicionado: acesso permitido também para `EMAIL_PENDENTE` |
 | 1.3 | red team | **A2** — colagem via MCol usa upsert `(album_id, figurinha_id)`; sem duplicatas em `FigurinhaColada` (RN-AP26). **A4** — comportamento definido quando álbum é arquivado durante colagem (RN-AP27). **M2** — pilha limitada a 100 itens PENDENTES (RN-AP28). **M3** — descarte exige confirmação com exibição do número e nome da figurinha (RN-AP24 atualizado). **M6** — modo offline: fila local com sincronização ao reconectar (seção 9, RN-AP29 a RN-AP31). **B1** — navegação via header global enquanto há itens PENDENTES na pilha aciona o alerta de saída (RN-AP32) |
 | 1.4 | Correção de conflito + WCAG | **Conflito B corrigido:** `FigurinhaColada.origem = DIRETA` para colagens via MCol (figurinha da pilha cola diretamente no álbum sem passar por EstoqueFigurinha). RN-AP14 atualizado; Seção 7.1 atualizada. Requisitos de acessibilidade adicionados (RN-AP33 a RN-AP40). |
-| 1.5 | ajustes UX | Header e footer globais tornados obrigatórios em todas as telas. Botão "Sair" removido da Tela AP1 (redundante com logout do header — RN-AP41). Nome e tipo do álbum da sessão exibidos em destaque no topo da AP1 (RN-AP42). Validação explícita de figurinha fora do catálogo do álbum selecionado (RN-AP04 detalhado). Ativação do modo câmera explicitada na estrutura da tela. |
 
 ---
 
@@ -67,10 +66,8 @@ A pilha é limpa após todas as entradas terem destino definido, ou após descar
         │
         ▼
 [Tela AP1 — Entrada e Pilha]
-  Nome e tipo do álbum exibidos no topo (ver RN-AP42)
         │
-        ├── [Seletor de modo "Fotografar" → botão "Abrir câmera"] → abre Modal Câmera (MC)
-        ├── [Seletor de modo "Digitar" → campo de texto + confirmação] → valida e adiciona à pilha
+        ├── [Ícone câmera] → abre Modal Câmera (MC)
         ├── [Colar — no card] → abre Modal de Colagem (MCol)
         └── [Enviar para Repetidas — no card ou em lote] → executa direto
 ```
@@ -94,10 +91,6 @@ Ao acessar "Abrir Pacotinhos" com Pilha da Sessão existente com itens `PENDENTE
 
 Exibida apenas em nova sessão.
 
-**Header global** — nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout.
-
-**Footer global** — idêntico ao da Home.
-
 **Elementos:**
 1. Título: "Que álbum você está abrindo?"
 2. Lista de tipos disponíveis no catálogo
@@ -111,24 +104,16 @@ Mesmo com um único tipo no catálogo, a seleção é explícita — o sistema n
 
 ### 5.1 Estrutura da tela
 
-**Header global** — nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout. Navegação via header enquanto há itens PENDENTES aciona o alerta de saída (RN-AP32).
-
-**Footer global** — idêntico ao da Home.
-
-**Zona superior — identificação da sessão:**
-1. **Nome e tipo do álbum da sessão** — exibidos em destaque no topo da tela, antes da zona de entrada, para referência permanente do usuário durante toda a sessão. Formato: `[TipoAlbum.nome]` (ex.: "Copa do Mundo 2026"). Ver RN-AP42.
-
-**Zona de entrada:**
+**Zona superior — entrada:**
+1. Subtítulo com o tipo de álbum da sessão
 2. Seletor de modo: "Digitar" / "Fotografar"
 3. **Modo Digitar:** campo de texto com autofoco; converte para maiúsculas; botão de confirmação
-4. **Modo Fotografar:** ao selecionar este modo, exibe o botão **"Abrir câmera"**. O toque/clique neste botão abre o Modal Câmera (MC). A câmera não é ativada automaticamente ao trocar de modo — requer ação explícita do usuário no botão "Abrir câmera". Ver RN-AP43.
+4. **Modo Fotografar:** botão "Abrir câmera" que abre o Modal Câmera (MC)
 
 **Zona inferior — pilha:**
 5. Lista de cards, ordenada do mais recente (topo) ao mais antigo (base)
 6. Contador: "X figurinha(s) nesta sessão"
 7. Botão "Enviar todas para Repetidas" — visível somente com ao menos 1 entrada `PENDENTE`
-
-> **Ausência do botão "Sair":** a saída do fluxo é realizada exclusivamente via ações do header global (logout, navegação para Home ou perfil). Não há botão "Sair" dedicado nesta tela. Ver RN-AP41.
 
 ### 5.2 Fluxo de entrada por digitação
 
@@ -144,35 +129,57 @@ Sistema verifica limite: itens PENDENTES na pilha < 100?
         ▼
 Sistema valida: Figurinha existe em (tipo_album_id, numero)?
         │
-        ├── NÃO → mensagem de erro amigável inline:
-        │         "Figurinha [número] não encontrada no álbum [TipoAlbum.nome].
-        │          Verifique o número e tente novamente."
-        │         Campo permanece editável; número digitado mantido para correção.
+        ├── NÃO → mensagem de erro inline; campo permanece editável
         │
         ▼
-  Adiciona à pilha com status_destino = PENDENTE; persiste no backend (ou fila local se offline)
-  Campo limpo; autofoco restaurado
+Resolve figurinha_id; cria entrada na pilha (status_destino = PENDENTE)
+Persiste entrada no backend (ou encaminha para fila local se offline — ver seção 9)
+        │
+        ▼
+Novo card aparece no topo da pilha
+Campo limpo; foco retorna ao campo
 ```
 
 ### 5.3 Cards da pilha
 
-Cada card exibe: número da figurinha, nome, indicador de elegibilidade para álbum (quando aplicável) e ações disponíveis conforme `status_destino`:
+Cada card exibe: número da figurinha, nome do jogador/item, origem.
 
-- **PENDENTE:** botão "Colar" (quando há álbum elegível), botão "Enviar para Repetidas", controle de descarte.
-- **COLADA / REPETIDA:** somente leitura — exibe status e destino definido.
+**Card com álbum elegível disponível:**
+- Indicador visual de elegibilidade
+- Botão "Colar" — abre o Modal de Colagem (MCol)
+- Botão "Enviar para Repetidas"
+- Controle de descarte (somente para PENDENTE)
+
+**Card sem álbum elegível:**
+- Indicador visual de inelegibilidade
+- Apenas "Enviar para Repetidas" disponível
+- Controle de descarte
+
+**Card com destino já definido:**
+- Exibe destino confirmado
+- Somente leitura; permanece na pilha como histórico
+
+### 5.4 Descarte de figurinha
+
+Disponível apenas para cards com `status_destino = PENDENTE`.
+
+Ao acionar o controle de descarte, exibe confirmação inline no card:
+
+> "Remover **[numero] — [nome]** da pilha?"
+
+**Ações:** "Sim" · "Cancelar"
+
+Confirmado: entrada removida da pilha e do backend. Nenhum dado gravado nos registros definitivos.
 
 ---
 
 ## 6. Modal Câmera (MC)
 
-Sobrepõe a Tela AP1. A pilha permanece visível abaixo do modal. Ativado exclusivamente pelo botão "Abrir câmera" no Modo Fotografar da zona de entrada.
+Sobrepõe a Tela AP1. A pilha permanece visível abaixo do modal.
 
 ### 6.1 Fluxo de dados
 
 ```
-[Usuário aciona "Abrir câmera" no Modo Fotografar]
-        │
-        ▼
 [MC aberto]
   Viewfinder ativo com guia de alinhamento
         │
@@ -191,12 +198,9 @@ Sobrepõe a Tela AP1. A pilha permanece visível abaixo do modal. Ativado exclus
         │   Sistema verifica limite de 100 itens PENDENTES
         │         │
         │         ▼
-        │   Sistema valida no catálogo do tipo_album_id da sessão
+        │   Sistema valida no catálogo
         │         │
-        │         ├── NÃO EXISTE → mensagem de erro amigável:
-        │         │               "Figurinha [número] não encontrada no álbum [TipoAlbum.nome].
-        │         │                Verifique o número e tente novamente."
-        │         │               Campo permanece editável
+        │         ├── NÃO EXISTE → mensagem de erro; campo permanece editável
         │         │
         │         ▼
         │   Adiciona à pilha; persiste no backend (ou fila local se offline)
@@ -237,10 +241,8 @@ Sobrepõe a Tela AP1. Acionado pelo botão "Colar" em um card `PENDENTE`.
     - Se não existe: insere novo registro (colada_em = agora, origem = DIRETA)
     - Se já existe: atualiza colada_em = agora, origem = DIRETA
   (ver RN-AP26)
-
-  **Nota sobre `origem`:** a figurinha provém da pilha da sessão (pacote físico), nunca do EstoqueFigurinha.
-  Por isso `origem = DIRETA` em todos os casos de colagem via MCol neste fluxo.
-  Nenhum incremento/decremento ocorre em EstoqueFigurinha.
+  
+  **Nota sobre `origem`:** a figurinha provém da pilha da sessão (pacote físico), nunca do EstoqueFigurinha. Por isso `origem = DIRETA` em todos os casos de colagem via MCol neste fluxo. Nenhum incremento/decremento ocorre em EstoqueFigurinha.
         │
         ├── ÁLBUM ARQUIVADO (backend rejeita) → ver RN-AP27
         │
@@ -318,7 +320,7 @@ Se a sincronização falhar após reconexão (ex.: erro de servidor):
 | RN-AP01 | A Pilha da Sessão é persistida no backend, vinculada à conta do usuário; retomável em qualquer dispositivo |
 | RN-AP02 | O fluxo não controla nem debita recursos; o usuário pode registrar qualquer quantidade de figurinhas por sessão, respeitado o limite de itens PENDENTES (RN-AP28) |
 | RN-AP03 | Entradas com o mesmo `figurinha_id` são permitidas na mesma pilha — cada cópia é uma entrada independente |
-| RN-AP04 | Figurinha com número não encontrado no catálogo do `tipo_album_id` da sessão não é adicionada à pilha. A mensagem de erro exibida é: "Figurinha [número] não encontrada no álbum [TipoAlbum.nome]. Verifique o número e tente novamente." O número digitado é mantido no campo para correção; o campo permanece editável |
+| RN-AP04 | Figurinha com número não encontrado no catálogo não é adicionada à pilha; exibe mensagem de erro |
 | RN-AP05 | Álbuns elegíveis para receber uma figurinha no MCol são aqueles que: (a) são do `tipo_album_id` da sessão, (b) estão ativos (`arquivado_em IS NULL`) |
 | RN-AP06 | Se o usuário não possui nenhum álbum cadastrado, o botão "Colar" não é exibido em nenhum card |
 | RN-AP07 | Se não existir nenhum álbum elegível para uma figurinha específica, o botão "Colar" não é exibido para aquele card |
@@ -347,9 +349,6 @@ Se a sincronização falhar após reconexão (ex.: erro de servidor):
 | RN-AP30 | Ao reconectar, o sistema sincroniza automaticamente a fila local com o backend. Entradas duplicadas (já presentes no backend via outro dispositivo) são ignoradas silenciosamente |
 | RN-AP31 | Falha na sincronização: o sistema exibe indicador de erro com opção de nova tentativa manual. A fila local é preservada até sincronização bem-sucedida |
 | RN-AP32 | Ações de navegação do header global (perfil, logout, home) que ocorram enquanto há itens `PENDENTES` na pilha disparam o alerta de saída (seção 8), com a exceção do logout, que encerra o fluxo e a sessão imediatamente |
-| RN-AP41 | A Tela AP1 **não possui** botão "Sair" dedicado. A saída do fluxo é realizada exclusivamente pelas ações do header global (logout, home, perfil), sujeitas ao alerta de saída quando há itens PENDENTES (RN-AP32) |
-| RN-AP42 | O nome e o tipo do álbum da sessão (`TipoAlbum.nome`) DEVEM ser exibidos em destaque no topo da Tela AP1, em posição fixa acima da zona de entrada, durante toda a duração do fluxo. Esse elemento serve como referência permanente para o usuário e não pode ser ocultado ou colapsado |
-| RN-AP43 | No Modo Fotografar, a câmera é ativada exclusivamente pelo toque/clique no botão "Abrir câmera". A troca do seletor de modo para "Fotografar" apenas exibe o botão — não abre a câmera automaticamente. Essa exigência evita ativação acidental da câmera |
 
 ---
 
@@ -367,11 +366,10 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-AP38 | O modal de confirmação de descarte de figurinha (RN-AP24) DEVE ser `role="dialog"` com focus trap; ao cancelar, o foco retorna ao botão de descarte do card correspondente |
 | RN-AP39 | Os cards da pilha DEVEM expor o estado de cada figurinha programaticamente (ex.: `aria-label="Figurinha [número] — [nome] — [status]"`); o botão "Colar" e o botão "Enviar para Repetidas" DEVEM ter labels que incluam o identificador da figurinha (ex.: "Colar figurinha 347 — Vinicius Jr.") |
 | RN-AP40 | O contador de figurinhas na sessão DEVE ser atualizado via `aria-live="polite"` a cada adição |
-| RN-AP44 | O nome e tipo do álbum exibidos no topo da AP1 (RN-AP42) DEVEM ser marcados como região com rótulo acessível, de modo que leitores de tela anunciem o contexto da sessão ao usuário |
 
 ---
 
-## 12. Fluxos Relacionados (fora do escopo desta spec)
+## 11. Fluxos Relacionados (fora do escopo desta spec)
 
 | Fluxo | Gatilho nesta spec |
 |---|---|

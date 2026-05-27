@@ -11,7 +11,6 @@
 |---|---|---|
 | 1.0 | inicial | Versão original |
 | 1.1 | correções + WCAG/LGPD | **Conflito A corrigido:** RN-CF01 atualizado para incluir `EMAIL_PENDENTE` (alinhamento com demais specs). **Conflito B corrigido:** Seção 2.1 corrigida — `origem = DIRETA` para colagens via MCol de Abrir Pacotinhos (que não passam por EstoqueFigurinha). Requisitos de acessibilidade adicionados (RN-CF19 a RN-CF24). |
-| 1.2 | ajustes UX | Header e footer globais tornados obrigatórios em todas as telas. Mensagem de erro para figurinha não encontrada no MFN substituída por texto amigável (RN-CF25). Botão "Colar e Outra" adicionado ao MFN (RN-CF26). Ativação do modo câmera no MFN explicitada (RN-CF27). |
 
 ---
 
@@ -86,8 +85,7 @@ Pontos de entrada:
         ├── [Seleciona figurinha do estoque] → confirma → debita estoque; grava/atualiza FigurinhaColada
         │
         ├── [Figurinha não registrada] → abre Modal de Figurinha Não Registrada (MFN)
-        │       ├── [Colar] → cola e fecha modal
-        │       └── [Colar e Outra] → cola, mantém modal aberto e limpa campo (ver RN-CF26)
+        │                                → confirma → grava/atualiza FigurinhaColada (origem = DIRETA)
         │
         └── [Troca de álbum] → atualiza contexto; recarrega indicadores; permanece na Tela CF1
 ```
@@ -97,10 +95,6 @@ Pontos de entrada:
 ## 4. Tela CF0 — Seleção de Álbum
 
 Exibida **somente** quando o fluxo é acessado sem contexto de álbum pré-definido (entrada C). Nos demais casos, é ignorada.
-
-**Header global** — nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout.
-
-**Footer global** — idêntico ao da Home.
 
 **Elementos:**
 
@@ -117,14 +111,10 @@ Não há paginação nesta tela — todos os álbuns são listados.
 
 Tela principal do fluxo. O usuário permanece aqui durante toda a sessão de colagem. Modais são abertos sobre ela sem navegação.
 
-**Header global** — nome/logotipo da aplicação, identificação do usuário (nome e identificador público de 6 chars) e ação de logout.
-
-**Footer global** — idêntico ao da Home.
-
 ### 5.1 Estrutura da tela
 
 **Zona superior — contexto:**
-1. Seletor de álbum ativo: exibe o álbum atual (nome do tipo + variante + nome personalizado quando houver). Acionável para troca de álbum (ver 5.6). Percentual de conclusão do álbum ativo exibido em destaque.
+1. Seletor de álbum ativo: exibe o álbum atual (nome do tipo + variante + nome personalizado quando houver). Acionável para troca de álbum (ver 5.5). Percentual de conclusão do álbum ativo exibido em destaque.
 2. Botão "Figurinha não registrada" — abre o Modal de Figurinha Não Registrada (MFN).
 
 **Zona principal — estoque:**
@@ -180,7 +170,7 @@ Após confirmação no modal:
 ```
 Sistema valida: Figurinha existe no catálogo do tipo_album_id do álbum ativo?
         │
-        ├── NÃO → mensagem de erro amigável (ver RN-CF25); modal permanece aberto
+        ├── NÃO → mensagem de erro; modal permanece aberto
         │
         ▼
 Figurinha já colada no álbum ativo?
@@ -189,8 +179,7 @@ Figurinha já colada no álbum ativo?
         │
         └── NÃO →
               Grava FigurinhaColada (album_id, figurinha_id, colada_em = agora, origem = DIRETA)
-              [Colar]: fecha modal; atualiza percentual de conclusão
-              [Colar e Outra]: mantém modal aberto; limpa campo; autofoco restaurado
+              Fecha modal; atualiza percentual de conclusão
               EstoqueFigurinha NÃO é alterado
 ```
 
@@ -206,34 +195,16 @@ Acionada pelo seletor de álbum ativo na zona superior.
 
 ## 6. Modal de Figurinha Não Registrada (MFN)
 
-Reutiliza o comportamento e os elementos visuais do **Modal Câmera (MC)** e do modo de digitação definidos na Especificação de Abrir Pacotinhos, com as seguintes adaptações de contexto:
+Reutiliza integralmente o comportamento e os elementos visuais do **Modal Câmera (MC)** e do modo de digitação definidos na Especificação de Abrir Pacotinhos, com as seguintes adaptações de contexto:
 
 | Aspecto | Abrir Pacotinhos (MC) | Colar Figurinhas (MFN) |
 |---|---|---|
 | Destino após confirmação | Adiciona à Pilha da Sessão | Cola diretamente no álbum ativo |
 | `tipo_album_id` de referência | Selecionado na Tela AP0 | Derivado do álbum ativo na Tela CF1 |
-| Opção "Fotografar próxima" / câmera | Presente — ativada pelo botão "Abrir câmera" | Presente — ativada pelo botão "Abrir câmera" (ver RN-CF27) |
+| Opção "Fotografar próxima" | Presente | Presente — permite registrar múltiplas figurinhas sequencialmente |
 | Pilha persistida | Sim (backend) | Não se aplica — não há pilha |
-| Botão após colagem bem-sucedida | "Fotografar próxima" / fechar | "Colar e Outra" (mantém modal, limpa campo) · "Fechar" |
 
 O número reconhecido (por OCR) ou digitado é validado contra o catálogo do `tipo_album_id` do álbum ativo antes de acionar a colagem.
-
-### 6.1 Estrutura do modal
-
-**Modo Digitar:**
-1. Campo de texto para número da figurinha (autofoco ao abrir o modal)
-2. Botão "Confirmar" (valida e aciona colagem)
-
-**Modo Fotografar:**
-3. Botão **"Abrir câmera"** — ativa o viewfinder para captura por OCR. A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Ver RN-CF27.
-4. Após reconhecimento: campo editável com número + botão "Confirmar"
-
-**Ações pós-colagem bem-sucedida:**
-5. **"Colar e Outra"** — cola a figurinha confirmada, mantém o modal aberto e limpa o campo para entrada do próximo número. Ver RN-CF26.
-6. **"Fechar"** — cola a figurinha confirmada e fecha o modal.
-
-**Ação de cancelamento:**
-7. Botão "Cancelar" / (×) — fecha o modal sem colar nada.
 
 ---
 
@@ -260,9 +231,6 @@ O número reconhecido (por OCR) ou digitado é validado contra o catálogo do `t
 | RN-CF16 | A validação de número de figurinha no MFN usa o `tipo_album_id` do álbum ativo no momento da abertura do modal; a troca de álbum não afeta um modal já aberto |
 | RN-CF17 | Cada colagem é persistida individualmente no momento da confirmação; não há operação em lote neste fluxo |
 | RN-CF18 | O fluxo não possui estado de sessão persistido no backend; não há retomada nem alerta de saída |
-| RN-CF25 | Quando o número informado no MFN não for encontrado no catálogo do álbum ativo, a mensagem de erro exibida é: "Figurinha [número] não encontrada neste álbum. Verifique o número e tente novamente." O número digitado é mantido no campo para correção; o campo permanece editável; o modal permanece aberto |
-| RN-CF26 | O MFN exibe o botão **"Colar e Outra"** como alternativa ao botão "Fechar" após uma colagem bem-sucedida. Ao acionar "Colar e Outra": a colagem confirmada é persistida, o modal permanece aberto, o campo de número é limpo e o autofoco é restaurado, permitindo ao usuário informar a próxima figurinha sem reabrir o modal |
-| RN-CF27 | No MFN, o modo câmera é ativado exclusivamente pelo toque/clique no botão "Abrir câmera". A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Esse comportamento é consistente com RN-AP43 de spec_abrir_pacotinhos |
 
 ---
 
@@ -278,8 +246,6 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-CF22 | O percentual de conclusão atualizado após cada colagem DEVE ser anunciado via live region (ex.: "Álbum atualizado: 42,3% concluído") |
 | RN-CF23 | O seletor de álbum ativo (zona superior) DEVE expor o álbum atual como texto acessível; ao abrir para troca, DEVE ser implementado como `role="listbox"` com `role="option"` e suporte a navegação por teclado |
 | RN-CF24 | Itens desabilitados ("Fora do catálogo") DEVEM ser `aria-disabled="true"` (e não `disabled`) para permanecerem anunciáveis por leitores de tela com a indicação de que estão indisponíveis |
-| RN-CF28 | O MFN DEVE ser implementado como `role="dialog"` com focus trap, `aria-modal="true"` e `aria-labelledby`; ao fechar (por "Fechar" ou cancelamento), o foco DEVE retornar ao botão "Figurinha não registrada" da Tela CF1; ao acionar "Colar e Outra", o foco DEVE ir para o campo de número |
-| RN-CF29 | A mensagem de erro de figurinha não encontrada (RN-CF25) DEVE ser anunciada via `role="alert"` ao ser exibida, sem que o foco seja movido do campo de número |
 
 ---
 

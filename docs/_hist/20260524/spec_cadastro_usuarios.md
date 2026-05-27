@@ -11,7 +11,6 @@
 | 1.2 | revisão | Enum `status` ampliado com `EMAIL_PENDENTE`; requisito de número adicionado à política de senha (RN-14); checklist da Tela 1 atualizado; link "Corrigir email" adicionado à Tela 2 |
 | 1.3 | red team | **C2** — `TokenConfirmacaoCadastro` (UUID) introduzido; `identificador` deixa de funcionar como token de confirmação; Tela 2 passa a confirmar exclusivamente via magic link; VIA A (digitação manual) removida. **C3** — rate limiting formalizado como RN-18. **B4** — comportamento definido para magic link acessado com sessão ativa de outro usuário (RN-19). **M7** — campo de cooldown para usuário `PENDENTE` que altera email explicitado (RN-20). Adicionado campo `token_versao` à entidade `Usuário` (RN-21) |
 | 1.4 | LGPD + WCAG | Campo `declaracao_maioridade_em` adicionado à entidade `Usuário` (RN-22). Checkbox declaratório de maioridade e aceite de Termos/Política adicionado à Tela 1 (RN-22, RN-23). Aviso de privacidade no ponto de coleta adicionado (RN-23). Seção de Requisitos de Acessibilidade adicionada (RN-24 a RN-32). |
-| 1.5 | revisão de RNs implícitas | **RN-33** — limite máximo de 100 caracteres para o campo nome. **RN-34** — email convertido para minúsculas antes de persistir. **RN-35** — comportamento do botão "Criar conta" durante requisição. **RN-36** — o campo de email na Tela 2 é mascarado. **RN-37** — o link "Corrigir email" da Tela 2 não está disponível para usuários já `ATIVO`. **RN-38** — a Tela 3 não é acessível diretamente por URL; exige transição do fluxo. |
 
 ---
 
@@ -28,8 +27,8 @@ Fluxo de cadastro para aplicação web responsiva (PWA-ready) composto por três
 | Campo | Tipo | Observações |
 |---|---|---|
 | `identificador` | String (6 chars) | **Chave primária.** Alfanumérico maiúsculo, aleatório, único. Identificador público do usuário. Não é mais utilizado como token de confirmação de email |
-| `nome` | String | Nome completo. Máximo 100 caracteres (RN-33) |
-| `email` | String | Único no sistema. Armazenado em minúsculas (RN-34) |
+| `nome` | String | Nome completo |
+| `email` | String | Único no sistema |
 | `senha` | String (hash) | Armazenada como hash via algoritmo moderno (bcrypt, Argon2id ou scrypt); salt gerenciado internamente pelo algoritmo |
 | `status` | Enum | `PENDENTE` · `ATIVO` · `EMAIL_PENDENTE` |
 | `token_versao` | Integer | Inicia em `1` no cadastro. Incrementado em +1 no logout e na troca de senha. JWTs carregam `token_versao` no payload; servidor rejeita JWTs com versão inferior à registrada |
@@ -76,16 +75,14 @@ Utilizada exclusivamente pelo fluxo de confirmação de email de cadastro.
   Usuário preenche: nome, email, senha
         │
         ▼
-  Sistema valida campos (formato, unicidade do email, política de senha, limite de nome)
+  Sistema valida campos (formato, unicidade do email, política de senha)
         │
         ├── ERRO → Exibe mensagem inline, permanece na Tela 1
         │
         ▼
   Sistema gera identificador (6 chars, alfanumérico maiúsculo, único)
-  Sistema normaliza email para minúsculas
   Sistema persiste usuário: status = PENDENTE, token_versao = 1, ultimo_envio_em = agora
   Sistema gera TokenConfirmacaoCadastro (UUID, expira_em = agora + 24h)
-  Botão "Criar conta" entra em estado de carregamento (desabilitado) durante a requisição
         │
         ▼
   Sistema envia email com:
@@ -117,15 +114,14 @@ Utilizada exclusivamente pelo fluxo de confirmação de email de cadastro.
         ▼
 [Tela 3: Sucesso / Acesso à Aplicação]
   Usuário autenticado e redirecionado para a aplicação
-  (Tela 3 não é acessível diretamente por URL — ver RN-38)
 ```
 
 ### 3.1 Regra de Reenvio
 
 - O usuário pode solicitar reenvio a partir da Tela 2.
 - Intervalo mínimo entre envios: **5 minutos**, calculado a partir de `ultimo_envio_em`.
-- Cada reenvio gera novo `TokenConfirmacaoCadastro`, invalidando o anterior.
-- O botão de reenvio exibe contador regressivo enquanto em cooldown; torna-se clicável após expiração.
+- O reenvio gera novo `TokenConfirmacaoCadastro` (UUID), atualiza `ultimo_envio_em = agora`; nenhum outro dado é alterado.
+- O botão de reenvio exibe um contador regressivo enquanto o intervalo não se esgota.
 
 ---
 
@@ -142,7 +138,7 @@ Utilizada exclusivamente pelo fluxo de confirmação de email de cadastro.
 3. **Campo: Nome completo**
    - Label acima do campo
    - Placeholder: "Seu nome"
-   - Validação inline: obrigatório; máximo 100 caracteres
+   - Validação inline: obrigatório
 4. **Campo: Email**
    - Label acima do campo
    - Placeholder: "seuemail@exemplo.com"
@@ -158,7 +154,7 @@ Utilizada exclusivamente pelo fluxo de confirmação de email de cadastro.
      - `[ ]` Ao menos um caractere especial
 6. **Aviso de privacidade:** texto informativo abaixo do checklist de senha — "Seus dados (nome e email) são usados para criar e gerenciar sua conta. Consulte nossa [Política de Privacidade]." — link abre em nova aba com indicação textual "(abre em nova aba)"
 7. **Checkbox declaratório (obrigatório):** `[ ] Tenho 18 anos ou mais, li e concordo com os [Termos de Uso] e a [Política de Privacidade].` — inicia desmarcado; "Termos de Uso" e "Política de Privacidade" são links independentes
-8. **Botão primário: "Criar conta"** — largura total do formulário; **desabilitado** enquanto o checkbox declaratório estiver desmarcado; entra em estado de carregamento durante o processamento da requisição (RN-35)
+8. **Botão primário: "Criar conta"** — largura total do formulário; **desabilitado** enquanto o checkbox declaratório estiver desmarcado
 9. **Link secundário:** "Já tem conta? Entrar" — abaixo do botão, centralizado
 
 ---
@@ -173,13 +169,13 @@ A confirmação ocorre exclusivamente via magic link enviado por email. Não há
 
 1. **Ícone:** envelope (outline)
 2. **Título:** "Confirme seu email"
-3. **Texto descritivo:** "Enviamos um link de confirmação para **[email mascarado]**. Clique nele para ativar sua conta." O endereço é exibido mascarado (ex.: `j***@exemplo.com`) — ver RN-36.
+3. **Texto descritivo:** "Enviamos um link de confirmação para **[email mascarado]**. Clique nele para ativar sua conta."
 4. **Identificador em destaque:** bloco tipográfico com o código de 6 caracteres precedido do texto "Seu identificador é:" — exibido para que o usuário anote
 5. **Área de reenvio:**
    - Enquanto em cooldown: "Reenviar em **MM:SS**" (não clicável)
    - Após cooldown: link/botão "Reenviar email"
 6. **Mensagem de feedback de reenvio:** "Email reenviado" — aparece temporariamente
-7. **Link "Corrigir email"** — disponível somente enquanto `status = PENDENTE`; redireciona para a tela de Perfil do Usuário (ver RN-37)
+7. **Link "Corrigir email"** — redireciona para a tela de Perfil do Usuário
 
 **Estado de erro (token inválido ou expirado):**
 
@@ -195,8 +191,6 @@ Exibido quando o magic link falha na validação.
 ### Tela 3 — Cadastro Confirmado
 
 **Layout:** coluna central, mesma estrutura.
-
-Acessível apenas após transição bem-sucedida do fluxo de confirmação; não pode ser acessada diretamente por URL (RN-38).
 
 1. **Ícone de sucesso**
 2. **Título:** "Tudo certo!"
@@ -232,12 +226,6 @@ Acessível apenas após transição bem-sucedida do fluxo de confirmação; não
 | RN-19 | **Magic link com sessão ativa:** ao processar um magic link de confirmação, se houver sessão ativa de **outro usuário** no dispositivo, essa sessão é encerrada (via incremento de `token_versao` do outro usuário) e o usuário recém-confirmado é autenticado em seu lugar. Se a sessão ativa pertencer ao próprio usuário `PENDENTE`, a confirmação prossegue normalmente sem interrupção |
 | RN-20 | **Cooldown para usuário `PENDENTE` que altera email:** o cooldown é controlado por `ultimo_envio_em` (campo de cadastro). O campo `ultimo_envio_email_pendente_em` **não é utilizado** para usuários `PENDENTE` — é reservado para usuários `ATIVO`/`EMAIL_PENDENTE` no fluxo de alteração de email confirmada |
 | RN-21 | `token_versao` é inicializado em `1` no cadastro. Todo JWT emitido inclui `token_versao` no payload. O servidor rejeita requisições autenticadas cujo `token_versao` do JWT seja inferior ao valor atual em `Usuário.token_versao`, tratando-as como sessão inválida |
-| RN-33 | O campo `nome` aceita no máximo **100 caracteres**. Valores acima do limite são rejeitados com mensagem de erro inline; o cadastro não é processado |
-| RN-34 | O endereço de email é normalizado para **minúsculas** antes de ser persistido e antes de qualquer comparação de unicidade. Entradas mistas (ex.: `Usuario@EXEMPLO.com`) são tratadas como equivalentes ao email em minúsculas |
-| RN-35 | O botão "Criar conta" entra em **estado de carregamento** (desabilitado, com indicador visual) imediatamente após o clique, enquanto a requisição ao servidor estiver em andamento. O botão retorna ao estado habilitado em caso de erro de validação do servidor |
-| RN-36 | O endereço de email exibido na Tela 2 é **mascarado** (ex.: `j***@exemplo.com`), expondo apenas o primeiro caractere do nome local e o domínio completo. O mascaramento protege o endereço contra exposição em telas compartilhadas |
-| RN-37 | O link "Corrigir email" é exibido na Tela 2 **somente para usuários com `status = PENDENTE`**. Usuários que chegam à Tela 2 por erro de token após já serem `ATIVO` não veem este link |
-| RN-38 | A Tela 3 (Cadastro Confirmado) **não é acessível diretamente por URL**. Ela só pode ser exibida como resultado da confirmação bem-sucedida do magic link no mesmo fluxo. Tentativa de acesso direto à rota redireciona para a Tela de Login |
 
 ---
 

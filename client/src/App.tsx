@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import BottomNav from '@/components/BottomNav';
 import { SkipLink } from '@/components/ui/SkipLink';
+import { CookieBanner } from '@/components/CookieBanner';
 
 import LandingPage from '@/pages/LandingPage';
 import RegisterPage from '@/pages/RegisterPage';
@@ -13,6 +14,8 @@ import EmailConfirmationPage from '@/pages/EmailConfirmationPage';
 import ConfirmEmailChangePage from '@/pages/ConfirmEmailChangePage';
 import HomePage from '@/pages/HomePage';
 import AlbumsPage from '@/pages/AlbumsPage';
+import AlbumManagePage from '@/pages/AlbumManagePage';
+import AlbumVisualizarPage from '@/pages/AlbumVisualizarPage';
 import CadastroAlbumPage from '@/pages/CadastroAlbumPage';
 import AbrirPacotinhosPage from '@/pages/AbrirPacotinhosPage';
 import ColarFigurinhasPage from '@/pages/ColarFigurinhasPage';
@@ -59,6 +62,7 @@ export default function App() {
   const { checkAuth, setReady, user, isLoading } = useAuthStore();
   const location = useLocation();
   const showBottomNav = BOTTOM_NAV_ROUTES.some((r) => location.pathname.startsWith(r));
+  const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem('cookie-consent'));
 
   useEffect(() => {
     const noAuthRoutes = ['/redefinir-senha', '/confirmar-cadastro', '/confirmar-email'];
@@ -112,6 +116,8 @@ export default function App() {
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
             <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
+            <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
+            <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
             <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
             <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
             <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
@@ -122,6 +128,9 @@ export default function App() {
         </main>
         {showBottomNav && <BottomNav />}
         {!showBottomNav && <Footer authenticated={!!user} />}
+        {showCookieBanner && (
+          <CookieBanner onAccept={() => { localStorage.setItem('cookie-consent', '1'); setShowCookieBanner(false); }} />
+        )}
       </div>
     </>
   );

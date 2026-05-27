@@ -188,4 +188,58 @@ router.patch('/:id/desarquivar', requireAuth, async (req: AuthRequest, res) => {
   res.json({ album: serializeAlbum(album, tipo, percent) });
 });
 
+router.get('/:id/pdf', requireAuth, async (req: AuthRequest, res) => {
+  const id = req.params.id as string;
+  if (!Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: 'ID inválido' });
+    return;
+  }
+  const album = await Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) })
+    .populate('tipoAlbumId').lean();
+  if (!album) {
+    res.status(404).json({ error: 'Álbum não encontrado' });
+    return;
+  }
+  const tipoId = (album.tipoAlbumId as any)?._id ?? album.tipoAlbumId;
+  const secaoIds = await Secao.find({ tipoAlbumId: tipoId }).distinct('_id');
+  const todasFigurinhas = await Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean();
+  const coladas = await FigurinhaColada.find({ albumId: album._id }).lean();
+  const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
+  const faltantes = todasFigurinhas.filter((f) => !coladasSet.has(String(f._id)));
+
+  const nomeAlbum = (album.tipoAlbumId as any)?.nome ?? 'Álbum';
+  const linhas = [`Figurinhas Faltantes — ${nomeAlbum}`, '', ...faltantes.map((f: any) => `${f.number}  ${f.subject || ''}`)];
+  const body = linhas.join('\n');
+  const pdf = buildTextPdf(body);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename="figurinhas-faltantes.pdf"');
+  res.send(pdf);
+});
+
+function buildTextPdf(text: string): Buffer {
+  const escaped = text.replace(/[()\\]/g, (c) => `\\${c}`);
+  const stream = `BT /F1 10 Tf 40 750 Td 14 TL (${escaped}) Tj ET`;
+  const streamLen = Buffer.byteLength(stream, 'utf8');
+  const objects: string[] = [
+    '',
+    '1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n',
+    '2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n',
+    `3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<</Font<</F1<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>>>>>/Contents 4 0 R>>endobj\n`,
+    `4 0 obj<</Length ${streamLen}>>\nstream\n${stream}\nendstream\nendobj\n`,
+  ];
+  let offset = 9;
+  const offsets: number[] = [];
+  const header = '%PDF-1.4\n';
+  const parts: string[] = [header];
+  for (let i = 1; i < objects.length; i++) {
+    offsets.push(offset);
+    parts.push(objects[i]);
+    offset += Buffer.byteLength(objects[i], 'utf8');
+  }
+  const xref = `xref\n0 ${objects.length}\n0000000000 65535 f \n${offsets.map((o) => `${String(o).padStart(10, '0')} 00000 n \n`).join('')}`;
+  const trailer = `trailer<</Size ${objects.length}/Root 1 0 R>>\nstartxref\n${offset}\n%%EOF`;
+  parts.push(xref, trailer);
+  return Buffer.from(parts.join(''), 'utf8');
+}
+
 export default router;

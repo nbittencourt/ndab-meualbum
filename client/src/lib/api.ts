@@ -24,8 +24,12 @@ async function request<T>(
   });
 
   if (res.status === 401) {
-    if (!skipAuthRedirect) window.location.href = '/';
-    throw new ApiError(401, 'Não autenticado');
+    if (!skipAuthRedirect) {
+      window.location.href = '/';
+      throw new ApiError(401, 'Não autenticado');
+    }
+    const errData = await res.json().catch(() => ({}));
+    throw new ApiError(401, (errData as { error?: string }).error ?? 'Não autenticado', errData);
   }
 
   const data = await res.json().catch(() => ({}));
@@ -92,13 +96,31 @@ export const albumsApi = {
     request<{ ativos: Album[]; arquivados: Album[] }>('/albums'),
 
   get: (id: string) =>
-    request<{ album: Album; secoes: unknown[] }>(`/albums/${id}`),
+    request<{ album: Album; secoes: Array<{ _id: string; nome: string; ordem: number; totalFigurinhas: number; figurinhasColadas: number }> }>(`/albums/${id}`),
+
+  faltantes: (id: string) =>
+    request<{ faltantes: Array<{ numero: string; nome: string; secaoId: string }> }>(`/albums/${id}/faltantes`),
 
   arquivar: (id: string) =>
     request<{ album: Album }>(`/albums/${id}/arquivar`, { method: 'PATCH' }),
 
   desarquivar: (id: string) =>
     request<{ album: Album }>(`/albums/${id}/desarquivar`, { method: 'PATCH' }),
+
+  baixarPdf: async (id: string): Promise<void> => {
+    const BASE_URL = (import.meta.env.VITE_API_URL ?? '') + '/api/v1';
+    const res = await fetch(`${BASE_URL}/albums/${id}/pdf`, { credentials: 'include' });
+    if (!res.ok) throw new ApiError(res.status, 'Erro ao gerar PDF');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'figurinhas-faltantes.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
 
   getTipos: () =>
     request<{ tipos: Array<{ _id: string; nome: string; totalFigurinhas: number }> }>('/albums/tipos'),
@@ -133,6 +155,7 @@ export const profileApi = {
     request<{ ok: boolean }>('/profile/senha', {
       method: 'PATCH',
       body: JSON.stringify({ senhaAtual, novaSenha: senhaNova }),
+      skipAuthRedirect: true,
     }),
 
   exportarDados: async (): Promise<Blob> => {
@@ -172,6 +195,9 @@ export const abrirPacotinhosApi = {
 
   descartarPilha: () =>
     request<{ ok: boolean }>('/pilha', { method: 'DELETE' }),
+
+  descartarItem: (itemId: string) =>
+    request<{ ok: boolean }>(`/pilha/${itemId}`, { method: 'DELETE' }),
 
   sincronizar: (itens: Array<{ figurinhaNumero: string; tipoAlbumId: string; origem: PilhaOrigem }>) =>
     request<{ itens: PilhaDaSessao[] }>('/pilha/sincronizar', {

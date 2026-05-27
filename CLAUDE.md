@@ -130,6 +130,8 @@ The client should register a service worker for offline access to the sticker ca
 
 Tests were built on Playwright and are stored on the following locations:
 
+You must follow the rules on (tests/TESTS.md).
+
 ```
 /
 ├── tests/          # Frontend testing

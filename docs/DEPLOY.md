@@ -78,7 +78,7 @@ gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregi
 ### 3.2 Criar e vincular projetos Firebase
 
 ```powershell
-$TST_PROJECT = "ndab-meualbum-tst"
+$TST_PROJECT = "ndab-meualbum-tst-497511"
 $PRD_PROJECT = "ndab-meualbum-prd"
 firebase projects:create $TST_PROJECT --display-name "MeuAlbum TST"
 firebase projects:create $PRD_PROJECT --display-name "MeuAlbum PRD"
@@ -122,26 +122,28 @@ gcloud iam service-accounts add-iam-policy-binding "$PROJECT_NUMBER-compute@deve
 
 ## 4. Secrets no Secret Manager
 
-Crie os secrets **antes** do primeiro deploy. O bloco abaixo usa um arquivo temporário para evitar problemas de encoding no PowerShell.
+Crie os secrets **antes** do primeiro deploy. O bloco abaixo usa `[System.IO.File]::WriteAllText` com `UTF8Encoding($false)` para gravar **sem BOM** — `Set-Content -Encoding utf8` no PowerShell 5.1 adiciona BOM ao arquivo, corrompendo o secret.
 
 ```powershell
 $PROJECT_ID = "ndab-meualbum-prd"
 $TMP = "$env:TEMP\gcloud_secret.tmp"
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 
 # 1. String de conexão MongoDB Atlas — substitua USER e SENHA
-Set-Content -Path $TMP -Value "mongodb+srv://USER:SENHA@ndab-meualbum.mongodb.net/meualbum" -NoNewline -Encoding utf8
+[System.IO.File]::WriteAllText($TMP, "mongodb+srv://USER:SENHA@ndab-meualbum.mongodb.net/meualbum", $utf8NoBom)
 gcloud secrets create MONGODB_URI --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 # 2. JWT secret gerado automaticamente (32 bytes aleatórios)
-Set-Content -Path $TMP -Value ([Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))) -NoNewline -Encoding utf8
+$bytes = New-Object byte[] 32; [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+[System.IO.File]::WriteAllText($TMP, ([Convert]::ToBase64String($bytes)), $utf8NoBom)
 gcloud secrets create JWT_SECRET --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 # 3. URL do frontend Firebase Hosting — usada para CORS e links de e-mail
-Set-Content -Path $TMP -Value "https://ndab-meualbum-tst.web.app" -NoNewline -Encoding utf8
+[System.IO.File]::WriteAllText($TMP, "https://ndab-meualbum-tst.web.app", $utf8NoBom)
 gcloud secrets create CLIENT_URL --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 # 4. Chave Resend (obter em resend.com)
-Set-Content -Path $TMP -Value "re_XXXXXXXXXXXXXXXXXX" -NoNewline -Encoding utf8
+[System.IO.File]::WriteAllText($TMP, "re_XXXXXXXXXXXXXXXXXX", $utf8NoBom)
 gcloud secrets create RESEND_API_KEY --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 Remove-Item $TMP
@@ -154,7 +156,8 @@ Remove-Item $TMP
 ```powershell
 $PROJECT_ID = "ndab-meualbum-prd"
 $TMP = "$env:TEMP\gcloud_secret.tmp"
-Set-Content -Path $TMP -Value "NOVO_VALOR" -NoNewline -Encoding utf8
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+[System.IO.File]::WriteAllText($TMP, "NOVO_VALOR", $utf8NoBom)
 gcloud secrets versions add NOME_SECRET --data-file=$TMP --project=$PROJECT_ID
 Remove-Item $TMP
 gcloud secrets versions disable NUMERO_VERSAO --secret=NOME_SECRET --project=$PROJECT_ID
@@ -214,7 +217,7 @@ firebase deploy --only hosting
 ### Verificar o deploy
 
 ```powershell
-Start-Process "https://ndab-meualbum-tst.web.app"
+Start-Process "https://ndab-meualbum-tst-497511.web.app/"
 Invoke-RestMethod -Uri "https://ndab-meualbum-tst.web.app/api/health"
 ```
 

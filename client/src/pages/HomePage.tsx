@@ -190,10 +190,11 @@ interface PaginacaoProps {
 function Paginacao({ pagina, total, onChange }: PaginacaoProps) {
   if (total <= 1) return null;
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, padding: '12px 0' }}>
+    <nav aria-label="paginação" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, padding: '12px 0' }}>
       <button
         disabled={pagina <= 1}
         onClick={() => onChange(pagina - 1)}
+        aria-label="Página anterior"
         style={{ background: 'none', border: '1.5px solid #0A0907', padding: '6px 12px', cursor: pagina > 1 ? 'pointer' : 'not-allowed', opacity: pagina <= 1 ? 0.3 : 1, fontFamily: '"Geist", sans-serif', fontSize: 13 }}
       >
         ← Anterior
@@ -204,11 +205,12 @@ function Paginacao({ pagina, total, onChange }: PaginacaoProps) {
       <button
         disabled={pagina >= total}
         onClick={() => onChange(pagina + 1)}
+        aria-label="Próxima página"
         style={{ background: 'none', border: '1.5px solid #0A0907', padding: '6px 12px', cursor: pagina < total ? 'pointer' : 'not-allowed', opacity: pagina >= total ? 0.3 : 1, fontFamily: '"Geist", sans-serif', fontSize: 13 }}
       >
         Próxima →
       </button>
-    </div>
+    </nav>
   );
 }
 
@@ -219,6 +221,7 @@ export default function HomePage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['home', pagina],
     queryFn: () => homeApi.getHome(pagina),
+    staleTime: 0,
   });
 
   return (
@@ -241,9 +244,14 @@ export default function HomePage() {
         {/* ── Seção Meus Álbuns ──────────────────────────────────── */}
         <section style={{ padding: '24px 16px 0' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 20, color: '#0A0907', margin: 0 }}>
-              Meus Álbuns
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <h2 style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 20, color: '#0A0907', margin: 0 }}>
+                Meus Álbuns
+              </h2>
+              <Link to="/albums" style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.5)', textDecoration: 'underline' }}>
+                Ver todos os álbuns
+              </Link>
+            </div>
             <Link to="/albums/novo">
               <button
                 style={{
@@ -375,11 +383,11 @@ export default function HomePage() {
 
           {/* Lista top 5 — RN-H07/08/09 */}
           {!isLoading && !isError && data && data.figurinhasRepetidas.length > 0 && (
-            <div>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {data.figurinhasRepetidas.map((item, i) => (
                 <StickerRankItem key={item.figurinhaId} item={item} rank={i + 1} />
               ))}
-            </div>
+            </ul>
           )}
         </section>
 

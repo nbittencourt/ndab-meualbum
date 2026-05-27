@@ -1,13 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../support/fixtures';
 import { usuarioAtivo, adicionarEstoque } from '../support/helpers';
 
 test.describe('Cadastro de Álbum', () => {
 
-  test('deve exibir formulário com Tipo, Variante e Nome personalizado', async ({ page, request }) => {
+  test('deve exibir formulário com campos Tipo, Variante e Nome personalizado', async ({ page, request }) => {
     await usuarioAtivo(page, request);
     await page.goto('/albums/novo');
     await expect(page.getByText(/novo álbum/i)).toBeVisible();
-    // TODO: verificar campos por label/role
+    await expect(page.getByRole('radio', { name: /brochura/i })).toBeVisible();
+    await expect(page.getByLabel(/nome personalizado/i)).toBeVisible();
+  });
+
+  test('deve exibir bloco de detalhes do tipo selecionado (RN-CA13)', async ({ page, request }) => {
+    await usuarioAtivo(page, request);
+    await page.goto('/albums/novo');
+    await expect(page.getByText(/980|total de figurinhas/i)).toBeVisible();
   });
 
   test('deve manter "Criar álbum" desabilitado sem variante selecionada (RN-CA03)', async ({ page, request }) => {
@@ -21,12 +28,6 @@ test.describe('Cadastro de Álbum', () => {
     await page.goto('/albums/novo');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await expect(page.getByRole('button', { name: /criar álbum/i })).toBeEnabled();
-  });
-
-  test('deve exibir bloco de detalhes do tipo ao selecionar (RN-CA13)', async ({ page, request }) => {
-    await usuarioAtivo(page, request);
-    await page.goto('/albums/novo');
-    // TODO: selecionar tipo e verificar bloco de detalhes (nome e total de figurinhas)
   });
 
   test('deve cancelar e retornar para Home sem persistir (RN-CA12)', async ({ page, request }) => {
@@ -82,7 +83,7 @@ test.describe('Cadastro de Álbum', () => {
     await page.getByLabel(/nome personalizado/i).fill('A'.repeat(61));
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
-    // TODO: verificar mensagem de erro de comprimento
+    await expect(page.getByText(/máximo de 60|limite de 60|muito longo/i)).toBeVisible();
   });
 
   test('deve sanitizar nome personalizado – sem tags HTML (RN-CA06)', async ({ page, request }) => {
@@ -91,6 +92,9 @@ test.describe('Cadastro de Álbum', () => {
     await page.getByLabel(/nome personalizado/i).fill('<b>teste</b>');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
-    // TODO: verificar que o card não renderiza HTML
+    await page.waitForURL(/\/home/);
+    const cardAlbum = page.getByRole('article').first();
+    await expect(cardAlbum.locator('b')).not.toBeVisible();
+    await expect(cardAlbum.getByText('<b>teste</b>', { exact: true })).not.toBeVisible();
   });
 });
