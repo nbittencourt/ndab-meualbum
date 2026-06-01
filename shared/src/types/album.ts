@@ -54,3 +54,18 @@ export interface SecaoDetalhe extends Secao {
   figurinhasFaltantes: string[];
   figurinhasColadas: number;
 }
+
+export interface FigurinhaGridItem {
+  _id: string;
+  numero: string;
+  nome: string;
+  colada: boolean;
+  quantidade: number;
+}
+
+export interface SecaoGrid {
+  _id: string;
+  nome: string;
+  ordem: number;
+  figurinhas: FigurinhaGridItem[];
+}

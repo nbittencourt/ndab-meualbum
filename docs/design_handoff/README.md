@@ -1,7 +1,7 @@
 # Handoff: MeuAlbum — Design Completo
 
-> **Gerado em:** 17 mai 2026  
-> **Specs de referência:** `../spec_*.md` no repositório de design
+> **Gerado em:** 17 mai 2026 · **Atualizado em:** 30 mai 2026  
+> **Specs de referência:** `specs/spec_*.md` (incluídas neste pacote)
 
 ---
 
@@ -14,6 +14,8 @@ Cadastro → Login → Home → Abrir Pacotinhos → Colar Figurinhas → Gerenc
 ```
 
 Este pacote contém **designs de referência em HTML** para todos os fluxos, especificações funcionais completas e tokens de design.
+
+> **Nota de estrutura:** este diretório (`design_handoff_meualbum/`) é a fonte única e canônica do handoff. Todos os arquivos de suporte (JSX, CSS, specs) estão contidos aqui.
 
 ---
 
@@ -36,7 +38,7 @@ Para abrir os protótipos: abra cada `.html` diretamente no browser. O canvas in
 | `Home.html` | Home pós-login | **Baixa (wireframe)** | Guia de estrutura e regras de negócio; aplicar design system da landing para estilização. |
 | `Abrir Pacotinhos.html` | Abrir Pacotinhos (AP0 · AP1 · modais) | **Alta (hi-fi anotado)** | Seguir com fidelidade. Anotações de RN nas margens são referência, não decoração. |
 | `Cadastro Album.html` | Cadastro de Álbum (CA1 · CA2) | **Alta (hi-fi anotado)** | Seguir com fidelidade. Animação de variante (RN-CA05) é intencional. |
-| `Albuns.html` | Álbuns — Gerenciamento (AL0 · AL1) | **Média (wireframe anotado)** | Estrutura e regras; estilizar com design system. |
+| `Albuns.html` | Álbuns — Gerenciamento (AL0 · AL1) | **Média-alta (wireframe anotado + grid hi-fi)** | AL0: estrutura e regras. AL1: o grid de figurinhas é hi-fi — implementar com fidelidade. |
 | `Colar Figurinhas.html` | Colar Figurinhas (CF0 · CF1 · MFN) | **Média (wireframe anotado)** | Estrutura e regras; estilizar com design system. |
 | `Perfil do Usuario.html` | Perfil / Configurações (P1 · P2) | **Média (wireframe anotado)** | Estrutura e regras; estilizar com design system. |
 
@@ -444,7 +446,8 @@ Modal bloqueante exibido apenas se usuário tem figurinhas no estoque (RN-CA08):
 
 ## Fluxo 6 — Álbuns (Gerenciamento)
 
-**Arquivo:** `Albuns.html` · **Fidelidade:** wireframe anotado  
+**Arquivo:** `Albuns.html` · **Fidelidade:** wireframe anotado (AL0) + grid hi-fi (AL1)  
+**Referência de exploração:** `Albuns - Grid de Cards.html` (variantes A e B side-by-side)  
 **Telas:** AL0 (lista) · AL1 (gerenciamento individual)
 
 ### Artboards disponíveis
@@ -454,11 +457,9 @@ Modal bloqueante exibido apenas se usuário tem figurinhas no estoque (RN-CA08):
 | `al0-mob-normal` | AL0 mobile — ativos + arquivados |
 | `al0-mob-noarchive` | AL0 mobile — sem arquivados (seção oculta, RN-AL13) |
 | `al0-desk-normal` | AL0 desktop 1280px |
-| `al1-mobile` | AL1 mobile — cabeçalho + barra de ações + seções |
-| `al1-expanding` | AL1 mobile — seção expandida (figurinhas faltantes) |
-| `al1-archive-confirm` | AL1 — confirmação de arquivamento inline |
-| `al1-pdf-loading` | AL1 — estado "Gerando PDF..." (RN-AL19) |
-| `al1-desktop` | AL1 desktop 1280px |
+| `al1-mob-normal` | AL1 mobile — cabeçalho + barra de ações + seção Brasil expandida em grid |
+| `al1-mob-archiving` | AL1 mobile — confirmação de arquivamento inline |
+| `al1-desk-normal` | AL1 desktop 1280px — seção Brasil expandida em grid |
 
 ### AL1 — Barra de ações
 
@@ -470,16 +471,51 @@ Estado "Gerando PDF":
   "Colar figurinhas" e "Arquivar" → desabilitados (RN-AL19)
 ```
 
-### AL1 — Seções do álbum (lista)
+### AL1 — Seções do álbum (accordeon)
 
 ```
-┌─ Nome da seção (ex: "BRASIL") ─── 12/23 ─── [barra] ─┐
-│ ▶ Expandir                       [██████░░░░░] 52.2%  │
+┌─ Nome da seção (ex: "BRASIL") ─── 42/80 ─── [barra] ─┐
+│ ▶                                [████████░░░] 52%    │
 ├─ (expandida) ─────────────────────────────────────────┤
-│ Lista figurinhas faltantes: número · nome             │
-│ Seção completa: "✓ Seção completa"                    │
+│ Legenda: ━ Colada · ○ Faltante · ×2 Repetida         │
+│ Grid de cards: 3 col (mob) · 5 col (desk)             │
+│ ─────────────────────────────────────────────────────  │
+│ ✓ N coladas   ⇄ N repetidas   N faltantes             │
 └───────────────────────────────────────────────────────┘
 ```
+
+### AL1 — Card de figurinha (Variante B — fichas de jogador)
+
+Implementar com **altura fixa**: `94px` mobile · `106px` desktop (`box-sizing: border-box`).
+
+```
+┌─────────────────────────────────┐  ← altura fixa
+│ BRA-01              ×1 [verde]  │  ← número (mono) + badge qty
+│                                 │
+│ ALISSON                         │  ← nome (display uppercase, 2 linhas max)
+│                                 │
+│ ─────────────────────────────── │  ← área do botão: 25px (mob) / 28px (desk)
+│ [     Colar →     ] (se repet.) │    espaço sempre reservado, botão só se repetida
+└─────────────────────────────────┘
+```
+
+**Badge `×N` de quantidade — codificação por cor:**
+
+| Valor | Significado | Background | Cor do texto |
+|---|---|---|---|
+| `×0` | Faltante (sem exemplar) | `rgba(10,9,7,0.06)` | `rgba(10,9,7,0.55)` |
+| `×1` | Colada (1 exemplar) | `rgba(10,145,69,0.12)` | `#0A9145` (green) |
+| `×2`+ | Repetida (excedente) | `#E5142A` (red) | `#fff` |
+
+**Bordas e fundo do card por status:**
+
+| Status | Background | Border |
+|---|---|---|
+| Colada | `rgba(10,145,69,0.04)` | `1.5px solid rgba(10,145,69,0.3)` |
+| Repetida | `#fff` | `1.5px solid #0A0907` |
+| Faltante | `#fff` | `1.5px solid rgba(10,9,7,0.18)` (dashed) |
+
+**Nome:** `text-decoration: line-through` quando colada (cor `rgba(10,9,7,0.28)`).
 
 ### PDF de figurinhas faltantes
 
@@ -725,7 +761,8 @@ TokenOperacao (token UUID PK, usuario_identificador FK, tipo ENUM, email_novo,
 | `Home.html` | Wireframe anotado | Home pós-login |
 | `Abrir Pacotinhos.html` | Hi-fi anotado | Fluxo completo de abertura de pacotinhos |
 | `Cadastro Album.html` | Hi-fi anotado | Formulário CA1 + diálogo CA2 |
-| `Albuns.html` | Wireframe anotado | AL0 (lista) + AL1 (gerenciamento) |
+| `Albuns.html` | Wireframe + grid hi-fi | AL0 (lista) + AL1 (gerenciamento) — grid de cards Variante B |
+| `Albuns - Grid de Cards.html` | Hi-fi exploração | Canvas de variantes A e B do grid (referência de decisão de design) |
 | `Colar Figurinhas.html` | Wireframe anotado | CF0 + CF1 + Modal MFN |
 | `Perfil do Usuario.html` | Wireframe anotado | P1 (configurações) + P2 (confirmação email) |
 | `styles.css` | Tokens CSS | Design tokens compartilhados — migrar para design system do projeto |
@@ -734,12 +771,22 @@ TokenOperacao (token UUID PK, usuario_identificador FK, tipo ENUM, email_novo,
 | `abrir-pacotinhos.jsx` | JSX | Componentes hi-fi: AP0 · AP1 · modais |
 | `cadastro-album.jsx` | JSX | Componentes hi-fi: CA1 · CA2 |
 | `home-wf.jsx` | JSX | Componentes wireframe: Home |
-| `albuns-wf.jsx` | JSX | Componentes wireframe: AL0 · AL1 |
+| `albuns-wf.jsx` | JSX | Componentes: AL0 · AL1 com grid Variante B (`StickerCardAL1`, `SectionRow`) |
+| `albuns-sticker-grid.jsx` | JSX | Variantes A e B do grid — fonte das especificações visuais do card |
+| `shared-chrome.jsx` | JSX (suporte) | Header/footer móvel compartilhado entre telas |
 | `colar-figurinhas-wf.jsx` | JSX | Componentes wireframe: CF0 · CF1 · MFN |
 | `perfil-wf.jsx` | JSX | Componentes wireframe: P1 · P2 |
 | `design-canvas.jsx` | JSX (suporte) | Canvas pan/zoom — ignorar na implementação |
 | `tweaks-panel.jsx` | JSX (suporte) | Painel de tweaks — ignorar na implementação |
 | `app.jsx` | JSX (suporte) | Mount point — ignorar na implementação |
+| `specs/spec_home.md` | Spec | Especificação funcional — Home |
+| `specs/spec_login_recuperacao_senha.md` | Spec | Especificação funcional — Login e Recuperação de Senha |
+| `specs/spec_cadastro_usuarios.md` | Spec | Especificação funcional — Cadastro de Usuários |
+| `specs/spec_abrir_pacotinhos.md` | Spec | Especificação funcional — Abrir Pacotinhos |
+| `specs/spec_cadastro_album.md` | Spec | Especificação funcional — Cadastro de Álbum |
+| `specs/spec_albums.md` | Spec | Especificação funcional — Álbuns (Gerenciamento) |
+| `specs/spec_colar_figurinhas.md` | Spec | Especificação funcional — Colar Figurinhas |
+| `specs/spec_perfil_usuario.md` | Spec | Especificação funcional — Perfil do Usuário |
 
 ---
 
@@ -767,4 +814,8 @@ TokenOperacao (token UUID PK, usuario_identificador FK, tipo ENUM, email_novo,
 
 11. **Progressos e contadores** que mudam por interação (CF1, Home) devem atualizar sem reload completo — invalidar/atualizar query específica no cache do cliente.
 
-12. **Breakpoint desktop:** a maioria dos fluxos tem layout sidebar + conteúdo para ≥ 1024px (sidebar fixa de 228px). Verificar artboards "Desktop" em cada arquivo.
+13. **Grid de figurinhas AL1** usa `display: grid` com `grid-template-columns: repeat(3, 1fr)` (mobile) e `repeat(5, 1fr)` (desktop), `gap: 8px` / `10px`. Cards com altura fixa via `height` + `box-sizing: border-box` — **não usar `min-height`**, pois quebraria o alinhamento entre linhas do grid.
+
+14. **Badge `×N`** deve refletir o estoque real do usuário (`EstoqueFigurinha.quantidade`). Para figurinhas coladas sem repetidas, `quantidade = 1`; para faltantes, `quantidade = 0`; para repetidas, `quantidade ≥ 2`.
+
+15. **Botão "Colar →"** nos cards de repetida deve acionar o fluxo de Colar Figurinhas com a figurinha pré-selecionada. Área do botão (`height: 25px` mob / `28px` desk) deve estar sempre presente no DOM, mesmo quando vazio, para manter altura uniforme dos cards.

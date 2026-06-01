@@ -1,4 +1,4 @@
-import type { User, AuthResponse, HomeData, Album, AlbumVariante, PreferenciasCookie, EstoqueItem, PilhaDaSessao, PilhaOrigem } from '@meualbum/shared';
+import type { User, AuthResponse, HomeData, Album, AlbumVariante, PreferenciasCookie, EstoqueItem, PilhaDaSessao, PilhaOrigem, SecaoGrid } from '@meualbum/shared';
 
 const BASE = (import.meta.env.VITE_API_URL ?? '') + '/api/v1';
 
@@ -50,6 +50,13 @@ export const authApi = {
 
   confirmarCadastro: (token: string) =>
     request<AuthResponse>('/auth/confirmar-cadastro' + `?token=${token}`, { skipAuthRedirect: true }),
+
+  reenviarConfirmacaoCadastro: (publicId: string) =>
+    request<{ ok: boolean; cooldownSecs: number }>('/auth/reenviar-confirmacao', {
+      method: 'POST',
+      body: JSON.stringify({ publicId }),
+      skipAuthRedirect: true,
+    }),
 
   login: (email: string, password: string) =>
     request<AuthResponse>('/auth/login', {
@@ -124,6 +131,9 @@ export const albumsApi = {
 
   getTipos: () =>
     request<{ tipos: Array<{ _id: string; nome: string; totalFigurinhas: number }> }>('/albums/tipos'),
+
+  getFigurinhas: (id: string) =>
+    request<{ secoes: SecaoGrid[] }>(`/albums/${id}/figurinhas`),
 };
 
 export const profileApi = {
@@ -200,9 +210,9 @@ export const abrirPacotinhosApi = {
     request<{ ok: boolean }>(`/pilha/${itemId}`, { method: 'DELETE' }),
 
   sincronizar: (itens: Array<{ figurinhaNumero: string; tipoAlbumId: string; origem: PilhaOrigem }>) =>
-    request<{ itens: PilhaDaSessao[] }>('/pilha/sincronizar', {
+    request<{ sincronizados: number; ignorados: number }>('/pilha/sincronizar', {
       method: 'PATCH',
-      body: JSON.stringify({ itens }),
+      body: JSON.stringify(itens),
     }),
 };
 

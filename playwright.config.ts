@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests',
   timeout: 10_000,
   expect: { timeout: 3_000 },
-  workers: process.env.CI ? 1 : 2,
+  workers: 1,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
@@ -31,6 +31,8 @@ export default defineConfig({
         NODE_ENV: 'test',
         MONGODB_URI: process.env.MONGODB_URI!,
         JWT_SECRET: process.env.JWT_SECRET ?? 'jwt-secret-para-testes-apenas',
+        CADASTRO_COOLDOWN_SECS: '5',
+        RATE_LIMIT_MAX: '5',
       },
     },
     {

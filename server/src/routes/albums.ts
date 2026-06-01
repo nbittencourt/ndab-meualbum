@@ -8,6 +8,8 @@ import { Secao } from '../models/Secao.js';
 import { Sticker } from '../models/Sticker.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
+import { User } from '../models/User.js';
+import { buildPdfHtml, type StickerPdf, type SecaoPdf } from '../lib/pdfTemplate.js';
 import type { AlbumVariante } from '@meualbum/shared';
 
 const router = Router();
@@ -43,7 +45,10 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
     res.status(400).json({ error: parsed.error.flatten() });
     return;
   }
-  const { tipoAlbumId, variante, nomePersonalizado } = parsed.data;
+  const { tipoAlbumId, variante } = parsed.data;
+  const nomePersonalizado = parsed.data.nomePersonalizado
+    ?.replace(/<[^>]+>/g, '')
+    .trim() || undefined;
   if (!Types.ObjectId.isValid(tipoAlbumId)) {
     res.status(400).json({ error: 'tipoAlbumId inválido' });
     return;
@@ -149,6 +154,57 @@ router.get('/:id/faltantes', requireAuth, async (req: AuthRequest, res) => {
   res.json({ faltantes: faltantes.map((f) => ({ numero: f.number, nome: f.subject, secaoId: String(f.secaoId) })) });
 });
 
+router.get('/:id/figurinhas', requireAuth, async (req: AuthRequest, res) => {
+  const id = req.params.id as string;
+  if (!Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: 'ID inválido' });
+    return;
+  }
+  const album = await Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) })
+    .populate('tipoAlbumId')
+    .lean();
+  if (!album) {
+    res.status(404).json({ error: 'Álbum não encontrado' });
+    return;
+  }
+  const tipoId = (album.tipoAlbumId as any)?._id ?? album.tipoAlbumId;
+
+  const secoes = await Secao.find({ tipoAlbumId: tipoId }).sort({ ordem: 1 }).lean();
+  const secaoIds = secoes.map((s) => s._id);
+
+  const [todasFigurinhas, coladas, estoqueItens] = await Promise.all([
+    Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean(),
+    FigurinhaColada.find({ albumId: album._id }).lean(),
+    EstoqueFigurinha.find({ usuarioId: new Types.ObjectId(req.userId) }).lean(),
+  ]);
+
+  const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
+  const estoqueMap = new Map(estoqueItens.map((e) => [String(e.figurinhaId), e.quantidade]));
+
+  const figurinhasPorSecao = new Map<string, any[]>();
+  for (const f of todasFigurinhas) {
+    const secaoKey = String(f.secaoId);
+    const arr = figurinhasPorSecao.get(secaoKey) ?? [];
+    arr.push({
+      _id: String(f._id),
+      numero: f.number,
+      nome: f.subject ?? '',
+      colada: coladasSet.has(String(f._id)),
+      quantidade: estoqueMap.get(String(f._id)) ?? 0,
+    });
+    figurinhasPorSecao.set(secaoKey, arr);
+  }
+
+  const result = secoes.map((s) => ({
+    _id: String(s._id),
+    nome: s.nome,
+    ordem: s.ordem,
+    figurinhas: figurinhasPorSecao.get(String(s._id)) ?? [],
+  }));
+
+  res.json({ secoes: result });
+});
+
 router.patch('/:id/arquivar', requireAuth, async (req: AuthRequest, res) => {
   const id = req.params.id as string;
   if (!Types.ObjectId.isValid(id)) {
@@ -194,52 +250,83 @@ router.get('/:id/pdf', requireAuth, async (req: AuthRequest, res) => {
     res.status(400).json({ error: 'ID inválido' });
     return;
   }
-  const album = await Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) })
-    .populate('tipoAlbumId').lean();
+
+  const [album, usuario] = await Promise.all([
+    Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) })
+      .populate('tipoAlbumId').lean(),
+    User.findById(req.userId, { name: 1, publicId: 1 }).lean(),
+  ]);
+
   if (!album) {
     res.status(404).json({ error: 'Álbum não encontrado' });
     return;
   }
+
   const tipoId = (album.tipoAlbumId as any)?._id ?? album.tipoAlbumId;
-  const secaoIds = await Secao.find({ tipoAlbumId: tipoId }).distinct('_id');
-  const todasFigurinhas = await Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean();
-  const coladas = await FigurinhaColada.find({ albumId: album._id }).lean();
-  const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
-  const faltantes = todasFigurinhas.filter((f) => !coladasSet.has(String(f._id)));
-
   const nomeAlbum = (album.tipoAlbumId as any)?.nome ?? 'Álbum';
-  const linhas = [`Figurinhas Faltantes — ${nomeAlbum}`, '', ...faltantes.map((f: any) => `${f.number}  ${f.subject || ''}`)];
-  const body = linhas.join('\n');
-  const pdf = buildTextPdf(body);
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', 'attachment; filename="figurinhas-faltantes.pdf"');
-  res.send(pdf);
-});
+  const nomePersonalizado = (album as any).nomePersonalizado as string | undefined;
 
-function buildTextPdf(text: string): Buffer {
-  const escaped = text.replace(/[()\\]/g, (c) => `\\${c}`);
-  const stream = `BT /F1 10 Tf 40 750 Td 14 TL (${escaped}) Tj ET`;
-  const streamLen = Buffer.byteLength(stream, 'utf8');
-  const objects: string[] = [
-    '',
-    '1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n',
-    '2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n',
-    `3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<</Font<</F1<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>>>>>/Contents 4 0 R>>endobj\n`,
-    `4 0 obj<</Length ${streamLen}>>\nstream\n${stream}\nendstream\nendobj\n`,
-  ];
-  let offset = 9;
-  const offsets: number[] = [];
-  const header = '%PDF-1.4\n';
-  const parts: string[] = [header];
-  for (let i = 1; i < objects.length; i++) {
-    offsets.push(offset);
-    parts.push(objects[i]);
-    offset += Buffer.byteLength(objects[i], 'utf8');
+  const secaoDocs = await Secao.find({ tipoAlbumId: tipoId })
+    .sort({ ordem: 1 }).lean();
+
+  const secaoIds = secaoDocs.map((s) => s._id);
+  const [todasFigurinhas, coladas, estoque] = await Promise.all([
+    Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean(),
+    FigurinhaColada.find({ albumId: album._id }).lean(),
+    EstoqueFigurinha.find({ usuarioId: new Types.ObjectId(req.userId), quantidade: { $gt: 1 } }).lean(),
+  ]);
+
+  const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
+  const repetidosSet = new Set(estoque.map((e) => String(e.figurinhaId)));
+
+  const secoes: SecaoPdf[] = secaoDocs.map((s) => ({
+    _id: String(s._id),
+    nome: s.nome,
+    grupo: (s as any).grupo ?? null,
+    sigla_time: (s as any).sigla_time ?? null,
+    ordem: s.ordem,
+  }));
+
+  const stickers: StickerPdf[] = todasFigurinhas.map((f) => {
+    const fid = String(f._id);
+    const status: StickerPdf['status'] = coladasSet.has(fid)
+      ? 'colada'
+      : repetidosSet.has(fid)
+        ? 'repetida'
+        : 'faltante';
+    return {
+      id: fid,
+      number: f.number,
+      section: f.section,
+      subject: f.subject,
+      secaoId: String(f.secaoId),
+      grupo: null,
+      sigla_time: null,
+      status,
+    };
+  });
+
+  const html = buildPdfHtml({
+    nomeAlbum: nomePersonalizado ?? nomeAlbum,
+    nomeUsuario: usuario?.name ?? 'Colecionador',
+    identificador: (usuario as any)?.publicId ?? '—',
+    stickers,
+    secoes,
+  });
+
+  const puppeteer = await import('puppeteer').then((m) => m.default);
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'load' });
+    await page.evaluate('document.fonts.ready');
+    const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: '7mm', right: '7mm', bottom: '7mm', left: '7mm' }, printBackground: true });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="figurinhas-faltantes.pdf"');
+    res.send(Buffer.from(pdfBuffer));
+  } finally {
+    await browser.close();
   }
-  const xref = `xref\n0 ${objects.length}\n0000000000 65535 f \n${offsets.map((o) => `${String(o).padStart(10, '0')} 00000 n \n`).join('')}`;
-  const trailer = `trailer<</Size ${objects.length}/Root 1 0 R>>\nstartxref\n${offset}\n%%EOF`;
-  parts.push(xref, trailer);
-  return Buffer.from(parts.join(''), 'utf8');
-}
+});
 
 export default router;

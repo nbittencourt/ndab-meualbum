@@ -47,7 +47,7 @@ test.describe('Cadastro de Álbum', () => {
 
   test('deve exibir Diálogo CA2 quando há figurinhas no estoque (RN-CA09)', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
-    await adicionarEstoque(request, identificador, 'ESP-01', 1);
+    await adicionarEstoque(request, identificador, 'FWC1', 1);
     await page.goto('/albums/novo');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
@@ -59,7 +59,7 @@ test.describe('Cadastro de Álbum', () => {
 
   test('"Agora não" no CA2 redireciona para Home (RN-CA10)', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
-    await adicionarEstoque(request, identificador, 'ESP-01', 1);
+    await adicionarEstoque(request, identificador, 'FWC1', 1);
     await page.goto('/albums/novo');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
@@ -69,7 +69,7 @@ test.describe('Cadastro de Álbum', () => {
 
   test('"Colar figurinhas" no CA2 redireciona para Colar Figurinhas (RN-CA11)', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
-    await adicionarEstoque(request, identificador, 'ESP-01', 1);
+    await adicionarEstoque(request, identificador, 'FWC1', 1);
     await page.goto('/albums/novo');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
@@ -77,13 +77,12 @@ test.describe('Cadastro de Álbum', () => {
     await expect(page).toHaveURL(/\/colar/);
   });
 
-  test('deve rejeitar nome personalizado com mais de 60 chars (RN-CA06)', async ({ page, request }) => {
+  test('deve truncar nome personalizado em 60 chars (RN-CA06)', async ({ page, request }) => {
     await usuarioAtivo(page, request);
     await page.goto('/albums/novo');
-    await page.getByLabel(/nome personalizado/i).fill('A'.repeat(61));
-    await page.getByRole('radio', { name: /brochura/i }).click();
-    await page.getByRole('button', { name: /criar álbum/i }).click();
-    await expect(page.getByText(/máximo de 60|limite de 60|muito longo/i)).toBeVisible();
+    const campo = page.getByLabel(/nome personalizado/i);
+    await campo.fill('A'.repeat(61));
+    await expect(campo).toHaveValue('A'.repeat(60));
   });
 
   test('deve sanitizar nome personalizado – sem tags HTML (RN-CA06)', async ({ page, request }) => {

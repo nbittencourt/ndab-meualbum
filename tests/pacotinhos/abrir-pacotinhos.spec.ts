@@ -39,7 +39,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01', 'ESP-02', 'ESP-03'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1', 'FWC2', 'FWC3'], identificador },
       });
       await page.goto('/abrir');
 
@@ -52,7 +52,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -64,7 +64,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /descartar e começar do zero/i }).click();
@@ -107,7 +107,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       const campo = page.getByRole('textbox');
-      await campo.fill('ESP-01');
+      await campo.fill('FWC1');
       await campo.press('Enter');
       await expect(page.getByText(/limite de 100|máximo de 100/i)).toBeVisible();
     });
@@ -118,7 +118,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
       await page.getByRole('button', { name: /confirmar/i }).click();
       const campo = page.getByRole('textbox');
-      await campo.fill('ESP-01');
+      await campo.fill('FWC1');
       await campo.press('Enter');
       await expect(campo).toHaveValue('');
       await expect(campo).toBeFocused();
@@ -133,12 +133,12 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /descartar/i }).first().click();
-      await expect(page.getByText(/ESP-01/)).toBeVisible();
+      await expect(page.getByText(/FWC1/)).toBeVisible();
       await expect(page.getByRole('button', { name: /confirmar/i })).toBeVisible();
     });
   });
@@ -151,7 +151,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -164,7 +164,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -178,7 +178,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -196,7 +196,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -231,7 +231,7 @@ test.describe('Abrir Pacotinhos', () => {
       const tipoId = await getTipoAlbumId(request);
       await criarAlbum(request, tipoId, 'BROCHURA');
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -248,7 +248,7 @@ test.describe('Abrir Pacotinhos', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await criarAlbum(request, tipoId, 'CAPA_DURA');
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -262,7 +262,7 @@ test.describe('Abrir Pacotinhos', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
@@ -276,7 +276,7 @@ test.describe('Abrir Pacotinhos', () => {
       await arquivarAlbum(request, albumArquivado._id ?? albumArquivado.id);
       await criarAlbum(request, tipoId, 'CAPA_DURA');
       await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['ESP-01'], identificador },
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();

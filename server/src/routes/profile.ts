@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { ZipArchive } from 'archiver';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 import { sendEmailAlteracaoEmail } from '../lib/email.js';
 import { logger, maskEmail } from '../lib/logger.js';
@@ -239,7 +238,11 @@ router.get('/exportar', requireAuth, async (req: AuthRequest, res) => {
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', 'attachment; filename="meus-dados.zip"');
 
-  const archive = new ZipArchive();
+  // archiver v8 exports ZipArchive as ESM class; @types/archiver@7 predates this API
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { ZipArchive } = (await import('archiver')) as any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const archive = new ZipArchive() as any;
   archive.pipe(res);
 
   const toCsv = (rows: string[][], header: string[]) =>

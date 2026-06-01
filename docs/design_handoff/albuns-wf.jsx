@@ -83,10 +83,11 @@ function AlSidebar({ activeItem = "albums" }) {
     { id: "home",    icon: "⊞", label: "Início"      },
     { id: "albums",  icon: "◻", label: "Meus Álbuns"  },
     { id: "stickers",icon: "◈", label: "Figurinhas"   },
+    { id: "trades",  icon: "⇄", label: "Trocas"       },
     { id: "profile", icon: "○", label: "Perfil"        },
   ];
   return (
-    <aside style={{ width: SIDEBAR_W, flexShrink: 0, position: "absolute", top: 0, left: 0, bottom: 0, background: AL.paper, borderRight: `2px solid ${AL.ink}`, display: "flex", flexDirection: "column", zIndex: 5 }}>
+    <aside style={{ width: SIDEBAR_W, flexShrink: 0, background: AL.paper, borderRight: `2px solid ${AL.ink}`, display: "flex", flexDirection: "column", zIndex: 5 }}>
       <div style={{ padding: "20px 20px 18px", borderBottom: `2px solid ${AL.ink}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 28, height: 28, background: AL.red, color: "#fff", border: `2px solid ${AL.ink}`, boxShadow: `2px 2px 0 ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: AL.fontD, fontSize: 12, transform: "rotate(-4deg)", flexShrink: 0 }}>MA</div>
@@ -101,36 +102,27 @@ function AlSidebar({ activeItem = "albums" }) {
           </div>
         ))}
       </nav>
-      <div style={{ padding: "12px 16px", borderTop: `1px solid ${AL.line}` }}>
-        <button style={{ width: "100%", padding: "12px 14px", background: AL.red, color: "#fff", border: `2px solid ${AL.ink}`, boxShadow: `2px 2px 0 ${AL.ink}`, fontFamily: AL.fontD, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.04em", cursor: "pointer" }}>
-          + Abrir pacotinhos
-        </button>
-      </div>
-      <div style={{ padding: "14px 16px", borderTop: `2px solid ${AL.ink}`, display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 32, height: 32, background: AL.ink, color: "#fff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: AL.fontD, fontSize: 13 }}>J</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: AL.fontD, fontSize: 12, textTransform: "uppercase" }}>João S.</div>
-          <div style={{ fontFamily: AL.fontM, fontSize: 9, color: AL.mute, letterSpacing: "0.12em" }}>#XB3K29</div>
-        </div>
-      </div>
     </aside>
   );
 }
 
 function AlMobileHeader({ title, back = false }) {
   return (
-    <div style={{ padding: "0 16px", height: 56, background: AL.paper, borderBottom: `2px solid ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
+    <div style={{ padding: "0 16px", height: 60, background: AL.paper, borderBottom: `2px solid ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
       {back
         ? <button style={{ width: 36, height: 36, background: "transparent", border: `1.5px solid ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke={AL.ink} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         : <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 26, height: 26, background: AL.red, color: "#fff", border: `2px solid ${AL.ink}`, boxShadow: `2px 2px 0 ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: AL.fontD, fontSize: 11, transform: "rotate(-4deg)" }}>MA</div>
+            <div style={{ width: 28, height: 28, background: AL.red, color: "#fff", border: `2px solid ${AL.ink}`, boxShadow: `2px 2px 0 ${AL.ink}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: AL.fontD, fontSize: 12, transform: "rotate(-4deg)" }}>MA</div>
             <span style={{ fontFamily: AL.fontD, fontSize: 13, letterSpacing: "0.04em", textTransform: "uppercase" }}>Meu Album</span>
           </div>
       }
       <span style={{ fontFamily: AL.fontD, fontSize: 15, textTransform: "uppercase", letterSpacing: "0.02em" }}>{title}</span>
-      <div style={{ width: 36 }} />
+      {back
+        ? <div style={{ width: 36 }} />
+        : <MAUserBlock />
+      }
     </div>
   );
 }
@@ -142,7 +134,7 @@ function AlDesktopTopBar({ title, breadcrumb }) {
         {breadcrumb && <><span style={{ fontFamily: AL.fontM, fontSize: 10, color: AL.mute, letterSpacing: "0.16em", textTransform: "uppercase" }}>{breadcrumb}</span><span style={{ color: AL.mute, margin: "0 6px" }}>/</span></>}
         <h1 style={{ margin: 0, fontFamily: AL.fontD, fontSize: 18, textTransform: "uppercase", letterSpacing: "0.04em" }}>{title}</h1>
       </div>
-      <div style={{ fontFamily: AL.fontM, fontSize: 10, letterSpacing: "0.14em", color: AL.mute, textTransform: "uppercase" }}>16 mai 2026</div>
+      <MAUserBlock desktop />
     </div>
   );
 }
@@ -216,8 +208,30 @@ const MOCK_ARCHIVED = [
 const MOCK_ALBUM = MOCK_ACTIVE[1]; // Capa dura ouro – usado em AL1
 
 const MOCK_SECOES = [
-  { nome: "Brasil",              coladas: 42, total: 80,  ordem: 1, expanded: true,
-    faltam: ["BRA-03","BRA-07","BRA-12","BRA-15","BRA-18","BRA-22","BRA-24","BRA-29","BRA-31","BRA-36","BRA-39","BRA-42"] },
+  { nome: "Brasil", coladas: 42, total: 80, ordem: 1, expanded: true,
+    figurinhas: [
+      { num: "BRA-01", nome: "Alisson",            status: "colada",   qty: 1 },
+      { num: "BRA-02", nome: "Danilo",             status: "colada",   qty: 1 },
+      { num: "BRA-03", nome: "Marquinhos",         status: "faltante", qty: 0 },
+      { num: "BRA-04", nome: "Éder Militão",       status: "repetida", qty: 3 },
+      { num: "BRA-05", nome: "Wendell",            status: "faltante", qty: 0 },
+      { num: "BRA-06", nome: "Casemiro",           status: "colada",   qty: 1 },
+      { num: "BRA-07", nome: "Raphinha",           status: "repetida", qty: 2 },
+      { num: "BRA-08", nome: "Lucas Paquetá",      status: "colada",   qty: 1 },
+      { num: "BRA-09", nome: "Pedro",              status: "faltante", qty: 0 },
+      { num: "BRA-10", nome: "Rodrygo",            status: "colada",   qty: 1 },
+      { num: "BRA-11", nome: "Endrick",            status: "faltante", qty: 0 },
+      { num: "BRA-12", nome: "Weverton",           status: "faltante", qty: 0 },
+      { num: "BRA-13", nome: "Renan Lodi",         status: "colada",   qty: 1 },
+      { num: "BRA-14", nome: "Gabriel Magalhães",  status: "colada",   qty: 1 },
+      { num: "BRA-15", nome: "Bremer",             status: "faltante", qty: 0 },
+      { num: "BRA-16", nome: "Gerson",             status: "colada",   qty: 1 },
+      { num: "BRA-17", nome: "Bruno Guimarães",    status: "repetida", qty: 4 },
+      { num: "BRA-18", nome: "Andreas Pereira",    status: "faltante", qty: 0 },
+      { num: "BRA-19", nome: "Gabriel Martinelli", status: "colada",   qty: 1 },
+      { num: "BRA-20", nome: "Vini Jr.",           status: "colada",   qty: 1 },
+    ]
+  },
   { nome: "América do Norte",    coladas: 38, total: 64,  ordem: 2, expanded: false },
   { nome: "Europa",              coladas: 112, total: 112, ordem: 3, expanded: false, completa: true },
   { nome: "Figurinhas Especiais",coladas: 2,  total: 20,  ordem: 4, expanded: false },
@@ -226,7 +240,7 @@ const MOCK_SECOES = [
 ];
 
 // ── AL0 Mobile ────────────────────────────────────────────────────────────
-function AL0Mobile({ archived = true, showAnnotations = true }) {
+function AL0Mobile({ archived = true, showAnnotations = false }) {
   const [ref, w] = alMeasure();
   const ANN = showAnnotations;
 
@@ -246,7 +260,7 @@ function AL0Mobile({ archived = true, showAnnotations = true }) {
   return (
     <AlVP.Provider value={{ isDesktop: false }}>
       <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%" }}>
-        <AlMobileHeader title="Meus Álbuns" />
+        <MAHeader />
         <div style={{ padding: "0 16px 32px" }}>
 
           {/* Álbuns Ativos */}
@@ -279,21 +293,24 @@ function AL0Mobile({ archived = true, showAnnotations = true }) {
 
           {ANN && <AlLegend items={ANN_AL0} />}
         </div>
+        <MAFooter />
       </div>
     </AlVP.Provider>
   );
 }
 
 // ── AL0 Desktop ───────────────────────────────────────────────────────────
-function AL0Desktop({ showAnnotations = true }) {
+function AL0Desktop({ showAnnotations = false }) {
   const [ref, w] = alMeasure();
   const ANN = showAnnotations;
   return (
     <AlVP.Provider value={{ isDesktop: true }}>
-      <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%", position: "relative", paddingLeft: SIDEBAR_W }}>
-        <AlSidebar activeItem="albums" />
-        <AlDesktopTopBar title="Meus Álbuns" />
-        <div style={{ padding: "28px 32px 40px" }}>
+      <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flex: 1 }}>
+          <AlSidebar activeItem="albums" />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <MATopBar title="Meus Álbuns" />
+            <div style={{ padding: "28px 32px 40px" }}>
           {/* active section */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, position: "relative" }}>
             {ANN && <AlAnn n="2" top={-6} left={-16} />}
@@ -313,9 +330,66 @@ function AL0Desktop({ showAnnotations = true }) {
               {MOCK_ARCHIVED.map(a => <AlbumArchivedCard key={a.id} album={a} withAnn={ANN} />)}
             </div>
           </div>
+            </div>
+          </div>
         </div>
+        <MAFooter desktop={true} />
       </div>
     </AlVP.Provider>
+  );
+}
+
+// ── AL1 — Figurinha card (Variante B: fichas com altura fixa + qty) ─────────
+function StickerCardAL1({ fig, isDesktop }) {
+  const colada   = fig.status === "colada";
+  const repetida = fig.status === "repetida";
+  const qty = fig.qty !== undefined ? fig.qty : colada ? 1 : repetida ? 2 : 0;
+
+  const CARD_H = isDesktop ? 106 : 94;
+  const BTN_H  = isDesktop ? 28 : 25;
+
+  const qtyBg = qty >= 2 ? AL.red : qty === 1 ? "rgba(10,145,69,0.12)" : "rgba(10,9,7,0.06)";
+  const qtyFg = qty >= 2 ? "#fff" : qty === 1 ? AL.green : AL.mute;
+
+  return (
+    <div style={{
+      background: colada ? "rgba(10,145,69,0.04)" : "#fff",
+      border: colada
+        ? "1.5px solid rgba(10,145,69,0.3)"
+        : repetida
+        ? `1.5px solid ${AL.ink}`
+        : `1.5px solid ${AL.line}`,
+      padding: isDesktop ? "10px 10px 9px" : "8px 7px 7px",
+      display: "flex", flexDirection: "column",
+      height: CARD_H, boxSizing: "border-box", minWidth: 0,
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ fontFamily: AL.fontM, fontSize: isDesktop ? 10 : 8.5, color: colada ? AL.green : AL.mute, letterSpacing: "0.08em" }}>{fig.num}</span>
+        <span style={{ background: qtyBg, color: qtyFg, fontFamily: AL.fontM, fontWeight: 600, fontSize: isDesktop ? 9 : 7.5, padding: "1px 5px", letterSpacing: "0.04em" }}>×{qty}</span>
+      </div>
+      <div style={{ flex: 1, overflow: "hidden", display: "flex", alignItems: "center", padding: "4px 0" }}>
+        <span style={{
+          fontFamily: AL.fontD, fontSize: isDesktop ? 12 : 10,
+          color: colada ? AL.mute : AL.ink,
+          textTransform: "uppercase", lineHeight: 1.15,
+          textDecoration: colada ? "line-through" : "none",
+          textDecorationColor: "rgba(10,9,7,0.28)",
+          overflow: "hidden", display: "-webkit-box",
+          WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+        }}>{fig.nome}</span>
+      </div>
+      <div style={{ flexShrink: 0, height: BTN_H }}>
+        {repetida && (
+          <button style={{
+            width: "100%", height: "100%",
+            background: AL.ink, color: "#fff",
+            border: `1.5px solid ${AL.ink}`, boxShadow: `1px 1px 0 ${AL.red}`,
+            fontFamily: AL.fontD, fontSize: isDesktop ? 9 : 8,
+            textTransform: "uppercase", letterSpacing: "0.04em", cursor: "pointer",
+          }}>Colar →</button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -343,17 +417,49 @@ function SectionRow({ s, withAnn, isDesktop }) {
         </div>
         <span style={{ fontFamily: AL.fontM, fontSize: 12, color: s.expanded ? AL.red : AL.mute, transform: s.expanded ? "rotate(90deg)" : "none" }}>›</span>
       </div>
-      {s.expanded && s.faltam && (
-        <div style={{ borderTop: `1.5px dashed ${AL.line}`, padding: isDesktop ? "14px 20px 16px" : "12px 14px 14px" }}>
-          <div style={{ fontFamily: AL.fontM, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: AL.mute, marginBottom: 8 }}>
-            Figurinhas faltantes ({s.total - s.coladas})
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "repeat(4,1fr)" : "repeat(2,1fr)", gap: 6 }}>
-            {s.faltam.map(num => (
-              <div key={num} style={{ padding: "6px 10px", background: AL.bg, border: `1px solid ${AL.line}`, fontFamily: AL.fontM, fontSize: 11, color: AL.ink }}>
-                {num}
+      {s.expanded && s.figurinhas && (
+        <div style={{ borderTop: `1.5px solid ${AL.ink}` }}>
+          {/* legenda */}
+          <div style={{
+            padding: isDesktop ? "7px 20px" : "6px 12px",
+            background: "rgba(10,9,7,0.03)",
+            borderBottom: `1px solid ${AL.line}`,
+            display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap",
+          }}>
+            {[
+              { symbol: "━", label: "Colada",   color: AL.green },
+              { symbol: "○", label: "Faltante", color: AL.mute  },
+              { symbol: "×2",label: "Repetida", color: AL.red   },
+            ].map(item => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontFamily: AL.fontM, fontSize: 9, color: item.color, fontWeight: 600 }}>{item.symbol}</span>
+                <span style={{ fontFamily: AL.fontM, fontSize: 8, color: AL.mute, letterSpacing: "0.08em", textTransform: "uppercase" }}>{item.label}</span>
               </div>
             ))}
+          </div>
+          {/* grid de cards */}
+          <div style={{ padding: isDesktop ? "14px 20px" : "10px 12px" }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${isDesktop ? 5 : 3}, 1fr)`,
+              gap: isDesktop ? 10 : 8,
+            }}>
+              {s.figurinhas.map(fig => (
+                <StickerCardAL1 key={fig.num} fig={fig} isDesktop={isDesktop} />
+              ))}
+            </div>
+          </div>
+          {/* rodapé */}
+          <div style={{
+            padding: isDesktop ? "8px 20px" : "8px 14px",
+            display: "flex", gap: 16, flexWrap: "wrap",
+            fontFamily: AL.fontM, fontSize: 9,
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            borderTop: `1px solid ${AL.line}`,
+          }}>
+            <span style={{ color: AL.green }}>✓ {s.figurinhas.filter(f => f.status === "colada").length} coladas</span>
+            <span style={{ color: AL.red }}>⇄ {s.figurinhas.filter(f => f.status === "repetida").length} repetidas</span>
+            <span style={{ color: AL.mute }}>{s.figurinhas.filter(f => f.status === "faltante").length} faltantes</span>
           </div>
         </div>
       )}
@@ -362,7 +468,7 @@ function SectionRow({ s, withAnn, isDesktop }) {
 }
 
 // ── AL1 Mobile ────────────────────────────────────────────────────────────
-function AL1Mobile({ archiving = false, pdfSpinner = false, showAnnotations = true }) {
+function AL1Mobile({ archiving = false, pdfSpinner = false, showAnnotations = false }) {
   const [ref] = alMeasure();
   const ANN = showAnnotations;
   const vs = AL_VARIANT[MOCK_ALBUM.variante];
@@ -384,7 +490,7 @@ function AL1Mobile({ archiving = false, pdfSpinner = false, showAnnotations = tr
   return (
     <AlVP.Provider value={{ isDesktop: false }}>
       <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%" }}>
-        <AlMobileHeader title="Gerenciar álbum" back />
+        <MAHeader back={true} />
 
         {/* Album header card */}
         <div style={{ background: vs.bg, border: `2px solid ${vs.dark ? AL.ink : AL.ink}`, borderTop: "none", padding: "16px 16px 14px", position: "relative" }}>
@@ -406,7 +512,7 @@ function AL1Mobile({ archiving = false, pdfSpinner = false, showAnnotations = tr
         </div>
 
         {/* Action bar */}
-        <div style={{ background: AL.paper, borderBottom: `2px solid ${AL.ink}`, padding: "10px 12px", display: "flex", gap: 8, position: "sticky", top: 56, zIndex: 5 }}>
+        <div style={{ background: AL.paper, borderBottom: `2px solid ${AL.ink}`, padding: "10px 12px", display: "flex", gap: 8, position: "sticky", top: 60, zIndex: 5 }}>
           <button style={{ flex: 1, padding: "10px 0", background: AL.ink, color: "#fff", border: `2px solid ${AL.ink}`, fontFamily: AL.fontD, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.03em", cursor: "pointer", position: "relative" }}>
             {ANN && <AlAnn n="4" top={-10} left={-10} />}
             Colar fig.
@@ -446,13 +552,14 @@ function AL1Mobile({ archiving = false, pdfSpinner = false, showAnnotations = tr
           </div>
           {ANN && <AlLegend items={ANN_AL1} />}
         </div>
+        <MAFooter />
       </div>
     </AlVP.Provider>
   );
 }
 
 // ── AL1 Desktop ───────────────────────────────────────────────────────────
-function AL1Desktop({ showAnnotations = true }) {
+function AL1Desktop({ showAnnotations = false }) {
   const [ref] = alMeasure();
   const ANN = showAnnotations;
   const vs = AL_VARIANT[MOCK_ALBUM.variante];
@@ -461,11 +568,13 @@ function AL1Desktop({ showAnnotations = true }) {
 
   return (
     <AlVP.Provider value={{ isDesktop: true }}>
-      <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%", position: "relative", paddingLeft: SIDEBAR_W }}>
-        <AlSidebar activeItem="albums" />
-        <AlDesktopTopBar title="Gerenciar álbum" breadcrumb="Meus Álbuns" />
+      <div ref={ref} style={{ background: AL.bg, fontFamily: AL.fontB, minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flex: 1 }}>
+          <AlSidebar activeItem="albums" />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <MATopBar breadcrumb="Meus Álbuns" title="Gerenciar álbum" />
 
-        <div style={{ padding: "24px 32px" }}>
+            <div style={{ padding: "24px 32px" }}>
           {/* Album hero */}
           <div style={{ background: vs.bg, border: vs.border, boxShadow: vs.shadow, padding: "20px 24px", marginBottom: 20, display: "grid", gridTemplateColumns: "1fr auto", gap: 24, alignItems: "center", position: "relative" }}>
             {ANN && <AlAnn n="2" top={-8} right={-8} />}
@@ -508,7 +617,10 @@ function AL1Desktop({ showAnnotations = true }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {MOCK_SECOES.map((s, i) => <SectionRow key={i} s={s} withAnn={i === 0 && ANN} isDesktop />)}
           </div>
+            </div>
+          </div>
         </div>
+        <MAFooter desktop={true} />
       </div>
     </AlVP.Provider>
   );

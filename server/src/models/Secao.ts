@@ -5,6 +5,8 @@ const secaoSchema = new Schema({
   nome: { type: String, required: true, trim: true },
   ordem: { type: Number, required: true, default: 0 },
   totalFigurinhas: { type: Number, required: true, default: 0 },
+  grupo: { type: String },
+  sigla_time: { type: String },
 });
 
 secaoSchema.index({ tipoAlbumId: 1, ordem: 1 });

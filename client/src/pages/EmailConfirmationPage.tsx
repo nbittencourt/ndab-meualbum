@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
@@ -34,6 +34,8 @@ export default function EmailConfirmationPage() {
   const { setUser, user } = useAuthStore();
   const [state, setState] = useState<State>('loading');
   const didRun = useRef(false);
+  const [reenviando, setReenviando] = useState(false);
+  const [ultimoEnvioOverride, setUltimoEnvioOverride] = useState<string | null>(null);
 
   useEffect(() => {
     if (didRun.current) return;
@@ -56,10 +58,23 @@ export default function EmailConfirmationPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rawUltimoEnvio = (user as any)?.ultimoEnvioEm ?? routerState?.ultimoEnvioEm ?? null;
+  const rawUltimoEnvio = ultimoEnvioOverride ?? (user as any)?.ultimoEnvioEm ?? routerState?.ultimoEnvioEm ?? null;
   const ultimoEnvio = rawUltimoEnvio ? new Date(rawUltimoEnvio) : null;
   const cooldownUntil = ultimoEnvio ? new Date(ultimoEnvio.getTime() + 5 * 60 * 1000) : null;
   const displayPublicId = user?.publicId ?? routerState?.publicId;
+
+  const handleReenviar = useCallback(async () => {
+    if (!displayPublicId || reenviando) return;
+    setReenviando(true);
+    try {
+      await authApi.reenviarConfirmacaoCadastro(displayPublicId);
+      setUltimoEnvioOverride(new Date().toISOString());
+    } catch {
+      // silencia — usuário pode tentar novamente
+    } finally {
+      setReenviando(false);
+    }
+  }, [displayPublicId, reenviando]);
 
   return (
     <div className="min-h-dvh bg-paper flex items-center justify-center p-6">
@@ -120,9 +135,11 @@ export default function EmailConfirmationPage() {
             </p>
             {cooldownUntil && cooldownUntil > new Date() ? (
               <Countdown until={cooldownUntil} />
-            ) : (
-              <p className="text-sm font-body text-ink/60">Você pode solicitar o reenvio do email.</p>
-            )}
+            ) : displayPublicId ? (
+              <Button onClick={handleReenviar} loading={reenviando} className="w-full">
+                Reenviar email
+              </Button>
+            ) : null}
             <Link to="/perfil" className="mt-4 inline-block text-sm font-body text-red underline hover:brightness-90">
               Corrigir email
             </Link>

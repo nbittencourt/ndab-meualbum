@@ -144,7 +144,7 @@ router.delete('/pilha', requireAuth, async (req: AuthRequest, res) => {
 
 router.delete('/pilha/:itemId', requireAuth, async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
-  const { itemId } = req.params;
+  const itemId = req.params.itemId as string;
   if (!Types.ObjectId.isValid(itemId)) {
     res.status(400).json({ error: 'ID inválido' });
     return;

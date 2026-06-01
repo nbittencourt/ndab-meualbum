@@ -86,8 +86,9 @@ test.describe('Perfil do Usuário', () => {
 
       await page.getByLabel('Email').fill(`novo1+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
+      await expect(page.getByText(/aguardando confirmação/i)).toBeVisible();
 
-      await page.getByLabel('Email').fill(`novo2+${Date.now()}@exemplo.com`);
+      await page.getByLabel('Novo email').fill(`novo2+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
 
       await expect(page.getByText(/aguarde/i)).toBeVisible();

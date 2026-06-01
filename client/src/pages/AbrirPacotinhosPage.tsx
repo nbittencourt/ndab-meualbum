@@ -8,21 +8,30 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Toast';
-import { Badge } from '@/components/ui/Badge';
 
 const MAX_PENDENTE = 100;
 
 type ToastVariant = 'success' | 'error' | 'info';
 type ToastState = { message: string; variant: ToastVariant } | null;
 
-function StatusLabel({ status }: { status: PilhaDaSessao['statusDestino'] }) {
-  const map: Record<PilhaDaSessao['statusDestino'], { label: string; variant: 'success' | 'warning' | 'info' }> = {
-    PENDENTE: { label: 'Pendente', variant: 'info' },
-    COLADA: { label: 'Colada', variant: 'success' },
-    REPETIDA: { label: 'Repetida', variant: 'warning' },
-  };
-  const { label, variant } = map[status];
-  return <Badge label={label} variant={variant} />;
+function PilhaTag({ children, bg, color }: { children: React.ReactNode; bg: string; color: string }) {
+  return (
+    <span
+      style={{
+        background: bg,
+        color,
+        fontFamily: '"Geist Mono", "Courier New", monospace',
+        fontSize: 9,
+        fontWeight: 600,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+        padding: '1px 5px',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {children}
+    </span>
+  );
 }
 
 export default function AbrirPacotinhosPage() {
@@ -351,59 +360,84 @@ export default function AbrirPacotinhosPage() {
             Pilha ({pilha.length})
           </h2>
           <div className="flex flex-col gap-2">
-            {pilha.map((item) => (
-              <article
-                key={item._id as string}
-                className="bg-white border-2 border-ink p-3 flex items-center justify-between gap-2"
-                aria-label={`Figurinha ${item.figurinhaNumero}, status: ${item.statusDestino}`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="font-mono font-bold text-ink text-sm">{item.figurinhaNumero}</span>
-                  {item.figurinhaNome && (
-                    <span className="text-xs font-body text-ink/60">{item.figurinhaNome}</span>
-                  )}
-                  <StatusLabel status={item.statusDestino} />
-                </div>
-                {item.statusDestino === 'PENDENTE' && descartarItemId === (item._id as string) ? (
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      loading={descartarItemMut.isPending}
-                      onClick={() => descartarItemMut.mutate(item._id as string)}
-                    >
-                      Confirmar
-                    </Button>
-                    <Button size="sm" variant="secondary" onClick={() => setDescartarItemId(null)}>
-                      Cancelar
-                    </Button>
-                  </div>
-                ) : item.statusDestino === 'PENDENTE' ? (
-                  <div className="flex gap-1">
-                    {temAlbumsAtivos && (
-                      <Button size="sm" variant="primary" onClick={() => setColarItem(item)}>
-                        Colar
-                      </Button>
+            {pilha.map((item) => {
+              const isColada = item.statusDestino === 'COLADA';
+              const isRepetida = item.statusDestino === 'REPETIDA';
+              const isPendente = item.statusDestino === 'PENDENTE';
+              const confirmandoDescartar = descartarItemId === (item._id as string);
+
+              return (
+                <article
+                  key={item._id as string}
+                  className="bg-white border-2 border-ink p-3 flex flex-col gap-2"
+                  aria-label={`Figurinha ${item.figurinhaNumero}, status: ${item.statusDestino}`}
+                >
+                  {/* Tags de origem e status */}
+                  <div className="flex gap-1 flex-wrap">
+                    <PilhaTag bg="rgba(10,9,7,0.08)" color="rgba(10,9,7,0.55)">
+                      {item.origem === 'CAMERA' ? 'Câmera' : 'Digitação'}
+                    </PilhaTag>
+                    {isPendente && (
+                      temAlbumsAtivos
+                        ? <PilhaTag bg="rgba(10,145,69,0.12)" color="#0A9145">Elegível</PilhaTag>
+                        : <PilhaTag bg="rgba(232,155,12,0.15)" color="#E89B0C">Sem álbum</PilhaTag>
                     )}
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      loading={repetidaMut.isPending}
-                      onClick={() => repetidaMut.mutate(item._id as string)}
-                    >
-                      Repetida
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setDescartarItemId(item._id as string)}
-                    >
-                      Descartar
-                    </Button>
+                    {isColada && <PilhaTag bg="rgba(10,145,69,0.12)" color="#0A9145">Colada</PilhaTag>}
+                    {isRepetida && <PilhaTag bg="rgba(232,155,12,0.15)" color="#E89B0C">Repetida</PilhaTag>}
                   </div>
-                ) : null}
-              </article>
-            ))}
+
+                  {/* Número e nome */}
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono font-bold text-ink text-sm">{item.figurinhaNumero}</span>
+                    {item.figurinhaNome && (
+                      <span className="text-xs font-body text-ink/60 truncate">{item.figurinhaNome}</span>
+                    )}
+                  </div>
+
+                  {/* Ações para PENDENTE */}
+                  {isPendente && (
+                    confirmandoDescartar ? (
+                      <div className="flex gap-1 flex-wrap">
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          loading={descartarItemMut.isPending}
+                          onClick={() => descartarItemMut.mutate(item._id as string)}
+                        >
+                          Confirmar descarte
+                        </Button>
+                        <Button size="sm" variant="secondary" onClick={() => setDescartarItemId(null)}>
+                          Cancelar
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-1 flex-wrap">
+                        {temAlbumsAtivos && (
+                          <Button size="sm" variant="primary" onClick={() => setColarItem(item)}>
+                            Colar →
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          loading={repetidaMut.isPending}
+                          onClick={() => repetidaMut.mutate(item._id as string)}
+                        >
+                          Enviar para Repetidas
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setDescartarItemId(item._id as string)}
+                        >
+                          ✕ Descartar
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </article>
+              );
+            })}
           </div>
         </section>
       )}

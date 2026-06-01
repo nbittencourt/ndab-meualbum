@@ -23,11 +23,8 @@ router.use(guard);
 
 router.post('/reset-db', async (_req, res) => {
   const db = mongoose.connection.db!;
-  const preserve = new Set(['tipoalbums', 'stickers', 'secaos']);
   const cols = await db.listCollections().toArray();
-  await Promise.all(
-    cols.filter((c) => !preserve.has(c.name)).map((c) => db.collection(c.name).deleteMany({}))
-  );
+  await Promise.all(cols.map((c) => db.collection(c.name).deleteMany({})));
   res.json({ ok: true });
 });
 
@@ -181,72 +178,94 @@ router.get('/tipo-album-id', async (_req, res) => {
 
 router.post('/seed', async (_req, res) => {
   const seedDir = join(process.cwd(), '..', 'tests', '_seed');
-  const tiposData = JSON.parse(readFileSync(join(seedDir, 'seed_tipo_album.json'), 'utf-8'));
-  const figurinhasData = JSON.parse(readFileSync(join(seedDir, 'seed_figurinhas.json'), 'utf-8'));
-  const tipos: Array<{ nome: string; total_figurinhas: number }> = tiposData.tipo_albums;
-  const figurinhas: Array<{
-    numero: string; nome: string; secao_id: number;
-    tipo_album_id: number; conta_para_fechar: boolean;
-  }> = figurinhasData.figurinhas;
+  const { tipo_albums }: { tipo_albums: Array<{ id: number; nome: string; total_figurinhas: number }> } =
+    JSON.parse(readFileSync(join(seedDir, 'seed_tipo_album.json'), 'utf-8'));
+  const { secoes: secoesData }: { secoes: Array<{ id: number; nome: string; grupo: string | null; sigla_time: string | null; tipo_album_id: number }> } =
+    JSON.parse(readFileSync(join(seedDir, 'panini_wc2026_secoes.json'), 'utf-8'));
+  const { figurinhas }: { figurinhas: Array<{ id: number; numero: string; nome: string; secao_id: number; tipo_album_id: number; conta_para_fechar: boolean }> } =
+    JSON.parse(readFileSync(join(seedDir, 'panini_wc2026_figurinhas.json'), 'utf-8'));
 
-  const tipoCount = await TipoAlbum.countDocuments();
-  if (tipoCount > 0) {
-    res.json({ ok: true, skipped: true });
-    return;
-  }
-
-  // TipoAlbum is empty but stickers/secoes may still exist from a previous partial seed.
-  // Clear them to avoid duplicate key errors on insertMany.
-  await Sticker.deleteMany({});
-  await Secao.deleteMany({});
-
+  // 1. TipoAlbum
   const tipoMap = new Map<number, Types.ObjectId>();
-  for (let i = 0; i < tipos.length; i++) {
-    const t = tipos[i];
-    const created = await TipoAlbum.create({ nome: t.nome, totalFigurinhas: t.total_figurinhas });
-    tipoMap.set(i + 1, created._id as Types.ObjectId);
+  for (const ta of tipo_albums) {
+    const created = await TipoAlbum.create({ nome: ta.nome, totalFigurinhas: ta.total_figurinhas });
+    tipoMap.set(ta.id, created._id as Types.ObjectId);
   }
 
-  const tipoAlbumId = tipoMap.get(1)!;
+  // 2. Contagem de figurinhas por seção
+  const totalFigurinhasMap = new Map<number, number>();
+  for (const f of figurinhas) {
+    totalFigurinhasMap.set(f.secao_id, (totalFigurinhasMap.get(f.secao_id) ?? 0) + 1);
+  }
 
-  const secaoMap = new Map<number, Types.ObjectId>();
-  const secaoGroups = new Map<number, string[]>();
-  figurinhas.forEach((f) => {
-    const prefix = f.numero.split('-')[0];
-    if (!secaoGroups.has(f.secao_id)) secaoGroups.set(f.secao_id, []);
-    secaoGroups.get(f.secao_id)!.push(prefix);
-  });
-
-  const secaoIds = [...secaoGroups.keys()].sort((a, b) => a - b);
-  for (const sid of secaoIds) {
-    const prefix = secaoGroups.get(sid)![0];
-    const count = figurinhas.filter((f) => f.secao_id === sid).length;
+  // 3. Secao
+  const secaoMap = new Map<number, { oid: Types.ObjectId; sigla_time: string | null }>();
+  for (const s of secoesData) {
+    const tipoAlbumOid = tipoMap.get(s.tipo_album_id);
+    if (!tipoAlbumOid) continue;
     const secao = await Secao.create({
-      tipoAlbumId,
-      nome: prefix,
-      ordem: sid,
-      totalFigurinhas: count,
+      tipoAlbumId: tipoAlbumOid,
+      nome: s.nome,
+      ordem: s.id,
+      totalFigurinhas: totalFigurinhasMap.get(s.id) ?? 0,
+      grupo: s.grupo ?? undefined,
+      sigla_time: s.sigla_time ?? undefined,
     });
-    secaoMap.set(sid, secao._id as Types.ObjectId);
+    secaoMap.set(s.id, { oid: secao._id as Types.ObjectId, sigla_time: s.sigla_time });
   }
+
+  // 4. Sticker
+  const SECOES_ESPECIAIS = new Set([1, 50, 51]);
 
   const stickerDocs = figurinhas.map((f) => {
-    const prefix = f.numero.split('-')[0];
-    const secaoId = secaoMap.get(f.secao_id)!;
-    const isSpecial = f.secao_id === 1;
+    const secaoData = secaoMap.get(f.secao_id);
+    const section = f.numero === '00' ? 'FWC0' : f.numero.replace(/\d+$/, '');
+    const n = f.nome.toLowerCase();
+    let type: string;
+    if (SECOES_ESPECIAIS.has(f.secao_id) || !f.conta_para_fechar) {
+      type = 'special';
+    } else if (n.includes('team logo') || n.includes('escudo') || n.includes('foto do time')) {
+      type = 'badge';
+    } else if (n.includes('estád') || n.includes('estad')) {
+      type = 'stadium';
+    } else {
+      type = 'player';
+    }
     return {
       number: f.numero,
-      section: prefix,
-      secaoId,
+      section,
+      secaoId: secaoData?.oid,
       subject: f.nome,
-      type: isSpecial ? 'special' : 'player',
+      type,
+      country: secaoData?.sigla_time ?? undefined,
       isShiny: false,
     };
   });
 
   await Sticker.insertMany(stickerDocs, { ordered: false });
 
-  res.json({ ok: true, tipos: tipos.length, secoes: secaoIds.length, stickers: stickerDocs.length });
+  res.json({ ok: true, tipos: tipo_albums.length, secoes: secoesData.length, stickers: stickerDocs.length });
+});
+
+// ── Rate limit test ───────────────────────────────────────────────────────────
+
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX ?? 5);
+const rateLimitCounter = new Map<string, number>();
+
+router.post('/reset-rate-limit', (_req, res) => {
+  rateLimitCounter.clear();
+  res.json({ ok: true });
+});
+
+router.post('/rate-limit-test', (req, res) => {
+  const ip = (req.ip ?? '::1').replace('::ffff:', '');
+  const count = (rateLimitCounter.get(ip) ?? 0) + 1;
+  rateLimitCounter.set(ip, count);
+  if (count > RATE_LIMIT_MAX) {
+    res.status(429).json({ error: 'Muitas requisições. Tente novamente em alguns instantes.' });
+    return;
+  }
+  res.json({ ok: true, count });
 });
 
 export default router;

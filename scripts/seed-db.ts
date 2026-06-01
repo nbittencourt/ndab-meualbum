@@ -33,6 +33,8 @@ const Secao = model(
     nome: { type: String, required: true },
     ordem: { type: Number, required: true, default: 0 },
     totalFigurinhas: { type: Number, required: true, default: 0 },
+    grupo: { type: String },
+    sigla_time: { type: String },
   }),
 );
 
@@ -59,7 +61,15 @@ interface SeedTipoAlbum {
   total_figurinhas: number;
 }
 
-interface SeedFigurinhas {
+interface SeedSecao {
+  id: number;
+  nome: string;
+  grupo: string | null;
+  sigla_time: string | null;
+  tipo_album_id: number;
+}
+
+interface SeedFigurinha {
   id: number;
   numero: string;
   nome: string;
@@ -69,17 +79,30 @@ interface SeedFigurinhas {
 }
 
 // ---------------------------------------------------------------------------
+// Derivação de `section` a partir do número da figurinha
+// ---------------------------------------------------------------------------
+
+function derivarSection(numero: string): string {
+  if (numero === '00') return 'FWC0';
+  // strip trailing digits: "FWC1" → "FWC", "CC14" → "CC", "MEX20" → "MEX"
+  return numero.replace(/\d+$/, '');
+}
+
+// ---------------------------------------------------------------------------
 // Derivação de `type` a partir dos dados da figurinha
 // ---------------------------------------------------------------------------
 
-function derivarType(f: SeedFigurinhas): 'player' | 'badge' | 'stadium' | 'special' {
-  if (f.secao_id === 1) return 'special';
+const SECOES_ESPECIAIS = new Set([1, 50, 51]);
+
+function derivarType(f: SeedFigurinha): 'player' | 'badge' | 'stadium' | 'special' {
+  if (SECOES_ESPECIAIS.has(f.secao_id)) return 'special';
   if (!f.conta_para_fechar) return 'special';
 
   const n = f.nome.toLowerCase();
+  if (n.includes('team logo')) return 'badge';
   if (n.includes('escudo')) return 'badge';
-  if (n.includes('estád') || n.includes('estad')) return 'stadium';
   if (n.includes('foto do time')) return 'badge';
+  if (n.includes('estád') || n.includes('estad')) return 'stadium';
 
   return 'player';
 }
@@ -123,34 +146,41 @@ async function main() {
     if (doc) tipoAlbumMap.set(ta.id, doc._id as Types.ObjectId);
   }
 
-  // --- Figurinhas (fonte para Secao e Sticker) ---
-  const { figurinhas }: { figurinhas: SeedFigurinhas[] } = JSON.parse(
-    readFileSync(join(ROOT, 'tests/_seed/seed_figurinhas.json'), 'utf-8'),
+  // --- Figurinhas (fonte para contagem de totalFigurinhas por seção e Sticker) ---
+  const { figurinhas }: { figurinhas: SeedFigurinha[] } = JSON.parse(
+    readFileSync(join(ROOT, 'tests/_seed/panini_wc2026_figurinhas.json'), 'utf-8'),
   );
 
-  // --- Secao ---
-  // Agrupa figurinhas por secao_id para derivar metadados da seção
-  const secaoGroups = new Map<number, SeedFigurinhas[]>();
+  // Conta figurinhas por secao_id para popular totalFigurinhas nas seções
+  const totalFigurinhasMap = new Map<number, number>();
   for (const f of figurinhas) {
-    if (!secaoGroups.has(f.secao_id)) secaoGroups.set(f.secao_id, []);
-    secaoGroups.get(f.secao_id)!.push(f);
+    totalFigurinhasMap.set(f.secao_id, (totalFigurinhasMap.get(f.secao_id) ?? 0) + 1);
   }
 
+  // --- Secao ---
+  const { secoes }: { secoes: SeedSecao[] } = JSON.parse(
+    readFileSync(join(ROOT, 'tests/_seed/panini_wc2026_secoes.json'), 'utf-8'),
+  );
+
   const secaoBulk: Parameters<typeof Secao.bulkWrite>[0] = [];
-  for (const [secaoId, grupo] of [...secaoGroups.entries()].sort(([a], [b]) => a - b)) {
-    const prefix = grupo[0].numero.split('-')[0];
-    const tipoAlbumOid = tipoAlbumMap.get(grupo[0].tipo_album_id);
+  for (const s of secoes) {
+    const tipoAlbumOid = tipoAlbumMap.get(s.tipo_album_id);
     if (!tipoAlbumOid) {
-      console.error(`TipoAlbum id=${grupo[0].tipo_album_id} não encontrado — seção ${secaoId} ignorada.`);
+      console.error(`TipoAlbum id=${s.tipo_album_id} não encontrado — seção ${s.id} ignorada.`);
       continue;
     }
-
+    const total = totalFigurinhasMap.get(s.id) ?? 0;
     secaoBulk.push({
       updateOne: {
-        filter: { tipoAlbumId: tipoAlbumOid, ordem: secaoId },
+        filter: { tipoAlbumId: tipoAlbumOid, ordem: s.id },
         update: {
-          $set: { nome: prefix, totalFigurinhas: grupo.length },
-          $setOnInsert: { tipoAlbumId: tipoAlbumOid, ordem: secaoId },
+          $set: {
+            nome: s.nome,
+            totalFigurinhas: total,
+            grupo: s.grupo ?? undefined,
+            sigla_time: s.sigla_time ?? undefined,
+          },
+          $setOnInsert: { tipoAlbumId: tipoAlbumOid, ordem: s.id },
         },
         upsert: true,
       },
@@ -162,26 +192,33 @@ async function main() {
     `[Secao]      upserted: ${secResult.upsertedCount}  already-up-to-date: ${secResult.matchedCount}`,
   );
 
-  // Popula mapa seed secao_id → ObjectId
-  const secaoIdMap = new Map<number, Types.ObjectId>();
+  // Popula mapa seed secao_id → { ObjectId, sigla_time }
+  const secaoIdMap = new Map<number, { oid: Types.ObjectId; sigla_time: string | null }>();
   const tipoAlbumIds = [...new Set([...tipoAlbumMap.values()])];
-  const secaoDocs = await Secao.find({ tipoAlbumId: { $in: tipoAlbumIds } }, { _id: 1, ordem: 1 }).lean();
+  const secaoDocs = await Secao.find(
+    { tipoAlbumId: { $in: tipoAlbumIds } },
+    { _id: 1, ordem: 1, sigla_time: 1 },
+  ).lean();
   for (const doc of secaoDocs) {
-    secaoIdMap.set(doc.ordem as number, doc._id as Types.ObjectId);
+    secaoIdMap.set(doc.ordem as number, {
+      oid: doc._id as Types.ObjectId,
+      sigla_time: (doc as any).sigla_time ?? null,
+    });
   }
 
   // --- Sticker ---
   const stickerBulk: Parameters<typeof Sticker.bulkWrite>[0] = figurinhas.map((f) => {
-    const section = f.numero.split('-')[0];
-    const secaoOid = secaoIdMap.get(f.secao_id);
+    const section = derivarSection(f.numero);
+    const secaoData = secaoIdMap.get(f.secao_id);
     const type = derivarType(f);
-    const country = section !== 'ESP' ? section : undefined;
+    // usa sigla_time da seção para evitar typos nos prefixos dos números (ex: SWI9 → country SUI)
+    const country = secaoData?.sigla_time ?? undefined;
 
     return {
       updateOne: {
         filter: { number: f.numero },
         update: {
-          $set: { subject: f.nome, section, secaoId: secaoOid, type, country },
+          $set: { subject: f.nome, section, secaoId: secaoData?.oid, type, country },
           $setOnInsert: { number: f.numero, isShiny: false },
         },
         upsert: true,

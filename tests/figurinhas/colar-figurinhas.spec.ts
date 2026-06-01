@@ -91,9 +91,9 @@ test.describe('Colar Figurinhas', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      await expect(page.getByText('ESP-01')).toBeVisible();
+      await expect(page.getByText('FWC1')).toBeVisible();
     });
 
     test('deve exibir estado vazio do estoque e manter botão MFN disponível', async ({ page, request }) => {
@@ -109,10 +109,10 @@ test.describe('Colar Figurinhas', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       const percentualAntes = await page.getByText(/0,0\s*%|0%/).first().textContent();
-      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
       await expect(page.getByText(/colada/i)).toBeVisible();
       const completoEl = page.locator('p').filter({ hasText: 'completo' });
       await expect(completoEl).not.toHaveText(/^0%/);
@@ -124,13 +124,13 @@ test.describe('Colar Figurinhas', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      await adicionarEstoque(request, identificador, 'ESP-01', 2);
+      await adicionarEstoque(request, identificador, 'FWC1', 2);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.reload();
-      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
       await expect(page.getByText(/já está colada|substituir/i).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /confirmar/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /cancelar/i })).toBeVisible();
@@ -140,26 +140,26 @@ test.describe('Colar Figurinhas', () => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      await adicionarEstoque(request, identificador, 'ESP-01', 2);
+      await adicionarEstoque(request, identificador, 'FWC1', 2);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      const esp01Row = page.getByText('ESP-01').locator('..');
-      await expect(esp01Row.getByText('2', { exact: true })).toBeVisible();
-      await esp01Row.getByRole('button', { name: /colar/i }).click();
-      await expect(esp01Row.getByText('1', { exact: true })).toBeVisible();
+      const fwc1Row = page.getByText('FWC1').locator('..');
+      await expect(fwc1Row.getByText('2', { exact: true })).toBeVisible();
+      await fwc1Row.getByRole('button', { name: /colar/i }).click();
+      await expect(fwc1Row.getByText('1', { exact: true })).toBeVisible();
     });
 
     test('não deve alterar estoque ao colar via MFN (RN-CF11)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
-      await adicionarEstoque(request, identificador, 'ESP-02', 1);
+      await adicionarEstoque(request, identificador, 'FWC2', 1);
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
-      const esp02Row = page.getByText('ESP-02').locator('..');
-      const qtdAntes = await esp02Row.locator('span.font-mono').last().textContent();
+      const fwc2Row = page.getByText('FWC2').locator('..');
+      const qtdAntes = await fwc2Row.locator('span.font-mono').last().textContent();
       await page.getByRole('button', { name: /figurinha não registrada/i }).click();
-      await page.getByRole('dialog').getByRole('textbox').fill('ESP-01');
+      await page.getByRole('dialog').getByRole('textbox').fill('FWC1');
       await page.getByRole('dialog').getByRole('button', { name: /^colar$/i }).click();
-      const qtdDepois = await esp02Row.locator('span.font-mono').last().textContent();
+      const qtdDepois = await fwc2Row.locator('span.font-mono').last().textContent();
       expect(qtdDepois).toBe(qtdAntes);
     });
 
@@ -168,9 +168,9 @@ test.describe('Colar Figurinhas', () => {
       const tipoId = await getTipoAlbumId(request);
       const album1 = await criarAlbum(request, tipoId, 'BROCHURA');
       const album2 = await criarAlbum(request, tipoId, 'CAPA_DURA');
-      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.goto(`/colar?albumId=${album1._id ?? album1.id}`);
-      await page.getByText('ESP-01').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
 
       await page.getByRole('button', { name: /trocar álbum|selecionar álbum/i }).click();
       await page.getByText(/Capa Dura/i).click();
@@ -179,7 +179,7 @@ test.describe('Colar Figurinhas', () => {
       expect(res.ok()).toBeTruthy();
       const data = await res.json();
       const faltantes = data.faltantes ?? [];
-      expect(faltantes.some((f: { numero?: string }) => f.numero === 'ESP-01')).toBe(false);
+      expect(faltantes.some((f: { numero?: string }) => f.numero === 'FWC1')).toBe(false);
       void album2;
     });
   });
@@ -206,7 +206,7 @@ test.describe('Colar Figurinhas', () => {
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       await page.getByRole('button', { name: /figurinha não registrada/i }).click();
-      await page.getByRole('dialog').getByRole('textbox').fill('ESP-01');
+      await page.getByRole('dialog').getByRole('textbox').fill('FWC1');
       await page.getByRole('dialog').getByRole('button', { name: /colar e outra/i }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       await expect(page.getByRole('dialog').getByRole('textbox')).toHaveValue('');

@@ -4,11 +4,18 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { albumsApi, ApiError } from '@/lib/api';
 import type { AlbumVariante } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { AlbumVarianteCard } from '@/components/AlbumVarianteCard';
 import { Modal } from '@/components/ui/Modal';
 
 const VARIANTES: AlbumVariante[] = ['BROCHURA', 'CAPA_DURA', 'CAPA_DURA_PRATA', 'CAPA_DURA_OURO', 'BOX_PREMIUM'];
+
+const VARIANTE_PAGE_BG: Record<AlbumVariante, string> = {
+  BROCHURA: '#ffffff',
+  CAPA_DURA: '#F5F0E4',
+  CAPA_DURA_PRATA: 'repeating-linear-gradient(135deg, #F0EDE4 0px, #F0EDE4 6px, #E0DDD5 6px, #E0DDD5 14px)',
+  CAPA_DURA_OURO: '#FEF3CC',
+  BOX_PREMIUM: '#0A0907',
+};
 
 export default function CadastroAlbumPage() {
   const navigate = useNavigate();
@@ -17,6 +24,11 @@ export default function CadastroAlbumPage() {
   const [error, setError] = useState('');
   const [showPropostaModal, setShowPropostaModal] = useState(false);
   const [albumCriadoId, setAlbumCriadoId] = useState<string | null>(null);
+
+  const isPremium = varianteSelecionada === 'BOX_PREMIUM';
+  const textColor = isPremium ? '#ffffff' : '#0A0907';
+  const textMuted = isPremium ? 'rgba(255,255,255,0.6)' : 'rgba(10,9,7,0.6)';
+  const pageBg = varianteSelecionada ? VARIANTE_PAGE_BG[varianteSelecionada] : '#FBF8EE';
 
   const { data: tiposData, isLoading: tiposLoading } = useQuery({
     queryKey: ['tiposAlbum'],
@@ -48,14 +60,34 @@ export default function CadastroAlbumPage() {
   const canSubmit = !!varianteSelecionada && !!tipoSelecionado;
 
   return (
-    <div className="min-h-dvh bg-paper p-4 flex flex-col gap-6">
+    <div
+      style={{
+        background: pageBg,
+        transition: 'background 0.2s ease',
+        minHeight: '100dvh',
+        padding: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
+        color: textColor,
+      }}
+    >
       <header>
-        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Novo Álbum</h1>
+        <h1
+          className="font-display text-xl font-black uppercase tracking-wide"
+          style={{ color: textColor }}
+        >
+          Novo Álbum
+        </h1>
       </header>
 
       {tiposLoading && (
         <div className="flex justify-center py-8" aria-busy="true" aria-label="Carregando tipos de álbum">
-          <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+          <div
+            className="w-6 h-6 border-2 rounded-full animate-spin"
+            style={{ borderColor: textColor, borderTopColor: isPremium ? '#E5142A' : '#E5142A' }}
+            aria-hidden="true"
+          />
         </div>
       )}
 
@@ -67,14 +99,17 @@ export default function CadastroAlbumPage() {
         >
           {!tipoUnico && tipos.length > 0 && (
             <fieldset className="border-0 p-0 m-0">
-              <legend className="font-display text-sm font-black uppercase tracking-wide text-ink mb-2">
-                Tipo de Álbum <span className="text-red">*</span>
+              <legend
+                className="font-display text-sm font-black uppercase tracking-wide mb-2"
+                style={{ color: textColor }}
+              >
+                Tipo de Álbum <span style={{ color: '#E5142A' }}>*</span>
               </legend>
               <div className="flex flex-col gap-2">
                 {tipos.map((t: any) => (
                   <label key={t._id} className="flex items-center gap-3 cursor-pointer">
                     <input type="radio" name="tipo" value={t._id} className="accent-red" defaultChecked={tipos.indexOf(t) === 0} />
-                    <span className="text-sm font-body text-ink">{t.nome}</span>
+                    <span className="text-sm font-body" style={{ color: textColor }}>{t.nome}</span>
                   </label>
                 ))}
               </div>
@@ -82,10 +117,17 @@ export default function CadastroAlbumPage() {
           )}
 
           {tipoSelecionado && (
-            <div className="border border-ink/20 p-3 bg-white text-sm font-body text-ink/70">
-              <span className="font-semibold text-ink">{tipoSelecionado.nome}</span>
+            <div
+              className="p-3 text-sm font-body"
+              style={{
+                border: isPremium ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(10,9,7,0.2)',
+                background: isPremium ? 'rgba(255,255,255,0.06)' : '#ffffff',
+                color: textColor,
+              }}
+            >
+              <span className="font-semibold">{tipoSelecionado.nome}</span>
               {' — '}
-              <span>Total de figurinhas: {tipoSelecionado.totalFigurinhas}</span>
+              <span style={{ color: textMuted }}>Total de figurinhas: {tipoSelecionado.totalFigurinhas}</span>
             </div>
           )}
 
@@ -95,8 +137,8 @@ export default function CadastroAlbumPage() {
             aria-label="Variante do álbum"
             aria-required="true"
           >
-            <legend className="font-display text-sm font-black uppercase tracking-wide text-ink mb-3">
-              Variante <span className="text-red" aria-hidden="true">*</span>
+            <legend className="font-display text-sm font-black uppercase tracking-wide mb-3" style={{ color: textColor }}>
+              Variante <span style={{ color: '#E5142A' }} aria-hidden="true">*</span>
               <span className="sr-only">(obrigatório)</span>
             </legend>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -111,17 +153,35 @@ export default function CadastroAlbumPage() {
             </div>
           </fieldset>
 
-          <Input
-            label="Nome personalizado (opcional)"
-            type="text"
-            placeholder="Ex.: Álbum da Copa"
-            value={nomePersonalizado}
-            onChange={(e) => setNomePersonalizado(e.target.value.slice(0, 60))}
-            maxLength={60}
-            hint="Máximo de 60 caracteres. Deixe em branco para usar o nome padrão."
-          />
+          <div>
+            <label
+              htmlFor="nome-personalizado"
+              className="block font-display text-xs font-black uppercase tracking-wide mb-1"
+              style={{ color: textColor }}
+            >
+              Nome personalizado <span style={{ color: textMuted }}>(opcional)</span>
+            </label>
+            <input
+              id="nome-personalizado"
+              type="text"
+              placeholder="Ex.: Álbum da Copa"
+              value={nomePersonalizado}
+              onChange={(e) => setNomePersonalizado(e.target.value.slice(0, 60))}
+              maxLength={60}
+              className="w-full px-3 py-2 text-sm font-body focus:outline-none"
+              style={{
+                background: isPremium ? 'rgba(255,255,255,0.1)' : '#ffffff',
+                border: isPremium ? '1.5px solid rgba(255,255,255,0.3)' : '1.5px solid #0A0907',
+                color: textColor,
+                borderRadius: 4,
+              }}
+            />
+            <p className="text-xs mt-1 font-body" style={{ color: textMuted }}>
+              Máximo de 60 caracteres. Deixe em branco para usar o nome padrão.
+            </p>
+          </div>
 
-          {error && <p role="alert" className="text-xs text-red font-body">⚠ {error}</p>}
+          {error && <p role="alert" className="text-xs font-body" style={{ color: '#E5142A' }}>⚠ {error}</p>}
 
           <div className="flex gap-3">
             <Button

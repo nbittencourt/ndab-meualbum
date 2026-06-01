@@ -29,7 +29,7 @@ function HomeHeader() {
     <header
       style={{
         height: 60,
-        borderBottom: '1.5px solid rgba(10,9,7,0.12)',
+        borderBottom: '2px solid #0A0907',
         background: '#FBF8EE',
         display: 'flex',
         alignItems: 'center',

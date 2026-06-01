@@ -93,7 +93,7 @@ test.describe('Home', () => {
 
     test('deve recarregar ao retornar do fluxo de Cadastro de Álbum (RN-H28)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
-      await adicionarEstoque(request, identificador, 'ESP-01', 1);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.goto('/albums/novo');
       await page.getByRole('radio', { name: /brochura/i }).click();
       await page.getByRole('button', { name: /criar álbum/i }).click();
@@ -118,13 +118,13 @@ test.describe('Home', () => {
 
     test('deve exibir no máximo 5 figurinhas no ranking (RN-H07)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
-      const numeros = ['ESP-01', 'ESP-02', 'ESP-03', 'ESP-04', 'ESP-05', 'ESP-06'];
+      const numeros = ['FWC1', 'FWC2', 'FWC3', 'FWC4', 'FWC5', 'FWC6'];
       for (const num of numeros) {
         await adicionarEstoque(request, identificador, num, 2);
       }
       await page.reload();
       const itens = page.locator('[data-testid="ranking-item"], .ranking-item').or(
-        page.getByRole('listitem').filter({ hasText: /ESP-0/ })
+        page.getByRole('listitem').filter({ hasText: /FWC/ })
       );
       await expect(itens.first()).toBeVisible();
       const count = await itens.count();
@@ -134,13 +134,13 @@ test.describe('Home', () => {
 
     test('deve desempatar por figurinha.numero ASC (RN-H09)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
-      await adicionarEstoque(request, identificador, 'ESP-05', 3);
-      await adicionarEstoque(request, identificador, 'ESP-01', 3);
-      await adicionarEstoque(request, identificador, 'ESP-03', 3);
+      await adicionarEstoque(request, identificador, 'FWC5', 3);
+      await adicionarEstoque(request, identificador, 'FWC1', 3);
+      await adicionarEstoque(request, identificador, 'FWC3', 3);
       await page.reload();
-      await expect(page.getByRole('listitem').filter({ hasText: /ESP-/ }).first()).toBeVisible();
-      const primeiroItem = page.getByRole('listitem').filter({ hasText: /ESP-/ }).first();
-      await expect(primeiroItem.getByText('ESP-01', { exact: true })).toBeVisible();
+      await expect(page.getByRole('listitem').filter({ hasText: /FWC/ }).first()).toBeVisible();
+      const primeiroItem = page.getByRole('listitem').filter({ hasText: /FWC/ }).first();
+      await expect(primeiroItem.getByText('FWC1', { exact: true })).toBeVisible();
     });
   });
 

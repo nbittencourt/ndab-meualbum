@@ -165,6 +165,41 @@ router.get('/confirmar-cadastro', async (req, res) => {
   res.json({ ok: true, user: serializeUser(user) });
 });
 
+const CADASTRO_COOLDOWN_SECS = Number(process.env.CADASTRO_COOLDOWN_SECS ?? 300);
+
+router.post('/reenviar-confirmacao', async (req, res) => {
+  const parsed = z.object({ publicId: z.string() }).safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'publicId obrigatório' });
+    return;
+  }
+  const { publicId } = parsed.data;
+  const user = await User.findOne({ publicId });
+  if (!user || (user as any).status !== 'PENDENTE') {
+    res.status(400).json({ error: 'Usuário não encontrado ou já confirmado' });
+    return;
+  }
+  const now = new Date();
+  const ultimo = (user as any).ultimoEnvioEm as Date | null;
+  if (ultimo && now.getTime() - ultimo.getTime() < CADASTRO_COOLDOWN_SECS * 1000) {
+    res.status(429).json({ error: 'COOLDOWN', cooldownSecs: CADASTRO_COOLDOWN_SECS });
+    return;
+  }
+  const confirmToken = randomUUID();
+  await TokenConfirmacaoCadastro.create({
+    token: confirmToken,
+    usuarioId: user._id,
+    criadoEm: now,
+    expiraEm: new Date(now.getTime() + 24 * 60 * 60 * 1000),
+  });
+  (user as any).ultimoEnvioEm = now;
+  await user.save();
+  const confirmUrl = `${CLIENT_URL()}/confirmar-cadastro?token=${confirmToken}`;
+  await sendEmailConfirmacaoCadastro((user as any).email, confirmUrl);
+  logger.info('register:resend', { publicId });
+  res.json({ ok: true, cooldownSecs: CADASTRO_COOLDOWN_SECS });
+});
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),

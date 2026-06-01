@@ -1,0 +1,7975 @@
+{
+  "_meta": {
+    "descricao": "Seed de inicialização — catálogo de figurinhas Panini FIFA World Cup 2026",
+    "tipo_album_id": 1,
+    "total_conta_para_fechar": 993,
+    "total_geral": 994,
+    "fontes": [
+      "Panini checklist oficial: https://www.diamondcardsonline.com/blog/2026-panini-fifa-world-cup-sticker-collection-checklist/",
+      "Checklist Insider: https://www.checklistinsider.com/2026-panini-fifa-world-cup-sticker",
+      "Football Cartophilic Info Exchange — Coca-Cola: https://cartophilic-info-exch.blogspot.com/2026/03/panini-fifa-world-cup-2026-mexusacan-09_030880692.html",
+      "CSV seed: panini_wc2026_seed.csv (2026-05-31)"
+    ],
+    "notas": {
+      "figurinha_00": "Logo Panini impresso na capa — não é figurinha colável, conta_para_fechar=false.",
+      "escudo_posicao_1": "Cada seleção tem sua figurinha de escudo na posição XX1 (ex: BRA1), dentro da própria seção do time.",
+      "foto_do_time_posicao_13": "Figurinha de Foto do Time em XX13 de cada seleção.",
+      "coca_cola": "Versão latino-americana (Brasil): CC1–CC14, 14 figurinhas exclusivas de rótulos Coca-Cola."
+    },
+    "data_geracao": "2026-05-31"
+  },
+  "figurinhas": [
+    {
+      "id": 1,
+      "numero": "00",
+      "nome": "Panini Logo",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": false
+    },
+    {
+      "id": 2,
+      "numero": "FWC1",
+      "nome": "Official Emblem",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 3,
+      "numero": "FWC2",
+      "nome": "Official Emblem",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 4,
+      "numero": "FWC3",
+      "nome": "Official Mascots",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 5,
+      "numero": "FWC4",
+      "nome": "Official Slogan",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 6,
+      "numero": "FWC5",
+      "nome": "Official Ball",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 7,
+      "numero": "FWC6",
+      "nome": "Canada - Host Countries & Cities",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 8,
+      "numero": "FWC7",
+      "nome": "Mexico - Host Countries & Cities",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 9,
+      "numero": "FWC8",
+      "nome": "USA - Host Countries & Cities",
+      "secao_id": 1,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 10,
+      "numero": "MEX1",
+      "nome": "Team Logo - Mexico",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 11,
+      "numero": "MEX2",
+      "nome": "Luis Malagón",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 12,
+      "numero": "MEX3",
+      "nome": "Johan Vasquez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 13,
+      "numero": "MEX4",
+      "nome": "Jorge Sánchez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 14,
+      "numero": "MEX5",
+      "nome": "Cesar Montes",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 15,
+      "numero": "MEX6",
+      "nome": "Jesus Gallardo",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 16,
+      "numero": "MEX7",
+      "nome": "Israel Reyes",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 17,
+      "numero": "MEX8",
+      "nome": "Diego Lainez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 18,
+      "numero": "MEX9",
+      "nome": "Carlos Rodriguez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 19,
+      "numero": "MEX10",
+      "nome": "Edson Alvarez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 20,
+      "numero": "MEX11",
+      "nome": "Orbelin Pineda",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 21,
+      "numero": "MEX12",
+      "nome": "Marcel Ruiz",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 22,
+      "numero": "MEX13",
+      "nome": "Foto do Time — Mexico",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 23,
+      "numero": "MEX14",
+      "nome": "Érick Sánchez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 24,
+      "numero": "MEX15",
+      "nome": "Hirving Lozano",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 25,
+      "numero": "MEX16",
+      "nome": "Santiago Giménez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 26,
+      "numero": "MEX17",
+      "nome": "Raúl Jiménez",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 27,
+      "numero": "MEX18",
+      "nome": "Alexis Vega",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 28,
+      "numero": "MEX19",
+      "nome": "Roberto Alvarado",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 29,
+      "numero": "MEX20",
+      "nome": "Cesar Huerta",
+      "secao_id": 2,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 30,
+      "numero": "RSA1",
+      "nome": "Team Logo - South Africa",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 31,
+      "numero": "RSA2",
+      "nome": "Ronwen Williams",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 32,
+      "numero": "RSA3",
+      "nome": "Sipho Chaine",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 33,
+      "numero": "RSA4",
+      "nome": "Aubrey Modiba",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 34,
+      "numero": "RSA5",
+      "nome": "Samukele Kabini",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 35,
+      "numero": "RSA6",
+      "nome": "Mbekezeli Mbokazi",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 36,
+      "numero": "RSA7",
+      "nome": "Khulumani Ndamane",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 37,
+      "numero": "RSA8",
+      "nome": "Siyabonga Ngezana",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 38,
+      "numero": "RSA9",
+      "nome": "Khuliso Mudau",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 39,
+      "numero": "RSA10",
+      "nome": "Nkosinathi Sibisi",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 40,
+      "numero": "RSA11",
+      "nome": "Teboho Mokoena",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 41,
+      "numero": "RSA12",
+      "nome": "Thalente Mbatha",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 42,
+      "numero": "RSA13",
+      "nome": "Foto do Time — South Africa",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 43,
+      "numero": "RSA14",
+      "nome": "Bathasi Aubaas",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 44,
+      "numero": "RSA15",
+      "nome": "Yaya Sithole",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 45,
+      "numero": "RSA16",
+      "nome": "Sipho Mbule",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 46,
+      "numero": "RSA17",
+      "nome": "Lyle Foster",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 47,
+      "numero": "RSA18",
+      "nome": "Iqraam Rayners",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 48,
+      "numero": "RSA19",
+      "nome": "Mohau Nkota",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 49,
+      "numero": "RSA20",
+      "nome": "Oswin Appollis",
+      "secao_id": 3,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 50,
+      "numero": "KOR1",
+      "nome": "Team Logo - South Korea",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 51,
+      "numero": "KOR2",
+      "nome": "Hyeon-woo Jo",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 52,
+      "numero": "KOR3",
+      "nome": "Seung-Gyu Kim",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 53,
+      "numero": "KOR4",
+      "nome": "Min-jae Kim",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 54,
+      "numero": "KOR5",
+      "nome": "Yu-min Cho",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 55,
+      "numero": "KOR6",
+      "nome": "Young-woo Seol",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 56,
+      "numero": "KOR7",
+      "nome": "Han-beom Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 57,
+      "numero": "KOR8",
+      "nome": "Tae-seok Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 58,
+      "numero": "KOR9",
+      "nome": "Myung-jae Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 59,
+      "numero": "KOR10",
+      "nome": "Jae-sung Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 60,
+      "numero": "KOR11",
+      "nome": "In-beom Hwang",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 61,
+      "numero": "KOR12",
+      "nome": "Kang-in Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 62,
+      "numero": "KOR13",
+      "nome": "Foto do Time — South Korea",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 63,
+      "numero": "KOR14",
+      "nome": "Seung-ho Paik",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 64,
+      "numero": "KOR15",
+      "nome": "Jens Castrop",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 65,
+      "numero": "KOR16",
+      "nome": "Dongg-yeong Lee",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 66,
+      "numero": "KOR17",
+      "nome": "Gue-sung Cho",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 67,
+      "numero": "KOR18",
+      "nome": "Heung-min Son",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 68,
+      "numero": "KOR19",
+      "nome": "Hee-chan Hwang",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 69,
+      "numero": "KOR20",
+      "nome": "Hyeon-Gyu Oh",
+      "secao_id": 4,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 70,
+      "numero": "CZE1",
+      "nome": "Team Logo - Czechia",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 71,
+      "numero": "CZE2",
+      "nome": "Matej Kovar",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 72,
+      "numero": "CZE3",
+      "nome": "Jindrich Stanek",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 73,
+      "numero": "CZE4",
+      "nome": "Ladislav Krejci",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 74,
+      "numero": "CZE5",
+      "nome": "Vladimir Coufal",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 75,
+      "numero": "CZE6",
+      "nome": "Jaroslav Zeleny",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 76,
+      "numero": "CZE7",
+      "nome": "Tomas Holes",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 77,
+      "numero": "CZE8",
+      "nome": "David Zima",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 78,
+      "numero": "CZE9",
+      "nome": "Michal Sadilek",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 79,
+      "numero": "CZE10",
+      "nome": "Lukas Provod",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 80,
+      "numero": "CZE11",
+      "nome": "Lukas Cerv",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 81,
+      "numero": "CZE12",
+      "nome": "Tomas Soucek",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 82,
+      "numero": "CZE13",
+      "nome": "Foto do Time — Czechia",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 83,
+      "numero": "CZE14",
+      "nome": "Pavel Sulc",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 84,
+      "numero": "CZE15",
+      "nome": "Matej Vydra",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 85,
+      "numero": "CZE16",
+      "nome": "Vasil Kusej",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 86,
+      "numero": "CZE17",
+      "nome": "Tomas Chory",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 87,
+      "numero": "CZE18",
+      "nome": "Vaclav Cerny",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 88,
+      "numero": "CZE19",
+      "nome": "Adam Hlozek",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 89,
+      "numero": "CZE20",
+      "nome": "Patrik Schick",
+      "secao_id": 5,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 90,
+      "numero": "CAN1",
+      "nome": "Team Logo - Canada",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 91,
+      "numero": "CAN2",
+      "nome": "Dayne St.Clair",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 92,
+      "numero": "CAN3",
+      "nome": "Alphonso Davies",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 93,
+      "numero": "CAN4",
+      "nome": "Alistair Johnston",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 94,
+      "numero": "CAN5",
+      "nome": "Samuel Adekugbe",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 95,
+      "numero": "CAN6",
+      "nome": "Riche Larvea",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 96,
+      "numero": "CAN7",
+      "nome": "Derek Cornelius",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 97,
+      "numero": "CAN8",
+      "nome": "Moïse Bombito",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 98,
+      "numero": "CAN9",
+      "nome": "Kamal Miller",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 99,
+      "numero": "CAN10",
+      "nome": "Stephen Eustáquio",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 100,
+      "numero": "CAN11",
+      "nome": "Ismaël Koné",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 101,
+      "numero": "CAN12",
+      "nome": "Jonathan Osorio",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 102,
+      "numero": "CAN13",
+      "nome": "Foto do Time — Canada",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 103,
+      "numero": "CAN14",
+      "nome": "Jacob Shaffelburg",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 104,
+      "numero": "CAN15",
+      "nome": "Mathieu Choinière",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 105,
+      "numero": "CAN16",
+      "nome": "Niko Sigur",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 106,
+      "numero": "CAN17",
+      "nome": "Tajon Buchanan",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 107,
+      "numero": "CAN18",
+      "nome": "Liam Millar",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 108,
+      "numero": "CAN19",
+      "nome": "Cyle Larin",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 109,
+      "numero": "CAN20",
+      "nome": "Jonathan David",
+      "secao_id": 6,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 110,
+      "numero": "BIH1",
+      "nome": "Team Logo - Bosnia and Herzegovina",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 111,
+      "numero": "BIH2",
+      "nome": "Nikola Vasilj",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 112,
+      "numero": "BIH3",
+      "nome": "Amer Dedic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 113,
+      "numero": "BIH4",
+      "nome": "Sead Kolasinac",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 114,
+      "numero": "BIH5",
+      "nome": "Tarik Muharemovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 115,
+      "numero": "BIH6",
+      "nome": "Nihad Mujakic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 116,
+      "numero": "BIH7",
+      "nome": "Nikola Katic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 117,
+      "numero": "BIH8",
+      "nome": "Amir Hadziahmetovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 118,
+      "numero": "BIH9",
+      "nome": "Benjamin Tahirovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 119,
+      "numero": "BIH10",
+      "nome": "Armin Gigovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 120,
+      "numero": "BIH11",
+      "nome": "Ivan Sunjic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 121,
+      "numero": "BIH12",
+      "nome": "Ivan Basic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 122,
+      "numero": "BIH13",
+      "nome": "Foto do Time — Bosnia and Herzegovina",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 123,
+      "numero": "BIH14",
+      "nome": "Dzenis Burnic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 124,
+      "numero": "BIH15",
+      "nome": "Esmir Bajraktarevic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 125,
+      "numero": "BIH16",
+      "nome": "Amar Memic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 126,
+      "numero": "BIH17",
+      "nome": "Ermedin Demirovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 127,
+      "numero": "BIH18",
+      "nome": "Edin Dzeko",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 128,
+      "numero": "BIH19",
+      "nome": "Samed Bazdar",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 129,
+      "numero": "BIH20",
+      "nome": "Haris Tabakovic",
+      "secao_id": 7,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 130,
+      "numero": "QAT1",
+      "nome": "Team Logo - Qatar",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 131,
+      "numero": "QAT2",
+      "nome": "Meshaal Barsham",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 132,
+      "numero": "QAT3",
+      "nome": "Sultan Albrake",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 133,
+      "numero": "QAT4",
+      "nome": "Lucas Mendes",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 134,
+      "numero": "QAT5",
+      "nome": "Homam Ahmed",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 135,
+      "numero": "QAT6",
+      "nome": "Boualem Khoukhi",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 136,
+      "numero": "QAT7",
+      "nome": "Pedro Miguel",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 137,
+      "numero": "QAT8",
+      "nome": "Tarek Salman",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 138,
+      "numero": "QAT9",
+      "nome": "Mohamed Al-Mannai",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 139,
+      "numero": "QAT10",
+      "nome": "Karim Boudiaf",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 140,
+      "numero": "QAT11",
+      "nome": "Assim Madibo",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 141,
+      "numero": "QAT12",
+      "nome": "Ahmed Fatehi",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 142,
+      "numero": "QAT13",
+      "nome": "Foto do Time — Qatar",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 143,
+      "numero": "QAT14",
+      "nome": "Mohammed Waad",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 144,
+      "numero": "QAT15",
+      "nome": "Abdulaziz Hatem",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 145,
+      "numero": "QAT16",
+      "nome": "Hassan Al-Haydos",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 146,
+      "numero": "QAT17",
+      "nome": "Edmilson Junior",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 147,
+      "numero": "QAT18",
+      "nome": "Akram Hassan Afif",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 148,
+      "numero": "QAT19",
+      "nome": "Ahmed Al Ganehi",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 149,
+      "numero": "QAT20",
+      "nome": "Almoez Ali",
+      "secao_id": 8,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 150,
+      "numero": "SUI1",
+      "nome": "Team Logo - Switzerland",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 151,
+      "numero": "SUI2",
+      "nome": "Gregor Kobel",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 152,
+      "numero": "SUI3",
+      "nome": "Yvon Mvogo",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 153,
+      "numero": "SUI4",
+      "nome": "Manuel Akanji",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 154,
+      "numero": "SUI5",
+      "nome": "Ricardo Rodriguez",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 155,
+      "numero": "SUI6",
+      "nome": "Nico Elvedi",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 156,
+      "numero": "SUI7",
+      "nome": "Aurèle Amenda",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 157,
+      "numero": "SUI8",
+      "nome": "Silvan Widmer",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 158,
+      "numero": "SWI9",
+      "nome": "Granit Xhaka",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 159,
+      "numero": "SUI10",
+      "nome": "Denis Zakaria",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 160,
+      "numero": "SUI11",
+      "nome": "Remo Freuler",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 161,
+      "numero": "SUI12",
+      "nome": "Fabian Rieder",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 162,
+      "numero": "SUI13",
+      "nome": "Foto do Time — Switzerland",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 163,
+      "numero": "SUI14",
+      "nome": "Ardon Jashari",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 164,
+      "numero": "SUI15",
+      "nome": "Johan Manzambi",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 165,
+      "numero": "SUI16",
+      "nome": "Michel Aebischer",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 166,
+      "numero": "SUI17",
+      "nome": "Breel Embolo",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 167,
+      "numero": "SUI18",
+      "nome": "Ruben Vargas",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 168,
+      "numero": "SUI19",
+      "nome": "Dan Ndoye",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 169,
+      "numero": "SWI20",
+      "nome": "Zeki Amdouni",
+      "secao_id": 9,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 170,
+      "numero": "BRA1",
+      "nome": "Team Logo - Brazil",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 171,
+      "numero": "BRA2",
+      "nome": "Alisson",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 172,
+      "numero": "BRA3",
+      "nome": "Bento",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 173,
+      "numero": "BRA4",
+      "nome": "Marquinhos",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 174,
+      "numero": "BRA5",
+      "nome": "Éder Militão",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 175,
+      "numero": "BRA6",
+      "nome": "Gabriel Magalhães",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 176,
+      "numero": "BRA7",
+      "nome": "Danilo",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 177,
+      "numero": "BRA8",
+      "nome": "Wesley",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 178,
+      "numero": "BRA9",
+      "nome": "Lucas Paquetá",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 179,
+      "numero": "BRA10",
+      "nome": "Casemiro",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 180,
+      "numero": "BRA11",
+      "nome": "Bruno Guimarães",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 181,
+      "numero": "BRA12",
+      "nome": "Luiz Henrique",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 182,
+      "numero": "BRA13",
+      "nome": "Foto do Time — Brazil",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 183,
+      "numero": "BRA14",
+      "nome": "Vinicius Júnior",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 184,
+      "numero": "BRA15",
+      "nome": "Rodrygo",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 185,
+      "numero": "BRA16",
+      "nome": "João Pedro",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 186,
+      "numero": "BRA17",
+      "nome": "Matheus Cunha",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 187,
+      "numero": "BRA18",
+      "nome": "Gabriel Martinelli",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 188,
+      "numero": "BRA19",
+      "nome": "Raphinha",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 189,
+      "numero": "BRA20",
+      "nome": "Estévão",
+      "secao_id": 10,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 190,
+      "numero": "MAR1",
+      "nome": "Team Logo - Morocco",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 191,
+      "numero": "MAR2",
+      "nome": "Yassine Bounou",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 192,
+      "numero": "MAR3",
+      "nome": "Munir El Kajoui",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 193,
+      "numero": "MAR4",
+      "nome": "Achraf Hakimi",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 194,
+      "numero": "MAR5",
+      "nome": "Noussair Mazraoui",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 195,
+      "numero": "MAR6",
+      "nome": "Nayef Aguerd",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 196,
+      "numero": "MAR7",
+      "nome": "Roman Saiss",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 197,
+      "numero": "MAR8",
+      "nome": "Jawad El Yamio",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 198,
+      "numero": "MAR9",
+      "nome": "Adam Masina",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 199,
+      "numero": "MAR10",
+      "nome": "Sofyan Amrabat",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 200,
+      "numero": "MAR11",
+      "nome": "Azzedine Ounahi",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 201,
+      "numero": "MAR12",
+      "nome": "Eliesse Ben Seghir",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 202,
+      "numero": "MAR13",
+      "nome": "Foto do Time — Morocco",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 203,
+      "numero": "MAR14",
+      "nome": "Bilal El Khannouss",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 204,
+      "numero": "MAR15",
+      "nome": "Ismael Saibari",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 205,
+      "numero": "MAR16",
+      "nome": "Youssef En-Nesyri",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 206,
+      "numero": "MAR17",
+      "nome": "Abde Ezzalzouli",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 207,
+      "numero": "MAR18",
+      "nome": "Soufiane Rahimi",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 208,
+      "numero": "MAR19",
+      "nome": "Brahim Diaz",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 209,
+      "numero": "MAR20",
+      "nome": "Ayoub El Kaabi",
+      "secao_id": 11,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 210,
+      "numero": "HAI1",
+      "nome": "Team Logo - Haiti",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 211,
+      "numero": "HAI2",
+      "nome": "Johny Placide",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 212,
+      "numero": "HAI3",
+      "nome": "Carlens Arcus",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 213,
+      "numero": "HAI4",
+      "nome": "Martin Expérience",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 214,
+      "numero": "HAI5",
+      "nome": "Jean-Kevin Duverne",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 215,
+      "numero": "HAI6",
+      "nome": "Ricardo Adé",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 216,
+      "numero": "HAI7",
+      "nome": "Duke Lacroix",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 217,
+      "numero": "HAI8",
+      "nome": "Garven Metusala",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 218,
+      "numero": "HAI9",
+      "nome": "Hannes Delcroix",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 219,
+      "numero": "HAI10",
+      "nome": "Leverton Pierre",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 220,
+      "numero": "HAI11",
+      "nome": "Danley Jean Jacques",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 221,
+      "numero": "HAI12",
+      "nome": "Jean-Ricner Bellegarde",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 222,
+      "numero": "HAI13",
+      "nome": "Foto do Time — Haiti",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 223,
+      "numero": "HAI14",
+      "nome": "Christopher Attys",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 224,
+      "numero": "HAI15",
+      "nome": "Derrick Etienne Jr",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 225,
+      "numero": "HAI16",
+      "nome": "Josue Casimir",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 226,
+      "numero": "HAI17",
+      "nome": "Ruben Providence",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 227,
+      "numero": "HAI18",
+      "nome": "Duckens Nazon",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 228,
+      "numero": "HAI19",
+      "nome": "Louicius Deedson",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 229,
+      "numero": "HAI20",
+      "nome": "Frantzdy Pierrot",
+      "secao_id": 12,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 230,
+      "numero": "SCO1",
+      "nome": "Team Logo - Scotland",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 231,
+      "numero": "SCO2",
+      "nome": "Angus Gunn",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 232,
+      "numero": "SCO3",
+      "nome": "Jack Hendry",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 233,
+      "numero": "SCO4",
+      "nome": "Kieran Tierney",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 234,
+      "numero": "SCO5",
+      "nome": "Aaron Hickey",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 235,
+      "numero": "SCO6",
+      "nome": "Andrew Robertson",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 236,
+      "numero": "SCO7",
+      "nome": "Scott McKenna",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 237,
+      "numero": "SCO8",
+      "nome": "John Souttar",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 238,
+      "numero": "SCO9",
+      "nome": "Anthony Ralston",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 239,
+      "numero": "SCO10",
+      "nome": "Grant Hanley",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 240,
+      "numero": "SCO11",
+      "nome": "Scott McTominay",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 241,
+      "numero": "SCO12",
+      "nome": "Billy Gilmour",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 242,
+      "numero": "SCO13",
+      "nome": "Foto do Time — Scotland",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 243,
+      "numero": "SCO14",
+      "nome": "Lewis Ferguson",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 244,
+      "numero": "SCO15",
+      "nome": "Ryan Christie",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 245,
+      "numero": "SCO16",
+      "nome": "Kenny McLean",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 246,
+      "numero": "SCO17",
+      "nome": "John McGinn",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 247,
+      "numero": "SCO18",
+      "nome": "Lyndon Dykes",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 248,
+      "numero": "SCO19",
+      "nome": "Che Adams",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 249,
+      "numero": "SCO20",
+      "nome": "Ben Gannon-Doak",
+      "secao_id": 13,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 250,
+      "numero": "USA1",
+      "nome": "Team Logo - USA",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 251,
+      "numero": "USA2",
+      "nome": "Matt Freese",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 252,
+      "numero": "USA3",
+      "nome": "Chris Richards",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 253,
+      "numero": "USA4",
+      "nome": "Tim Ream",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 254,
+      "numero": "USA5",
+      "nome": "Mark McKenzie",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 255,
+      "numero": "USA6",
+      "nome": "Alex Freeman",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 256,
+      "numero": "USA7",
+      "nome": "Antonee Robinson",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 257,
+      "numero": "USA8",
+      "nome": "Tyler Adams",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 258,
+      "numero": "USA9",
+      "nome": "Tanner Tessmann",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 259,
+      "numero": "USA10",
+      "nome": "Weston McKennie",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 260,
+      "numero": "USA11",
+      "nome": "Christian Roldan",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 261,
+      "numero": "USA12",
+      "nome": "Timothy Weah",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 262,
+      "numero": "USA13",
+      "nome": "Foto do Time — United States",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 263,
+      "numero": "USA14",
+      "nome": "Diego Luna",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 264,
+      "numero": "USA15",
+      "nome": "Malik Tillman",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 265,
+      "numero": "USA16",
+      "nome": "Christian Pulisic",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 266,
+      "numero": "USA17",
+      "nome": "Brenden Aaronson",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 267,
+      "numero": "USA18",
+      "nome": "Ricardo Pepi",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 268,
+      "numero": "USA19",
+      "nome": "Haji Wright",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 269,
+      "numero": "USA20",
+      "nome": "Folarin Balogun",
+      "secao_id": 14,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 270,
+      "numero": "PAR1",
+      "nome": "Team Logo - Paraguay",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 271,
+      "numero": "PAR2",
+      "nome": "Roberto Fernandez",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 272,
+      "numero": "PAR3",
+      "nome": "Orlando Gill",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 273,
+      "numero": "PAR4",
+      "nome": "Gustavo Gomez",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 274,
+      "numero": "PAR5",
+      "nome": "Fabián Balbuena",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 275,
+      "numero": "PAR6",
+      "nome": "Juan José Cáceres",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 276,
+      "numero": "PAR7",
+      "nome": "Omar Alderete",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 277,
+      "numero": "PAR8",
+      "nome": "Junior Alonso",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 278,
+      "numero": "PAR9",
+      "nome": "Mathías Villasanti",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 279,
+      "numero": "PAR10",
+      "nome": "Diego Gomez",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 280,
+      "numero": "PAR11",
+      "nome": "Damián Bobadilla",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 281,
+      "numero": "PAR12",
+      "nome": "Andres Cubas",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 282,
+      "numero": "PAR13",
+      "nome": "Foto do Time — Paraguay",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 283,
+      "numero": "PAR14",
+      "nome": "Matias Galarza Fonda",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 284,
+      "numero": "PAR15",
+      "nome": "Julio Enciso",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 285,
+      "numero": "PAR16",
+      "nome": "Alejandro Romero Gamarra",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 286,
+      "numero": "PAR17",
+      "nome": "Miguel Almirón",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 287,
+      "numero": "PAR18",
+      "nome": "Ramon Sosa",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 288,
+      "numero": "PAR19",
+      "nome": "Angel Romero",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 289,
+      "numero": "PAR20",
+      "nome": "Antonio Sanabria",
+      "secao_id": 15,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 290,
+      "numero": "AUS1",
+      "nome": "Team Logo - Australia",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 291,
+      "numero": "AUS2",
+      "nome": "Mathew Ryan",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 292,
+      "numero": "AUS3",
+      "nome": "Joe Gauci",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 293,
+      "numero": "AUS4",
+      "nome": "Harry Souttar",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 294,
+      "numero": "AUS5",
+      "nome": "Alessandro Circati",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 295,
+      "numero": "AUS6",
+      "nome": "Jordan Bos",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 296,
+      "numero": "AUS7",
+      "nome": "Aziz Behich",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 297,
+      "numero": "AUS8",
+      "nome": "Cameron Burgess",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 298,
+      "numero": "AUS9",
+      "nome": "Lewis Miller",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 299,
+      "numero": "AUS10",
+      "nome": "Milos Degenek",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 300,
+      "numero": "AUS11",
+      "nome": "Jackson Irvine",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 301,
+      "numero": "AUS12",
+      "nome": "Riley McGree",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 302,
+      "numero": "AUS13",
+      "nome": "Foto do Time — Australia",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 303,
+      "numero": "AUS14",
+      "nome": "Aiden O'Neill",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 304,
+      "numero": "AUS15",
+      "nome": "Connor Metcalfe",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 305,
+      "numero": "AUS16",
+      "nome": "Patrick Yazbek",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 306,
+      "numero": "AUS17",
+      "nome": "Craig Goodwin",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 307,
+      "numero": "AUS18",
+      "nome": "Kusini Vengi",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 308,
+      "numero": "AUS19",
+      "nome": "Nestory Irankunda",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 309,
+      "numero": "AUS20",
+      "nome": "Mohamed Touré",
+      "secao_id": 16,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 310,
+      "numero": "TUR1",
+      "nome": "Team Logo - Türkiye",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 311,
+      "numero": "TUR2",
+      "nome": "Ugurcan Cakir",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 312,
+      "numero": "TUR3",
+      "nome": "Mert Muldur",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 313,
+      "numero": "TUR4",
+      "nome": "Zeki Celik",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 314,
+      "numero": "TUR5",
+      "nome": "Abdulkerim Bardakci",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 315,
+      "numero": "TUR6",
+      "nome": "Caglar Soyuncu",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 316,
+      "numero": "TUR7",
+      "nome": "Merih Demiral",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 317,
+      "numero": "TUR8",
+      "nome": "Ferdi Kadioglu",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 318,
+      "numero": "TUR9",
+      "nome": "Kaan Ayhan",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 319,
+      "numero": "TUR10",
+      "nome": "Ismail Yuksek",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 320,
+      "numero": "TUR11",
+      "nome": "Hakan Calhanoglu",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 321,
+      "numero": "TUR12",
+      "nome": "Orkun Kokcu",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 322,
+      "numero": "TUR13",
+      "nome": "Foto do Time — Türkiye",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 323,
+      "numero": "TUR14",
+      "nome": "Arda Guler",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 324,
+      "numero": "TUR15",
+      "nome": "Irfan Can Kahveci",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 325,
+      "numero": "TUR16",
+      "nome": "Yunus Akgun",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 326,
+      "numero": "TUR17",
+      "nome": "Can Uzun",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 327,
+      "numero": "TUR18",
+      "nome": "Baris Alper Yilmaz",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 328,
+      "numero": "TUR19",
+      "nome": "Kerem Akturkoglu",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 329,
+      "numero": "TUR20",
+      "nome": "Kenan Yildiz",
+      "secao_id": 17,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 330,
+      "numero": "GER1",
+      "nome": "Team Logo - Germany",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 331,
+      "numero": "GER2",
+      "nome": "Marc-André ter Stegen",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 332,
+      "numero": "GER3",
+      "nome": "Jonathan Tah",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 333,
+      "numero": "GER4",
+      "nome": "David Raum",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 334,
+      "numero": "GER5",
+      "nome": "Nico Schlotterbeck",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 335,
+      "numero": "GER6",
+      "nome": "Antonio Rüdiger",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 336,
+      "numero": "GER7",
+      "nome": "Waldemar Anton",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 337,
+      "numero": "GER8",
+      "nome": "Ridle Baku",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 338,
+      "numero": "GER9",
+      "nome": "Maximilian Mittelstadt",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 339,
+      "numero": "GER10",
+      "nome": "Joshua Kimmich",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 340,
+      "numero": "GER11",
+      "nome": "Florian Wirtz",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 341,
+      "numero": "GER12",
+      "nome": "Felix Nmecha",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 342,
+      "numero": "GER13",
+      "nome": "Foto do Time — Germany",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 343,
+      "numero": "GER14",
+      "nome": "Leon Goretzka",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 344,
+      "numero": "GER15",
+      "nome": "Jamal Musiala",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 345,
+      "numero": "GER16",
+      "nome": "Serge Gnabry",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 346,
+      "numero": "GER17",
+      "nome": "Kai Havertz",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 347,
+      "numero": "GER18",
+      "nome": "Leroy Sane",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 348,
+      "numero": "GER19",
+      "nome": "Karim Adeyemi",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 349,
+      "numero": "GER20",
+      "nome": "Nick Woltemade",
+      "secao_id": 18,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 350,
+      "numero": "CUW1",
+      "nome": "Team Logo - Curaçao",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 351,
+      "numero": "CUW2",
+      "nome": "Eloy Room",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 352,
+      "numero": "CUW3",
+      "nome": "Armando Obispo",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 353,
+      "numero": "CUW4",
+      "nome": "Sherel Floranus",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 354,
+      "numero": "CUW5",
+      "nome": "Jurien Gaari",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 355,
+      "numero": "CUW6",
+      "nome": "Joshua Brenet",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 356,
+      "numero": "CUW7",
+      "nome": "Roshon Van Eijma",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 357,
+      "numero": "CUW8",
+      "nome": "Shurandy Sambo",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 358,
+      "numero": "CUW9",
+      "nome": "Livano Comenencia",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 359,
+      "numero": "CUW10",
+      "nome": "Godfried Roemeratoe",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 360,
+      "numero": "CUW11",
+      "nome": "Juninho Bacuna",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 361,
+      "numero": "CUW12",
+      "nome": "Leandro Bacuna",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 362,
+      "numero": "CUW13",
+      "nome": "Foto do Time — Curaçao",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 363,
+      "numero": "CUW14",
+      "nome": "Tahith Chong",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 364,
+      "numero": "CUW15",
+      "nome": "Kenji Gorre",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 365,
+      "numero": "CUW16",
+      "nome": "Jearl Margaritha",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 366,
+      "numero": "CUW17",
+      "nome": "Jurgen Locadia",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 367,
+      "numero": "CUW18",
+      "nome": "Jeremy Antonisse",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 368,
+      "numero": "CUW19",
+      "nome": "Gervane Kastaneer",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 369,
+      "numero": "CUW20",
+      "nome": "Sontje Hansen",
+      "secao_id": 19,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 370,
+      "numero": "CIV1",
+      "nome": "Team Logo - Ivory Coast",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 371,
+      "numero": "CIV2",
+      "nome": "Yahia Fofana",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 372,
+      "numero": "CIV3",
+      "nome": "Ghislain Konan",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 373,
+      "numero": "CIV4",
+      "nome": "Wilfried Singo",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 374,
+      "numero": "CIV5",
+      "nome": "Odilon Kossounou",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 375,
+      "numero": "CIV6",
+      "nome": "Evan Ndicka",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 376,
+      "numero": "CIV7",
+      "nome": "Willy Boly",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 377,
+      "numero": "CIV8",
+      "nome": "Emmanuel Agbadou",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 378,
+      "numero": "CIV9",
+      "nome": "Ousmane Diomande",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 379,
+      "numero": "CIV10",
+      "nome": "Franck Kessie",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 380,
+      "numero": "CIV11",
+      "nome": "Seko Fofana",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 381,
+      "numero": "CIV12",
+      "nome": "Ibrahim Sangare",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 382,
+      "numero": "CIV13",
+      "nome": "Foto do Time — Ivory Coast",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 383,
+      "numero": "CIV14",
+      "nome": "Jean-Philippe Gbamin",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 384,
+      "numero": "CIV15",
+      "nome": "Amad Diallo",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 385,
+      "numero": "CIV16",
+      "nome": "Sébastien Haller",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 386,
+      "numero": "CIV17",
+      "nome": "Simon Adingra",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 387,
+      "numero": "CIV18",
+      "nome": "Yan Diomande",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 388,
+      "numero": "CIV19",
+      "nome": "Evann Guessand",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 389,
+      "numero": "CIV20",
+      "nome": "Oumar Diakite",
+      "secao_id": 20,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 390,
+      "numero": "ECU1",
+      "nome": "Team Logo - Ecuador",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 391,
+      "numero": "ECU2",
+      "nome": "Hernán Galíndez",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 392,
+      "numero": "ECU3",
+      "nome": "Gonzalo Valle",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 393,
+      "numero": "ECU4",
+      "nome": "Piero Hincapié",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 394,
+      "numero": "ECU5",
+      "nome": "Pervis Estupiñán",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 395,
+      "numero": "ECU6",
+      "nome": "Willian Pacho",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 396,
+      "numero": "ECU7",
+      "nome": "Ángelo Preciado",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 397,
+      "numero": "ECU8",
+      "nome": "Joel Ordóñez",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 398,
+      "numero": "ECU9",
+      "nome": "Moises Caicedo",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 399,
+      "numero": "ECU10",
+      "nome": "Alan Franco",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 400,
+      "numero": "ECU11",
+      "nome": "Kendry Paez",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 401,
+      "numero": "ECU12",
+      "nome": "Pedro Vite",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 402,
+      "numero": "ECU13",
+      "nome": "Foto do Time — Ecuador",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 403,
+      "numero": "ECU14",
+      "nome": "John Veboah",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 404,
+      "numero": "ECU15",
+      "nome": "Leonardo Campana",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 405,
+      "numero": "ECU16",
+      "nome": "Gonzalo Plata",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 406,
+      "numero": "ECU17",
+      "nome": "Nilson Angulo",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 407,
+      "numero": "ECU18",
+      "nome": "Alan Minda",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 408,
+      "numero": "ECU19",
+      "nome": "Kevin Rodriguez",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 409,
+      "numero": "ECU20",
+      "nome": "Enner Valencia",
+      "secao_id": 21,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 410,
+      "numero": "NED1",
+      "nome": "Team Logo - Netherlands",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 411,
+      "numero": "NED2",
+      "nome": "Bart Verbruggen",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 412,
+      "numero": "NED3",
+      "nome": "Virgil van Dijk",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 413,
+      "numero": "NED4",
+      "nome": "Micky van de Ven",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 414,
+      "numero": "NED5",
+      "nome": "Jurrien Timber",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 415,
+      "numero": "NED6",
+      "nome": "Denzel Dumfries",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 416,
+      "numero": "NED7",
+      "nome": "Nathan Aké",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 417,
+      "numero": "NED8",
+      "nome": "Jeremie Frimpong",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 418,
+      "numero": "NED9",
+      "nome": "Jan Paul van Hecke",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 419,
+      "numero": "NED10",
+      "nome": "Tijjani Reijnders",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 420,
+      "numero": "NED11",
+      "nome": "Ryan Gravenberch",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 421,
+      "numero": "NED12",
+      "nome": "Teun Koopmeiners",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 422,
+      "numero": "NED13",
+      "nome": "Foto do Time — Netherlands",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 423,
+      "numero": "NED14",
+      "nome": "Frenkie de Jong",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 424,
+      "numero": "NED15",
+      "nome": "Xavi Simons",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 425,
+      "numero": "NED16",
+      "nome": "Justin Kluivert",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 426,
+      "numero": "NED17",
+      "nome": "Memphis Depay",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 427,
+      "numero": "NED18",
+      "nome": "Donyell Malen",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 428,
+      "numero": "NED19",
+      "nome": "Wout Weghorst",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 429,
+      "numero": "NED20",
+      "nome": "Cody Gakpo",
+      "secao_id": 22,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 430,
+      "numero": "JPN1",
+      "nome": "Team Logo - Japan",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 431,
+      "numero": "JPN2",
+      "nome": "Zion Suzuki",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 432,
+      "numero": "JPN3",
+      "nome": "Henry Heroki Mochizuki",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 433,
+      "numero": "JPN4",
+      "nome": "Ayumu Seko",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 434,
+      "numero": "JPN5",
+      "nome": "Junnosuke Suzuki",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 435,
+      "numero": "JPN6",
+      "nome": "Shogo Taniguchi",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 436,
+      "numero": "JPN7",
+      "nome": "Tsuyoshi Watanabe",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 437,
+      "numero": "JPN8",
+      "nome": "Kaishu Sano",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 438,
+      "numero": "JPN9",
+      "nome": "Yuki Soma",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 439,
+      "numero": "JPN10",
+      "nome": "Ao Tanaka",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 440,
+      "numero": "JPN11",
+      "nome": "Daichi Kamada",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 441,
+      "numero": "JPN12",
+      "nome": "Takefusa Kubo",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 442,
+      "numero": "JPN13",
+      "nome": "Foto do Time — Japan",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 443,
+      "numero": "JPN14",
+      "nome": "Ritsu Doan",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 444,
+      "numero": "JPN15",
+      "nome": "Keito Nakamura",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 445,
+      "numero": "JPN16",
+      "nome": "Takumi Minamino",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 446,
+      "numero": "JPN17",
+      "nome": "Shuto Machino",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 447,
+      "numero": "JPN18",
+      "nome": "Junya Ito",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 448,
+      "numero": "JPN19",
+      "nome": "Koki Ogawa",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 449,
+      "numero": "JPN20",
+      "nome": "Ayase Ueda",
+      "secao_id": 23,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 450,
+      "numero": "SWE1",
+      "nome": "Team Logo - Sweden",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 451,
+      "numero": "SWE2",
+      "nome": "Victor Johansson",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 452,
+      "numero": "SWE3",
+      "nome": "Isak Hien",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 453,
+      "numero": "SWE4",
+      "nome": "Gabriel Gudmundsson",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 454,
+      "numero": "SWE5",
+      "nome": "Emil Holm",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 455,
+      "numero": "SWE6",
+      "nome": "Victor Nilsson Lindelöf",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 456,
+      "numero": "SWE7",
+      "nome": "Gustaf Lagerbielke",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 457,
+      "numero": "SWE8",
+      "nome": "Lucas Bergvall",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 458,
+      "numero": "SWE9",
+      "nome": "Hugo Larsson",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 459,
+      "numero": "SWE10",
+      "nome": "Jesper Karlström",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 460,
+      "numero": "SWE11",
+      "nome": "Yasin Ayari",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 461,
+      "numero": "SWE12",
+      "nome": "Mattias Svanberg",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 462,
+      "numero": "SWE13",
+      "nome": "Foto do Time — Sweden",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 463,
+      "numero": "SWE14",
+      "nome": "Daniel Svensson",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 464,
+      "numero": "SWE15",
+      "nome": "Ken Sema",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 465,
+      "numero": "SWE16",
+      "nome": "Roony Bardghji",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 466,
+      "numero": "SWE17",
+      "nome": "Dejan Kulusevski",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 467,
+      "numero": "SWE18",
+      "nome": "Anthony Elanga",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 468,
+      "numero": "SWE19",
+      "nome": "Alexander Isak",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 469,
+      "numero": "SWE20",
+      "nome": "Viktor Gyökeres",
+      "secao_id": 24,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 470,
+      "numero": "TUN1",
+      "nome": "Team Logo - Tunisia",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 471,
+      "numero": "TUN2",
+      "nome": "Bechir Ben Said",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 472,
+      "numero": "TUN3",
+      "nome": "Aymen Dahmen",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 473,
+      "numero": "TUN4",
+      "nome": "Yan Valery",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 474,
+      "numero": "TUN5",
+      "nome": "Montassar Talbi",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 475,
+      "numero": "TUN6",
+      "nome": "Yassine Meriah",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 476,
+      "numero": "TUN7",
+      "nome": "Ali Abdi",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 477,
+      "numero": "TUN8",
+      "nome": "Dylan Bronn",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 478,
+      "numero": "TUN9",
+      "nome": "Ellyes Skhiri",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 479,
+      "numero": "TUN10",
+      "nome": "Aissa Laidouni",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 480,
+      "numero": "TUN11",
+      "nome": "Ferjani Sassi",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 481,
+      "numero": "TUN12",
+      "nome": "Mohamed Ali Ben Romdhane",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 482,
+      "numero": "TUN13",
+      "nome": "Foto do Time — Tunisia",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 483,
+      "numero": "TUN14",
+      "nome": "Hannibal Mejbri",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 484,
+      "numero": "TUN15",
+      "nome": "Elias Achouri",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 485,
+      "numero": "TUN16",
+      "nome": "Elias Saad",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 486,
+      "numero": "TUN17",
+      "nome": "Hazem Mastouri",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 487,
+      "numero": "TUN18",
+      "nome": "Ismael Gharbi",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 488,
+      "numero": "TUN19",
+      "nome": "Sayfallah Ltaief",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 489,
+      "numero": "TUN20",
+      "nome": "Naim Sliti",
+      "secao_id": 25,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 490,
+      "numero": "BEL1",
+      "nome": "Team Logo - Belgium",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 491,
+      "numero": "BEL2",
+      "nome": "Thibaut Courtois",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 492,
+      "numero": "BEL3",
+      "nome": "Arthur Theate",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 493,
+      "numero": "BEL4",
+      "nome": "Timothy Castagne",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 494,
+      "numero": "BEL5",
+      "nome": "Zeno Debast",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 495,
+      "numero": "BEL6",
+      "nome": "Brandon Mechele",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 496,
+      "numero": "BEL7",
+      "nome": "Maxim De Cuyper",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 497,
+      "numero": "BEL8",
+      "nome": "Thomas Meunier",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 498,
+      "numero": "BEL9",
+      "nome": "Youri Tielemans",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 499,
+      "numero": "BEL10",
+      "nome": "Amadou Onana",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 500,
+      "numero": "BEL11",
+      "nome": "Nicolas Raskin",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 501,
+      "numero": "BEL12",
+      "nome": "Alexis Saelemaekers",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 502,
+      "numero": "BEL13",
+      "nome": "Foto do Time — Belgium",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 503,
+      "numero": "BEL14",
+      "nome": "Hans Vanaken",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 504,
+      "numero": "BEL15",
+      "nome": "Kevin De Bruyne",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 505,
+      "numero": "BEL16",
+      "nome": "Jérémy Doku",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 506,
+      "numero": "BEL17",
+      "nome": "Charles De Ketelaere",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 507,
+      "numero": "BEL18",
+      "nome": "Leandro Trossard",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 508,
+      "numero": "BEL19",
+      "nome": "Loïs Openda",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 509,
+      "numero": "BEL20",
+      "nome": "Romelu Lukaku",
+      "secao_id": 26,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 510,
+      "numero": "EGY1",
+      "nome": "Team Logo - Egypt",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 511,
+      "numero": "EGY2",
+      "nome": "Mohamed El Shenawy",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 512,
+      "numero": "EGY3",
+      "nome": "Mohamed Hany",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 513,
+      "numero": "EGY4",
+      "nome": "Mohamed Hamdy",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 514,
+      "numero": "EGY5",
+      "nome": "Yasser Ibrahim",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 515,
+      "numero": "EGY6",
+      "nome": "Khaled Sobhi",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 516,
+      "numero": "EGY7",
+      "nome": "Ramy Rabia",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 517,
+      "numero": "EGY8",
+      "nome": "Hossam Abdelmaguid",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 518,
+      "numero": "EGY9",
+      "nome": "Ahmed Fatouh",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 519,
+      "numero": "EGY10",
+      "nome": "Marwan Attia",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 520,
+      "numero": "EGY11",
+      "nome": "Zizo",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 521,
+      "numero": "EGY12",
+      "nome": "Hamdy Fathy",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 522,
+      "numero": "EGY13",
+      "nome": "Foto do Time — Egypt",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 523,
+      "numero": "EGY14",
+      "nome": "Mohamed Lasheen",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 524,
+      "numero": "EGY15",
+      "nome": "Emam Ashour",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 525,
+      "numero": "EGY16",
+      "nome": "Osama Faisal",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 526,
+      "numero": "EGY17",
+      "nome": "Mohamed Salah",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 527,
+      "numero": "EGY18",
+      "nome": "Mostafa Mohamed",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 528,
+      "numero": "EGY19",
+      "nome": "Trezeguet",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 529,
+      "numero": "EGY20",
+      "nome": "Omar Marmoush",
+      "secao_id": 27,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 530,
+      "numero": "IRN1",
+      "nome": "Team Logo - Iran",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 531,
+      "numero": "IRN2",
+      "nome": "Alireza Beiranvand",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 532,
+      "numero": "IRN3",
+      "nome": "Morteza Pouraliganji",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 533,
+      "numero": "IRN4",
+      "nome": "Ehsan Hajsafi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 534,
+      "numero": "IRN5",
+      "nome": "Milad Mohammadi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 535,
+      "numero": "IRN6",
+      "nome": "Shojae Khalilzadeh",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 536,
+      "numero": "IRN7",
+      "nome": "Ramin Rezaeian",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 537,
+      "numero": "IRN8",
+      "nome": "Hossein Kanaani",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 538,
+      "numero": "IRN9",
+      "nome": "Sadegh Moharrami",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 539,
+      "numero": "IRN10",
+      "nome": "Saleh Hardani",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 540,
+      "numero": "IRN11",
+      "nome": "Saeed Ezatolahi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 541,
+      "numero": "IRN12",
+      "nome": "Saman Ghoddos",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 542,
+      "numero": "IRN13",
+      "nome": "Foto do Time — Iran",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 543,
+      "numero": "IRN14",
+      "nome": "Omid Noorafkan",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 544,
+      "numero": "IRN15",
+      "nome": "Roozbeh Cheshmi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 545,
+      "numero": "IRN16",
+      "nome": "Mohammad Mohebi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 546,
+      "numero": "IRN17",
+      "nome": "Sardar Azmoun",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 547,
+      "numero": "IRN18",
+      "nome": "Mehdi Taremi",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 548,
+      "numero": "IRN19",
+      "nome": "Alireza Jahanbakhsh",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 549,
+      "numero": "IRN20",
+      "nome": "Ali Gholizadeh",
+      "secao_id": 28,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 550,
+      "numero": "NZL1",
+      "nome": "Team Logo - New Zealand",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 551,
+      "numero": "NZL2",
+      "nome": "Max Crocombe Payne",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 552,
+      "numero": "NZL3",
+      "nome": "Alex Paulsen",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 553,
+      "numero": "NZL4",
+      "nome": "Michael Boxall",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 554,
+      "numero": "NZL5",
+      "nome": "Liberato Cacace",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 555,
+      "numero": "NZL6",
+      "nome": "Tim Payne",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 556,
+      "numero": "NZL7",
+      "nome": "Tyler Bindon",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 557,
+      "numero": "NZL8",
+      "nome": "Francis de Vries",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 558,
+      "numero": "NZL9",
+      "nome": "Finn Surman",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 559,
+      "numero": "NZL10",
+      "nome": "Joe Bell",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 560,
+      "numero": "NZL11",
+      "nome": "Sarpreet Singh",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 561,
+      "numero": "NZL12",
+      "nome": "Ryan Thomas",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 562,
+      "numero": "NZL13",
+      "nome": "Foto do Time — New Zealand",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 563,
+      "numero": "NZL14",
+      "nome": "Matthew Garbett",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 564,
+      "numero": "NZL15",
+      "nome": "Marko Stamenić",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 565,
+      "numero": "NZL16",
+      "nome": "Ben Old",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 566,
+      "numero": "NZL17",
+      "nome": "Chris Wood",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 567,
+      "numero": "NZL18",
+      "nome": "Elijah Just",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 568,
+      "numero": "NZL19",
+      "nome": "Callum McCowatt",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 569,
+      "numero": "NZL20",
+      "nome": "Kosta Barbarouses",
+      "secao_id": 29,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 570,
+      "numero": "ESP1",
+      "nome": "Team Logo - Spain",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 571,
+      "numero": "ESP2",
+      "nome": "Unai Simon",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 572,
+      "numero": "ESP3",
+      "nome": "Robin Le Normand",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 573,
+      "numero": "ESP4",
+      "nome": "Aymeric Laporte",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 574,
+      "numero": "ESP5",
+      "nome": "Dean Huijsen",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 575,
+      "numero": "ESP6",
+      "nome": "Pedro Porro",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 576,
+      "numero": "ESP7",
+      "nome": "Dani Carvajal",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 577,
+      "numero": "ESP8",
+      "nome": "Marc Cucurella",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 578,
+      "numero": "ESP9",
+      "nome": "Martín Zubimendi",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 579,
+      "numero": "ESP10",
+      "nome": "Rodri",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 580,
+      "numero": "ESP11",
+      "nome": "Pedri",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 581,
+      "numero": "ESP12",
+      "nome": "Fabian Ruiz",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 582,
+      "numero": "ESP13",
+      "nome": "Foto do Time — Spain",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 583,
+      "numero": "ESP14",
+      "nome": "Mikel Merino",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 584,
+      "numero": "ESP15",
+      "nome": "Lamine Yamal",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 585,
+      "numero": "ESP16",
+      "nome": "Dani Olmo",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 586,
+      "numero": "ESP17",
+      "nome": "Nico Williams",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 587,
+      "numero": "ESP18",
+      "nome": "Ferran Torres",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 588,
+      "numero": "ESP19",
+      "nome": "Álvaro Morata",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 589,
+      "numero": "ESP20",
+      "nome": "Mikel Oyarzabal",
+      "secao_id": 30,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 590,
+      "numero": "CPV1",
+      "nome": "Team Logo - Cape Verde",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 591,
+      "numero": "CPV2",
+      "nome": "Vozinha",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 592,
+      "numero": "CPV3",
+      "nome": "Logan Costa",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 593,
+      "numero": "CPV4",
+      "nome": "Pico",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 594,
+      "numero": "CPV5",
+      "nome": "Diney",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 595,
+      "numero": "CPV6",
+      "nome": "Steven Moreira",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 596,
+      "numero": "CPV7",
+      "nome": "Wagner Pina",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 597,
+      "numero": "CPV8",
+      "nome": "Joao Paulo",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 598,
+      "numero": "CPV9",
+      "nome": "Yannick Semedo",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 599,
+      "numero": "CPV10",
+      "nome": "Kevin Pina",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 600,
+      "numero": "CPV11",
+      "nome": "Patrick Andrade",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 601,
+      "numero": "CPV12",
+      "nome": "Jamiro Monteiro",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 602,
+      "numero": "CPV13",
+      "nome": "Foto do Time — Cape Verde",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 603,
+      "numero": "CPV14",
+      "nome": "Deroy Duarte",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 604,
+      "numero": "CPV15",
+      "nome": "Garry Rodrigues",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 605,
+      "numero": "CPV16",
+      "nome": "Jovane Cabral",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 606,
+      "numero": "CPV17",
+      "nome": "Ryan Mendes",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 607,
+      "numero": "CPV18",
+      "nome": "Dailon Livramento",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 608,
+      "numero": "CPV19",
+      "nome": "Willy Semedo",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 609,
+      "numero": "CPV20",
+      "nome": "Bebe",
+      "secao_id": 31,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 610,
+      "numero": "KSA1",
+      "nome": "Team Logo - Saudi Arabia",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 611,
+      "numero": "KSA2",
+      "nome": "Nawaf Alaqidi",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 612,
+      "numero": "KSA3",
+      "nome": "Abdulrahman Al-Sanbi",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 613,
+      "numero": "KSA4",
+      "nome": "Saud Abdulhamid",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 614,
+      "numero": "KSA5",
+      "nome": "Nawaf Bouwashl",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 615,
+      "numero": "KSA6",
+      "nome": "Jihad Thakri",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 616,
+      "numero": "KSA7",
+      "nome": "Moteb Al-Harbi",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 617,
+      "numero": "KSA8",
+      "nome": "Hassan Altambakti",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 618,
+      "numero": "KSA9",
+      "nome": "Musab Aljuwayr",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 619,
+      "numero": "KSA10",
+      "nome": "Ziyad Aljohani",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 620,
+      "numero": "KSA11",
+      "nome": "Abdullah Alkhaibari",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 621,
+      "numero": "KAS12",
+      "nome": "Nasser Aldawsari",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 622,
+      "numero": "KSA13",
+      "nome": "Foto do Time — Saudi Arabia",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 623,
+      "numero": "KSA14",
+      "nome": "Saleh Abu Alshamat",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 624,
+      "numero": "KSA15",
+      "nome": "Marwan Alsahafi",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 625,
+      "numero": "KSA16",
+      "nome": "Salem Aldawsari",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 626,
+      "numero": "KSA17",
+      "nome": "Abdulrahman Al-Aboud",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 627,
+      "numero": "KSA18",
+      "nome": "Feras Akbrikan",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 628,
+      "numero": "KSA19",
+      "nome": "Saleh Alshehri",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 629,
+      "numero": "KSA20",
+      "nome": "Abdullah Al-Hamdan",
+      "secao_id": 32,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 630,
+      "numero": "URU1",
+      "nome": "Team Logo - Uruguay",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 631,
+      "numero": "URU2",
+      "nome": "Sergio Rochet",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 632,
+      "numero": "URU3",
+      "nome": "Santiago Mele",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 633,
+      "numero": "URU4",
+      "nome": "Ronald Araujo",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 634,
+      "numero": "URU5",
+      "nome": "José María Giménez",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 635,
+      "numero": "URU6",
+      "nome": "Sebastian Caceres",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 636,
+      "numero": "URU7",
+      "nome": "Mathias Olivera",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 637,
+      "numero": "URU8",
+      "nome": "Guillermo Varela",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 638,
+      "numero": "URU9",
+      "nome": "Nahitan Nandez",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 639,
+      "numero": "URU10",
+      "nome": "Federico Valverde",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 640,
+      "numero": "URU11",
+      "nome": "Giorgian De Arrascaeta",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 641,
+      "numero": "URU12",
+      "nome": "Rodrigo Bentancur",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 642,
+      "numero": "URU13",
+      "nome": "Foto do Time — Uruguay",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 643,
+      "numero": "URU14",
+      "nome": "Manuel Ugarte",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 644,
+      "numero": "URU15",
+      "nome": "Nicolás de la Cruz",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 645,
+      "numero": "URU16",
+      "nome": "Maxi Araujo",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 646,
+      "numero": "URU17",
+      "nome": "Darwin Núñez",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 647,
+      "numero": "URU18",
+      "nome": "Federico Viñas",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 648,
+      "numero": "URU19",
+      "nome": "Rodrigo Aguirre",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 649,
+      "numero": "URU20",
+      "nome": "Facundo Pellistri",
+      "secao_id": 33,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 650,
+      "numero": "FRA1",
+      "nome": "Team Logo - France",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 651,
+      "numero": "FRA2",
+      "nome": "Mike Maignan",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 652,
+      "numero": "FRA3",
+      "nome": "Theo Hernandez",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 653,
+      "numero": "FRA4",
+      "nome": "William Saliba",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 654,
+      "numero": "FRA5",
+      "nome": "Jules Kounde",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 655,
+      "numero": "FRA6",
+      "nome": "Ibrahima Konate",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 656,
+      "numero": "FRA7",
+      "nome": "Dayot Upamecano",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 657,
+      "numero": "FRA8",
+      "nome": "Lucas Digne",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 658,
+      "numero": "FRA9",
+      "nome": "Aurélien Tchouaméni",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 659,
+      "numero": "FRA10",
+      "nome": "Eduardo Camavinga",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 660,
+      "numero": "FRA11",
+      "nome": "Manu Kone",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 661,
+      "numero": "FRA12",
+      "nome": "Adrien Rabiot",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 662,
+      "numero": "FRA13",
+      "nome": "Foto do Time — France",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 663,
+      "numero": "FRA14",
+      "nome": "Michael Olise",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 664,
+      "numero": "FRA15",
+      "nome": "Ousmane Dembele",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 665,
+      "numero": "FRA16",
+      "nome": "Bradley Barcola",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 666,
+      "numero": "FRA17",
+      "nome": "Désiré Doué",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 667,
+      "numero": "FRA18",
+      "nome": "Kingsley Coman",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 668,
+      "numero": "FRA19",
+      "nome": "Hugo Ekitike",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 669,
+      "numero": "FRA20",
+      "nome": "Kylian Mbappe",
+      "secao_id": 34,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 670,
+      "numero": "SEN1",
+      "nome": "Team Logo - Senegal",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 671,
+      "numero": "SEN2",
+      "nome": "Edouard Mendy",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 672,
+      "numero": "SEN3",
+      "nome": "Yehvann Diouf",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 673,
+      "numero": "SEN4",
+      "nome": "Moussa Niakhaté",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 674,
+      "numero": "SEN5",
+      "nome": "Abdoulaye Seck",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 675,
+      "numero": "SEN6",
+      "nome": "Ismail Jakobs",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 676,
+      "numero": "SEN7",
+      "nome": "El Hadji Malick Diouf",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 677,
+      "numero": "SEN8",
+      "nome": "Kalidou Koulibaly",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 678,
+      "numero": "SEN9",
+      "nome": "Idrissa Gana Gueye",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 679,
+      "numero": "SEN10",
+      "nome": "Pape Matar Sarr",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 680,
+      "numero": "SEN11",
+      "nome": "Pape Gueye",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 681,
+      "numero": "SEN12",
+      "nome": "Habib Diarra",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 682,
+      "numero": "SEN13",
+      "nome": "Foto do Time — Senegal",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 683,
+      "numero": "SEN14",
+      "nome": "Lamine Camara",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 684,
+      "numero": "SEN15",
+      "nome": "Sadio Mane",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 685,
+      "numero": "SEN16",
+      "nome": "Ismaïla Sarr",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 686,
+      "numero": "SEN17",
+      "nome": "Boulaye Dia",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 687,
+      "numero": "SEN18",
+      "nome": "Iliman Ndiaye",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 688,
+      "numero": "SEN19",
+      "nome": "Nicolas Jackson",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 689,
+      "numero": "SEN20",
+      "nome": "Krepin Diatta",
+      "secao_id": 35,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 690,
+      "numero": "IRQ1",
+      "nome": "Team Logo - Iraq",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 691,
+      "numero": "IRQ2",
+      "nome": "Jalal Hassan",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 692,
+      "numero": "IRQ3",
+      "nome": "Rebin Sulaka",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 693,
+      "numero": "IRQ4",
+      "nome": "Hussein Ali",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 694,
+      "numero": "IRQ5",
+      "nome": "Akam Hashem",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 695,
+      "numero": "IRQ6",
+      "nome": "Merchas Doski",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 696,
+      "numero": "IRQ7",
+      "nome": "Zaid Tahseen",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 697,
+      "numero": "IRQ8",
+      "nome": "Manaf Younis",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 698,
+      "numero": "IRQ9",
+      "nome": "Zidane Iqbal",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 699,
+      "numero": "IRQ10",
+      "nome": "Amir Al-Ammari",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 700,
+      "numero": "IRQ11",
+      "nome": "Ibrahim Bavesh",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 701,
+      "numero": "IRQ12",
+      "nome": "Ali Jasim",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 702,
+      "numero": "IRQ13",
+      "nome": "Foto do Time — Iraq",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 703,
+      "numero": "IRQ14",
+      "nome": "Youssef Amyn",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 704,
+      "numero": "IRQ15",
+      "nome": "Aimar Sher",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 705,
+      "numero": "IRQ16",
+      "nome": "Marko Farji",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 706,
+      "numero": "IRQ17",
+      "nome": "Osama Rashid",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 707,
+      "numero": "IRQ18",
+      "nome": "Ali Al-Hamadi",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 708,
+      "numero": "IRQ19",
+      "nome": "Aymen Hussein",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 709,
+      "numero": "IRQ20",
+      "nome": "Mohanad Ali",
+      "secao_id": 36,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 710,
+      "numero": "NOR1",
+      "nome": "Team Logo - Norway",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 711,
+      "numero": "NOR2",
+      "nome": "Orjan Nyland",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 712,
+      "numero": "NOR3",
+      "nome": "Julian Ryerson",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 713,
+      "numero": "NOR4",
+      "nome": "Leo Ostigård",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 714,
+      "numero": "NOR5",
+      "nome": "Kristoffer Vassbakk Ajer",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 715,
+      "numero": "NOR6",
+      "nome": "Marcus Holmgren Pedersen",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 716,
+      "numero": "NOR7",
+      "nome": "David Møller Wolfe",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 717,
+      "numero": "NOR8",
+      "nome": "Torbjørn Heggem",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 718,
+      "numero": "NOR9",
+      "nome": "Morten Thorsby",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 719,
+      "numero": "NOR10",
+      "nome": "Martin Ødegaard",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 720,
+      "numero": "NOR11",
+      "nome": "Sander Berge",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 721,
+      "numero": "NOR12",
+      "nome": "Andreas Schjelderup",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 722,
+      "numero": "NOR13",
+      "nome": "Foto do Time — Norway",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 723,
+      "numero": "NOR14",
+      "nome": "Patrick Berg",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 724,
+      "numero": "NOR15",
+      "nome": "Erling Haaland",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 725,
+      "numero": "NOR16",
+      "nome": "Alexander Sørloth",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 726,
+      "numero": "NOR17",
+      "nome": "Aron Dønnum",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 727,
+      "numero": "NOR18",
+      "nome": "Jorgen Strand Larsen",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 728,
+      "numero": "NOR19",
+      "nome": "Antonio Nusa",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 729,
+      "numero": "NOR20",
+      "nome": "Oscar Bobb",
+      "secao_id": 37,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 730,
+      "numero": "ARG1",
+      "nome": "Team Logo - Argentina",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 731,
+      "numero": "ARG2",
+      "nome": "Emiliano Martinez",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 732,
+      "numero": "ARG3",
+      "nome": "Nahuel Molina",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 733,
+      "numero": "ARG4",
+      "nome": "Cristian Romero",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 734,
+      "numero": "ARG5",
+      "nome": "Nicolas Otamendi",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 735,
+      "numero": "ARG6",
+      "nome": "Nicolas Tagliafico",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 736,
+      "numero": "ARG7",
+      "nome": "Leonardo Balerdi",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 737,
+      "numero": "ARG8",
+      "nome": "Enzo Fernandez",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 738,
+      "numero": "ARG9",
+      "nome": "Alexis Mac Allister",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 739,
+      "numero": "ARG10",
+      "nome": "Rodrigo De Paul",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 740,
+      "numero": "ARG11",
+      "nome": "Exequiel Palacios",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 741,
+      "numero": "ARG12",
+      "nome": "Leandro Paredes",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 742,
+      "numero": "ARG13",
+      "nome": "Foto do Time — Argentina",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 743,
+      "numero": "ARG14",
+      "nome": "Nico Paz",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 744,
+      "numero": "ARG15",
+      "nome": "Franco Mastantuono",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 745,
+      "numero": "ARG16",
+      "nome": "Nico Gonzalez",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 746,
+      "numero": "ARG17",
+      "nome": "Lionel Messi",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 747,
+      "numero": "ARG18",
+      "nome": "Lautaro Martinez",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 748,
+      "numero": "ARG19",
+      "nome": "Julian Alvarez",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 749,
+      "numero": "ARG20",
+      "nome": "Giuliano Simeone",
+      "secao_id": 38,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 750,
+      "numero": "ALG1",
+      "nome": "Team Logo - Algeria",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 751,
+      "numero": "ALG2",
+      "nome": "Alexis Guendouz",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 752,
+      "numero": "ALG3",
+      "nome": "Ramy Bensebaini",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 753,
+      "numero": "ALG4",
+      "nome": "Youcef Atal",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 754,
+      "numero": "ALG5",
+      "nome": "Rayan Aït-Nouri",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 755,
+      "numero": "ALG6",
+      "nome": "Mohamed Amine Tougai",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 756,
+      "numero": "ALG7",
+      "nome": "Aïssa Mandi",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 757,
+      "numero": "ALG8",
+      "nome": "Ismael Bennacer",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 758,
+      "numero": "ALG9",
+      "nome": "Houssem Aquar",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 759,
+      "numero": "ALG10",
+      "nome": "Hicham Boudaoui",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 760,
+      "numero": "ALG11",
+      "nome": "Ramiz Zerrouki",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 761,
+      "numero": "ALG12",
+      "nome": "Nabil Bentalab",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 762,
+      "numero": "ALG13",
+      "nome": "Foto do Time — Algeria",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 763,
+      "numero": "ALG14",
+      "nome": "Farés Chaibi",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 764,
+      "numero": "ALG15",
+      "nome": "Riyad Mahrez",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 765,
+      "numero": "ALG16",
+      "nome": "Said Benrahma",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 766,
+      "numero": "ALG17",
+      "nome": "Anis Hadj Moussa",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 767,
+      "numero": "ALG18",
+      "nome": "Amine Gouiri",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 768,
+      "numero": "ALG19",
+      "nome": "Baghdad Bounedjah",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 769,
+      "numero": "ALG20",
+      "nome": "Mohammed Amoura",
+      "secao_id": 39,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 770,
+      "numero": "AUT1",
+      "nome": "Team Logo - Austria",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 771,
+      "numero": "AUT2",
+      "nome": "Alexander Schlager",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 772,
+      "numero": "AUT3",
+      "nome": "Patrick Pentz",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 773,
+      "numero": "AUT4",
+      "nome": "David Alaba",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 774,
+      "numero": "AUT5",
+      "nome": "Kevin Danso",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 775,
+      "numero": "AUT6",
+      "nome": "Philipp Lienhart",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 776,
+      "numero": "AUT7",
+      "nome": "Stefan Posch",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 777,
+      "numero": "AUT8",
+      "nome": "Phillipp Mwene",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 778,
+      "numero": "AUT9",
+      "nome": "Alexander Prass",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 779,
+      "numero": "AUT10",
+      "nome": "Xaver Schlager",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 780,
+      "numero": "AUT11",
+      "nome": "Marcel Sabitzer",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 781,
+      "numero": "AUT12",
+      "nome": "Konrad Laimer",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 782,
+      "numero": "AUT13",
+      "nome": "Foto do Time — Austria",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 783,
+      "numero": "AUT14",
+      "nome": "Florian Grillitsch",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 784,
+      "numero": "AUT15",
+      "nome": "Nicolas Seiwald",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 785,
+      "numero": "AUT16",
+      "nome": "Romano Schmid",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 786,
+      "numero": "AUT17",
+      "nome": "Patrick Wimmer",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 787,
+      "numero": "AUT18",
+      "nome": "Christoph Baumgartner",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 788,
+      "numero": "AUT19",
+      "nome": "Michael Gregoritsch",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 789,
+      "numero": "AUT20",
+      "nome": "Marko Arnautović",
+      "secao_id": 40,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 790,
+      "numero": "JOR1",
+      "nome": "Team Logo - Jordan",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 791,
+      "numero": "JOR2",
+      "nome": "Yazeed Abulaila",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 792,
+      "numero": "JOR3",
+      "nome": "Ihsan Haddad",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 793,
+      "numero": "JOR4",
+      "nome": "Mohammad Abu Hashish",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 794,
+      "numero": "JOR5",
+      "nome": "Yazan Al-Arab",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 795,
+      "numero": "JOR6",
+      "nome": "Abdallah Nasib",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 796,
+      "numero": "JOR7",
+      "nome": "Saleem Obaid",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 797,
+      "numero": "JOR8",
+      "nome": "Mohammad Abualnadi",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 798,
+      "numero": "JOR9",
+      "nome": "Ibrahim Saadeh",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 799,
+      "numero": "JOR10",
+      "nome": "Nizar Al-Rashdan",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 800,
+      "numero": "JOR11",
+      "nome": "Noor Al-Rawabdeh",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 801,
+      "numero": "JOR12",
+      "nome": "Mohannad Abu Taha",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 802,
+      "numero": "JOR13",
+      "nome": "Foto do Time — Jordan",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 803,
+      "numero": "JOR14",
+      "nome": "Amer Jamous",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 804,
+      "numero": "JOR15",
+      "nome": "Musa Al-Taamari",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 805,
+      "numero": "JOR16",
+      "nome": "Yazan Al-Naimat",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 806,
+      "numero": "JOR17",
+      "nome": "Mahmoud Al-Mardi",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 807,
+      "numero": "JOR18",
+      "nome": "Ali Olwan",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 808,
+      "numero": "JOR19",
+      "nome": "Mohammad Abu Zrayq",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 809,
+      "numero": "JOR20",
+      "nome": "Ibrahim Sabra",
+      "secao_id": 41,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 810,
+      "numero": "POR1",
+      "nome": "Team Logo - Portugal",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 811,
+      "numero": "POR2",
+      "nome": "Diogo Costa",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 812,
+      "numero": "POR3",
+      "nome": "Jose Sa",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 813,
+      "numero": "POR4",
+      "nome": "Ruben Dias",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 814,
+      "numero": "POR5",
+      "nome": "João Cancelo",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 815,
+      "numero": "POR6",
+      "nome": "Diogo Dalot",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 816,
+      "numero": "POR7",
+      "nome": "Nuno Mendes",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 817,
+      "numero": "POR8",
+      "nome": "Gonçalo Inácio",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 818,
+      "numero": "POR9",
+      "nome": "Bernardo Silva",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 819,
+      "numero": "POR10",
+      "nome": "Bruno Fernandes",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 820,
+      "numero": "POR11",
+      "nome": "Ruben Neves",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 821,
+      "numero": "POR12",
+      "nome": "Vitinha",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 822,
+      "numero": "POR13",
+      "nome": "Foto do Time — Portugal",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 823,
+      "numero": "POR14",
+      "nome": "João Neves",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 824,
+      "numero": "POR15",
+      "nome": "Cristiano Ronaldo",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 825,
+      "numero": "POR16",
+      "nome": "Francisco Trincao",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 826,
+      "numero": "POR17",
+      "nome": "João Felix",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 827,
+      "numero": "POR18",
+      "nome": "Gonçalo Ramos",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 828,
+      "numero": "POR19",
+      "nome": "Pedro Neto",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 829,
+      "numero": "POR20",
+      "nome": "Rafael Leão",
+      "secao_id": 42,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 830,
+      "numero": "COD1",
+      "nome": "Team Logo - Congo DR",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 831,
+      "numero": "COD2",
+      "nome": "Lionel Mpasi",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 832,
+      "numero": "COD3",
+      "nome": "Aaron Wan-Bissaka",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 833,
+      "numero": "COD4",
+      "nome": "Axel Tuanzebe",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 834,
+      "numero": "COD5",
+      "nome": "Arthur Masuaku",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 835,
+      "numero": "COD6",
+      "nome": "Chancel Mbemba",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 836,
+      "numero": "COD7",
+      "nome": "Joris Kayembe",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 837,
+      "numero": "COD8",
+      "nome": "Charles Pickel",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 838,
+      "numero": "COD9",
+      "nome": "Ngal'ayel Mukau",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 839,
+      "numero": "COD10",
+      "nome": "Edo Kayembe",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 840,
+      "numero": "COD11",
+      "nome": "Samuel Moutoussamy",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 841,
+      "numero": "COD12",
+      "nome": "Noah Sadiki",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 842,
+      "numero": "COD13",
+      "nome": "Foto do Time — Congo DR",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 843,
+      "numero": "COD14",
+      "nome": "Théo Bongonda",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 844,
+      "numero": "COD15",
+      "nome": "Meschak Elia",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 845,
+      "numero": "COD16",
+      "nome": "Yoane Wissa",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 846,
+      "numero": "COD17",
+      "nome": "Brian Cipenga",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 847,
+      "numero": "COD18",
+      "nome": "Fiston Mayele",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 848,
+      "numero": "COD19",
+      "nome": "Cédric Bakambu",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 849,
+      "numero": "COD20",
+      "nome": "Nathanaël Mbuku",
+      "secao_id": 43,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 850,
+      "numero": "UZB1",
+      "nome": "Team Logo - Uzbekistan",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 851,
+      "numero": "UZB2",
+      "nome": "Utkir Yusupov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 852,
+      "numero": "UZB3",
+      "nome": "Farrukh Savfiev",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 853,
+      "numero": "UZB4",
+      "nome": "Sherzod Nasrullaev",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 854,
+      "numero": "UZB5",
+      "nome": "Umar Eshmurodov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 855,
+      "numero": "UZB6",
+      "nome": "Husniddin Aliqulov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 856,
+      "numero": "UZB7",
+      "nome": "Rustamjon Ashurmatov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 857,
+      "numero": "UZB8",
+      "nome": "Khojiakbar Alijonov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 858,
+      "numero": "UZB9",
+      "nome": "Abdukodir Khusanov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 859,
+      "numero": "UZB10",
+      "nome": "Odiljon Hamrobekov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 860,
+      "numero": "UZB11",
+      "nome": "Otabek Shukurov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 861,
+      "numero": "UZB12",
+      "nome": "Jamshid Iskanderov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 862,
+      "numero": "UZB13",
+      "nome": "Foto do Time — Uzbekistan",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 863,
+      "numero": "UZB14",
+      "nome": "Azizbek Turgunboev",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 864,
+      "numero": "UZB15",
+      "nome": "Khojimat Erkinov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 865,
+      "numero": "UZB16",
+      "nome": "Eldor Shomurodov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 866,
+      "numero": "UZB17",
+      "nome": "Oston Urunov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 867,
+      "numero": "UZB18",
+      "nome": "Jaloliddin Masharipov",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 868,
+      "numero": "UZB19",
+      "nome": "Igor Sergeev",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 869,
+      "numero": "UZB20",
+      "nome": "Abbosbek Fayzullaev",
+      "secao_id": 44,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 870,
+      "numero": "COL1",
+      "nome": "Team Logo - Colombia",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 871,
+      "numero": "COL2",
+      "nome": "Camilo Vargas",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 872,
+      "numero": "COL3",
+      "nome": "David Ospina",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 873,
+      "numero": "COL4",
+      "nome": "Dávinson Sánchez",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 874,
+      "numero": "COL5",
+      "nome": "Yerry Mina",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 875,
+      "numero": "COL6",
+      "nome": "Daniel Munoz",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 876,
+      "numero": "COL7",
+      "nome": "Johan Mojica",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 877,
+      "numero": "COL8",
+      "nome": "Jhon Lucumí",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 878,
+      "numero": "COL9",
+      "nome": "Santiago Arias",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 879,
+      "numero": "COL10",
+      "nome": "Jefferson Lerma",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 880,
+      "numero": "COL11",
+      "nome": "Kevin Castaño",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 881,
+      "numero": "COL12",
+      "nome": "Richard Rios",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 882,
+      "numero": "COL13",
+      "nome": "Foto do Time — Colombia",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 883,
+      "numero": "COL14",
+      "nome": "James Rodriguez",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 884,
+      "numero": "COL15",
+      "nome": "Juan Fernando Quintero",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 885,
+      "numero": "COL16",
+      "nome": "Jorge Carrascal",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 886,
+      "numero": "COL17",
+      "nome": "Jon Arias",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 887,
+      "numero": "COL18",
+      "nome": "Jhon Cordova",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 888,
+      "numero": "COL19",
+      "nome": "Luis Suarez",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 889,
+      "numero": "COL20",
+      "nome": "Luis Diaz",
+      "secao_id": 45,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 890,
+      "numero": "ENG1",
+      "nome": "Team Logo - England",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 891,
+      "numero": "ENG2",
+      "nome": "Jordan Pickford",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 892,
+      "numero": "ENG3",
+      "nome": "John Stones",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 893,
+      "numero": "ENG4",
+      "nome": "Marc Guéhi",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 894,
+      "numero": "ENG5",
+      "nome": "Ezri Konsa",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 895,
+      "numero": "ENG6",
+      "nome": "Trent Alexander-Arnold",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 896,
+      "numero": "ENG7",
+      "nome": "Reece James",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 897,
+      "numero": "ENG8",
+      "nome": "Dan Burn",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 898,
+      "numero": "ENG9",
+      "nome": "Jordan Henderson",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 899,
+      "numero": "ENG10",
+      "nome": "Declan Rice",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 900,
+      "numero": "ENG11",
+      "nome": "Jude Bellingham",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 901,
+      "numero": "ENG12",
+      "nome": "Cole Palmer",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 902,
+      "numero": "ENG13",
+      "nome": "Foto do Time — England",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 903,
+      "numero": "ENG14",
+      "nome": "Morgan Rogers",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 904,
+      "numero": "ENG15",
+      "nome": "Anthony Gordon",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 905,
+      "numero": "ENG16",
+      "nome": "Phil Foden",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 906,
+      "numero": "ENG17",
+      "nome": "Bukayo Saka",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 907,
+      "numero": "ENG18",
+      "nome": "Harry Kane",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 908,
+      "numero": "ENG19",
+      "nome": "Marcus Rashford",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 909,
+      "numero": "ENG20",
+      "nome": "Ollie Watkins",
+      "secao_id": 46,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 910,
+      "numero": "CRO1",
+      "nome": "Team Logo - Croatia",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 911,
+      "numero": "CRO2",
+      "nome": "Dominik Livaković",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 912,
+      "numero": "CRO3",
+      "nome": "Duje Caleta-Car",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 913,
+      "numero": "CRO4",
+      "nome": "Josko Gvardiol",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 914,
+      "numero": "CRO5",
+      "nome": "Josip Stanišić",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 915,
+      "numero": "CRO6",
+      "nome": "Luka Vušković",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 916,
+      "numero": "CRO7",
+      "nome": "Josip Sutalo",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 917,
+      "numero": "CRO8",
+      "nome": "Kristijan Jakic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 918,
+      "numero": "CRO9",
+      "nome": "Luka Modrić",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 919,
+      "numero": "CRO10",
+      "nome": "Mateo Kovacic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 920,
+      "numero": "CRO11",
+      "nome": "Martin Baturina",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 921,
+      "numero": "CRO12",
+      "nome": "Lovro Majer",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 922,
+      "numero": "CRO13",
+      "nome": "Foto do Time — Croatia",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 923,
+      "numero": "CRO14",
+      "nome": "Mario Pasalic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 924,
+      "numero": "CRO15",
+      "nome": "Petar Sucic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 925,
+      "numero": "CRO16",
+      "nome": "Ivan Perišić",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 926,
+      "numero": "CRO17",
+      "nome": "Marco Pasalic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 927,
+      "numero": "CRO18",
+      "nome": "Ante Budimir",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 928,
+      "numero": "CRO19",
+      "nome": "Andrej Kramarić",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 929,
+      "numero": "CRO20",
+      "nome": "Franjo Ivanovic",
+      "secao_id": 47,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 930,
+      "numero": "GHA1",
+      "nome": "Team Logo - Ghana",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 931,
+      "numero": "GHA2",
+      "nome": "Lawrence Ati Zigi",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 932,
+      "numero": "GHA3",
+      "nome": "Tariq Lamptey",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 933,
+      "numero": "GHA4",
+      "nome": "Mohammed Salisu",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 934,
+      "numero": "GHA5",
+      "nome": "Alidu Seidu",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 935,
+      "numero": "GHA6",
+      "nome": "Alexander Djiku",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 936,
+      "numero": "GHA7",
+      "nome": "Gideon Mensah",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 937,
+      "numero": "GHA8",
+      "nome": "Caleb Yirenkyi",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 938,
+      "numero": "GHA9",
+      "nome": "Abdul Issahaku Fatawu",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 939,
+      "numero": "GHA10",
+      "nome": "Thomas Partey",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 940,
+      "numero": "GHA11",
+      "nome": "Salis Abdul Samed",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 941,
+      "numero": "GHA12",
+      "nome": "Kamaldeen Sulemana",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 942,
+      "numero": "GHA13",
+      "nome": "Foto do Time — Ghana",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 943,
+      "numero": "GHA14",
+      "nome": "Mohammed Kudus",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 944,
+      "numero": "GHA15",
+      "nome": "Inaki Williams",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 945,
+      "numero": "GHA16",
+      "nome": "Jordan Ayew",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 946,
+      "numero": "GHA17",
+      "nome": "Andrew Ayew",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 947,
+      "numero": "GHA18",
+      "nome": "Joseph Paintsil",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 948,
+      "numero": "GHA19",
+      "nome": "Osman Bukari",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 949,
+      "numero": "GHA20",
+      "nome": "Antoine Semenyo",
+      "secao_id": 48,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 950,
+      "numero": "PAN1",
+      "nome": "Team Logo - Panama",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 951,
+      "numero": "PAN2",
+      "nome": "Orlando Mosquera",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 952,
+      "numero": "PAN3",
+      "nome": "Luis Mejia",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 953,
+      "numero": "PAN4",
+      "nome": "Fidel Escobar",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 954,
+      "numero": "PAN5",
+      "nome": "Andres Andrade",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 955,
+      "numero": "PAN6",
+      "nome": "Michael Amir Murillo",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 956,
+      "numero": "PAN7",
+      "nome": "Eric Davis",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 957,
+      "numero": "PAN8",
+      "nome": "Jose Cordoba",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 958,
+      "numero": "PAN9",
+      "nome": "Cesar Blackman",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 959,
+      "numero": "PAN10",
+      "nome": "Cristian Martinez",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 960,
+      "numero": "PAN11",
+      "nome": "Aníbal Godoy",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 961,
+      "numero": "PAN12",
+      "nome": "Adalberto Carrasquilla",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 962,
+      "numero": "PAN13",
+      "nome": "Foto do Time — Panama",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 963,
+      "numero": "PAN14",
+      "nome": "Édgar Bárcenas",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 964,
+      "numero": "PAN15",
+      "nome": "Carlos Harvey",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 965,
+      "numero": "PAN16",
+      "nome": "Ismael Díaz",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 966,
+      "numero": "PAN17",
+      "nome": "Jose Fajardo",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 967,
+      "numero": "PAN18",
+      "nome": "Cecilio Waterman",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 968,
+      "numero": "PAN19",
+      "nome": "Jose Luiz Rodriguez",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 969,
+      "numero": "PAN20",
+      "nome": "Alberto Quintero",
+      "secao_id": 49,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 970,
+      "numero": "FWC9",
+      "nome": "Italy 1934",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 971,
+      "numero": "FWC10",
+      "nome": "Uruguay 1950",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 972,
+      "numero": "FWC11",
+      "nome": "West Germany 1954",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 973,
+      "numero": "FWC12",
+      "nome": "Brazil 1962",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 974,
+      "numero": "FWC13",
+      "nome": "West Germany 1974",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 975,
+      "numero": "FWC14",
+      "nome": "Argentina 1986",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 976,
+      "numero": "FWC15",
+      "nome": "Brazil 1994",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 977,
+      "numero": "FWC16",
+      "nome": "Brazil 2002",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 978,
+      "numero": "FWC17",
+      "nome": "Italy 2006",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 979,
+      "numero": "FWC18",
+      "nome": "Germany 2014",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 980,
+      "numero": "FWC19",
+      "nome": "Argentina 2022",
+      "secao_id": 50,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 981,
+      "numero": "CC1",
+      "nome": "Lamine Yamal (Spain)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 982,
+      "numero": "CC2",
+      "nome": "Joshua Kimmich (Germany)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 983,
+      "numero": "CC3",
+      "nome": "Harry Kane (England)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 984,
+      "numero": "CC4",
+      "nome": "Santiago Giménez (Mexico)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 985,
+      "numero": "CC5",
+      "nome": "Josko Gvardiol (Croatia)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 986,
+      "numero": "CC6",
+      "nome": "Federico Valverde (Uruguay)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 987,
+      "numero": "CC7",
+      "nome": "Jefferson Lerma (Colombia)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 988,
+      "numero": "CC8",
+      "nome": "Enner Valencia (Ecuador)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 989,
+      "numero": "CC9",
+      "nome": "Gabriel Magalhães (Brazil)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 990,
+      "numero": "CC10",
+      "nome": "Virgil van Dijk (Netherlands)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 991,
+      "numero": "CC11",
+      "nome": "Alphonso Davies (Canada)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 992,
+      "numero": "CC12",
+      "nome": "Emiliano Martinez (Argentina)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 993,
+      "numero": "CC13",
+      "nome": "Raúl Jiménez (Mexico)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    },
+    {
+      "id": 994,
+      "numero": "CC14",
+      "nome": "Lautaro Martínez (Argentina)",
+      "secao_id": 51,
+      "tipo_album_id": 1,
+      "conta_para_fechar": true
+    }
+  ]
+}

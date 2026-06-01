@@ -1,5 +1,5 @@
 import { test, expect } from '../support/fixtures';
-import { criarUsuario, expirarToken } from '../support/helpers';
+import { criarUsuario, expirarToken, usuarioAtivo } from '../support/helpers';
 
 test.describe('Cadastro de Usuários', () => {
 
@@ -183,8 +183,29 @@ test.describe('Cadastro de Usuários', () => {
       await expect(page.getByRole('link', { name: /corrigir email/i })).toBeVisible();
     });
 
-    test('deve exibir botão "Reenviar email" após cooldown expirado', async () => {
-      test.skip(true, 'Requer helper de controle de tempo no backend de teste');
+    test('deve exibir botão "Reenviar email" após cooldown expirado', async ({ page, request }) => {
+      test.setTimeout(15_000);
+      const { dados, identificador } = await criarUsuario(request);
+
+      // Avança o relógio do browser 10 minutos → qualquer cooldown de 5 min já expirou
+      await page.clock.install({ time: Date.now() + 10 * 60 * 1000 });
+
+      await page.goto('/');
+      await page.getByLabel('Email').fill(dados.email as string);
+      await page.getByRole('textbox', { name: 'Senha', exact: true }).fill(dados.password as string);
+      await page.getByRole('button', { name: /entrar/i }).click();
+      await page.waitForURL(/\/confirmar-cadastro/);
+
+      // Botão deve aparecer imediatamente pois o clock está 10 min à frente
+      await expect(page.getByRole('button', { name: /reenviar email/i })).toBeVisible();
+
+      // Clica e verifica que o servidor aceita (cooldown no server é 5s, já passado no tempo real)
+      // Aguarda o cooldown do servidor expirar antes de clicar
+      await page.waitForTimeout(6_000);
+      await page.getByRole('button', { name: /reenviar email/i }).click();
+      // O botão fica disabled enquanto reenvia e depois o countdown reinicia
+      await expect(page.getByRole('button', { name: /reenviar email/i })).toBeHidden({ timeout: 4_000 });
+      void identificador;
     });
   });
 
@@ -220,8 +241,26 @@ test.describe('Cadastro de Usuários', () => {
       await expect(page.getByText(/link inválido ou expirado/i)).toBeVisible();
     });
 
-    test('deve encerrar sessão de outro usuário ao confirmar cadastro (RN-19)', async () => {
-      test.skip(true, 'Requer controle de múltiplas sessões autenticadas no mesmo contexto de browser');
+    test('deve encerrar sessão de outro usuário ao confirmar cadastro (RN-19)', async ({ page, request }) => {
+      // Usuário A faz login
+      const { identificador: idA } = await usuarioAtivo(page, request);
+      await expect(page.getByText(idA)).toBeVisible();
+
+      // Usuário B cria conta (PENDENTE) e obtém token de confirmação
+      const { identificador: idB } = await criarUsuario(request);
+      const tokenRes = await request.get(`/api/v1/test/token-confirmacao/${idB}`);
+      const { token } = await tokenRes.json();
+
+      // Visita o link de confirmação do usuário B no browser do usuário A
+      await page.goto(`/confirmar-cadastro?token=${token}`);
+      await expect(page.getByText('Tudo certo!')).toBeVisible();
+
+      // Navega para Home — agora o browser está autenticado como usuário B
+      await page.getByRole('button', { name: /acessar/i }).click();
+      await page.waitForURL(/\/home/);
+
+      // Identificador do usuário B deve aparecer no header
+      await expect(page.getByText(idB)).toBeVisible();
     });
   });
 
@@ -229,8 +268,22 @@ test.describe('Cadastro de Usuários', () => {
 
   test.describe('Rate limiting (RN-18)', () => {
 
-    test('deve retornar HTTP 429 após 100 requisições por minuto do mesmo IP', async () => {
-      test.skip(true, 'Executar isolado – não misturar com suíte principal');
+    test('deve retornar HTTP 429 após 100 requisições por minuto do mesmo IP', async ({ request }) => {
+      // RATE_LIMIT_MAX=5 está configurado no servidor de testes (playwright.config.ts)
+      const RATE_LIMIT_MAX_TEST = 5;
+
+      await request.post('/api/v1/test/reset-rate-limit');
+
+      for (let i = 0; i < RATE_LIMIT_MAX_TEST; i++) {
+        const res = await request.post('/api/v1/test/rate-limit-test');
+        expect(res.status()).toBe(200);
+      }
+
+      // Requisição max+1 deve retornar 429
+      const res = await request.post('/api/v1/test/rate-limit-test');
+      expect(res.status()).toBe(429);
+      const data = await res.json();
+      expect(data.error).toMatch(/muitas/i);
     });
   });
 });
