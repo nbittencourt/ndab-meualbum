@@ -95,7 +95,7 @@ export default function ColarFigurinhasPage() {
     return (
       <div className="min-h-dvh bg-paper flex flex-col">
         <AppHeader back />
-        <div className="p-4 flex flex-col gap-4">
+        <div className="p-4 xl:px-8 flex flex-col gap-4">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
         {albumsLoading ? (
           <div className="flex justify-center py-12" aria-busy="true" aria-label="Carregando álbuns">
@@ -137,7 +137,7 @@ export default function ColarFigurinhasPage() {
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
       <AppHeader back />
-      <div className="p-4 flex flex-col gap-4 pb-24 flex-1">
+      <div className="p-4 xl:px-8 flex flex-col gap-4 pb-24 flex-1">
       <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>

@@ -177,7 +177,7 @@ export default function AbrirPacotinhosPage() {
     return (
       <div className="min-h-dvh bg-paper flex flex-col">
         <AppHeader back />
-        <div className="p-4 flex flex-col gap-6">
+        <div className="p-4 xl:px-8 flex flex-col gap-6">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <div className="bg-white border-2 border-ink [box-shadow:3px_3px_0_#0A0907] p-4 flex flex-col gap-4">
           <p className="font-body text-sm text-ink font-semibold">Você tem uma sessão anterior</p>
@@ -213,7 +213,7 @@ export default function AbrirPacotinhosPage() {
     return (
       <div className="min-h-dvh bg-paper flex flex-col">
         <AppHeader back />
-        <div className="p-4 flex flex-col gap-4">
+        <div className="p-4 xl:px-8 flex flex-col gap-4">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <p className="font-body text-sm text-ink/70">Que álbum você está abrindo?</p>
         <div className="flex flex-col gap-2">
@@ -252,7 +252,7 @@ export default function AbrirPacotinhosPage() {
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
       <AppHeader back />
-      <div className="p-4 flex flex-col gap-4 pb-24 flex-1">
+      <div className="p-4 xl:px-8 flex flex-col gap-4 pb-24 flex-1">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>

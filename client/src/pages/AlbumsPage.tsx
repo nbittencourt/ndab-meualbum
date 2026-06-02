@@ -149,7 +149,7 @@ export default function AlbumsPage() {
         </Link>
       </div>
 
-      <div className="flex-1 p-4 flex flex-col gap-6">
+      <div className="flex-1 p-4 xl:p-8 flex flex-col gap-6">
         {isLoading && (
           <div className="flex justify-center py-12" aria-busy="true" aria-label="Carregando álbuns">
             <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
@@ -178,7 +178,7 @@ export default function AlbumsPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {data.ativos.map((album) => (
                     <AlbumCard key={album._id} album={album} />
                   ))}
@@ -191,7 +191,7 @@ export default function AlbumsPage() {
                 <h2 id="arquivados-heading" className="font-display text-sm font-black uppercase tracking-wide text-ink mb-3">
                   Álbuns arquivados ({data.arquivados.length})
                 </h2>
-                <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {data.arquivados.map((album) => (
                     <AlbumCard key={album._id} album={album} onDesarquivar={(id) => desarquivarMut.mutate(id)} />
                   ))}

@@ -230,13 +230,13 @@ function SecaoGrid({
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 8,
             }}
-            className="sm:[grid-template-columns:repeat(5,1fr)] sm:[gap:10px]"
+            className="xl:[grid-template-columns:repeat(5,1fr)] xl:[gap:10px]"
           >
             {secao.figurinhas.map((f) => (
               <div
                 key={f._id}
                 style={{ height: 94 }}
-                className="sm:h-[106px]"
+                className="xl:h-[106px]"
               >
                 <StickerCardAL1
                   item={f}
@@ -394,7 +394,7 @@ export default function AlbumManagePage() {
       {arquivarError && <p role="alert" className="px-4 pt-2 text-xs text-red font-body">⚠ {arquivarError}</p>}
 
       {/* Grid de figurinhas por seção */}
-      <div className="flex-1 p-4 flex flex-col gap-3">
+      <div className="flex-1 p-4 xl:px-8 flex flex-col gap-3">
         {figurinhasLoading && (
           <div className="flex justify-center py-8" aria-busy="true" aria-label="Carregando figurinhas">
             <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />

@@ -137,7 +137,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
       <AppHeader />
-      <div className="p-4 flex flex-col gap-6">
+      <div className="p-4 xl:px-8 flex flex-col gap-6">
       <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Perfil</h1>
 
       {user && (
