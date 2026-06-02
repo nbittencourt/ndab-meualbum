@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBlocker } from 'react-router-dom';
 import { abrirPacotinhosApi, albumsApi, ApiError } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
+import { AppHeader } from '@/components/AppHeader';
 import type { PilhaDaSessao } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -36,7 +36,6 @@ function PilhaTag({ children, bg, color }: { children: React.ReactNode; bg: stri
 
 export default function AbrirPacotinhosPage() {
   const queryClient = useQueryClient();
-  const { logout } = useAuthStore();
 
   // tipoId=null → AP0 (ou retomada); tipoId=string → AP1
   const [tipoId, setTipoId] = useState<string | null>(null);
@@ -164,8 +163,11 @@ export default function AbrirPacotinhosPage() {
   // ── Loading ───────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex items-center justify-center" aria-busy="true" aria-label="Carregando">
-        <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="flex-1 flex items-center justify-center" aria-busy="true" aria-label="Carregando">
+          <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+        </div>
       </div>
     );
   }
@@ -173,10 +175,10 @@ export default function AbrirPacotinhosPage() {
   // ── Retomada (sessão pendente) ────────────────────────────────────────────────
   if (temRetomada) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex flex-col gap-6">
-        <header>
-          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
-        </header>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4 flex flex-col gap-6">
+        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <div className="bg-white border-2 border-ink [box-shadow:3px_3px_0_#0A0907] p-4 flex flex-col gap-4">
           <p className="font-body text-sm text-ink font-semibold">Você tem uma sessão anterior</p>
           <p className="font-body text-sm text-ink/70">
@@ -201,6 +203,7 @@ export default function AbrirPacotinhosPage() {
           </div>
         </div>
         {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+        </div>
       </div>
     );
   }
@@ -208,10 +211,10 @@ export default function AbrirPacotinhosPage() {
   // ── AP0 – Seleção de tipo ─────────────────────────────────────────────────────
   if (tipoId === null) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4">
-        <header>
-          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
-        </header>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4 flex flex-col gap-4">
+        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <p className="font-body text-sm text-ink/70">Que álbum você está abrindo?</p>
         <div className="flex flex-col gap-2">
           {tipos.map((t) => (
@@ -238,6 +241,7 @@ export default function AbrirPacotinhosPage() {
           Confirmar
         </Button>
         {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+        </div>
       </div>
     );
   }
@@ -246,8 +250,10 @@ export default function AbrirPacotinhosPage() {
   const tipoAtual = tipos.find((t) => t._id === tipoId);
 
   return (
-    <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4 pb-24">
-      <header className="flex items-center justify-between">
+    <div className="min-h-dvh bg-paper flex flex-col">
+      <AppHeader back />
+      <div className="p-4 flex flex-col gap-4 pb-24 flex-1">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
           {tipoAtual && (
@@ -260,15 +266,8 @@ export default function AbrirPacotinhosPage() {
               Limpar pilha
             </Button>
           )}
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={async () => { await logout(); window.location.href = '/'; }}
-          >
-            Sair da conta
-          </Button>
         </div>
-      </header>
+      </div>
 
       <div
         ref={statusRef}
@@ -509,6 +508,7 @@ export default function AbrirPacotinhosPage() {
       />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+      </div>
     </div>
   );
 }

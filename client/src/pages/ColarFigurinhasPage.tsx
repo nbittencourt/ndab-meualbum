@@ -1,5 +1,6 @@
 import { useState, useId, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { colarFigurinhasApi, albumsApi, ApiError } from '@/lib/api';
 import type { EstoqueItem } from '@meualbum/shared';
@@ -92,11 +93,10 @@ export default function ColarFigurinhasPage() {
 
   if (!albumId || albumsLoading || !albumSelecionado) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4">
-        <header className="flex items-center justify-between">
-          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
-          <Button size="sm" variant="secondary" onClick={() => navigate(-1)}>Cancelar</Button>
-        </header>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4 flex flex-col gap-4">
+        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
         {albumsLoading ? (
           <div className="flex justify-center py-12" aria-busy="true" aria-label="Carregando álbuns">
             <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
@@ -129,13 +129,16 @@ export default function ColarFigurinhasPage() {
             )}
           </>
         )}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4 pb-24">
-      <header className="flex items-center justify-between gap-2">
+    <div className="min-h-dvh bg-paper flex flex-col">
+      <AppHeader back />
+      <div className="p-4 flex flex-col gap-4 pb-24 flex-1">
+      <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
           <p className="text-xs font-body text-ink/50 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
@@ -144,7 +147,7 @@ export default function ColarFigurinhasPage() {
         {ativos.length > 1 && (
           <Button size="sm" variant="secondary" onClick={() => setAlbumId('')}>Trocar álbum</Button>
         )}
-      </header>
+      </div>
 
       <Input
         label="Buscar figurinha"
@@ -250,6 +253,7 @@ export default function ColarFigurinhasPage() {
       </Modal>
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+      </div>
     </div>
   );
 }
