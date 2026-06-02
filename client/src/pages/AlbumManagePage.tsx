@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { albumsApi, ApiError } from '@/lib/api';
 import type { FigurinhaGridItem } from '@meualbum/shared';
@@ -229,13 +230,13 @@ function SecaoGrid({
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 8,
             }}
-            className="sm:[grid-template-columns:repeat(5,1fr)] sm:[gap:10px]"
+            className="xl:[grid-template-columns:repeat(5,1fr)] xl:[gap:10px]"
           >
             {secao.figurinhas.map((f) => (
               <div
                 key={f._id}
                 style={{ height: 94 }}
-                className="sm:h-[106px]"
+                className="xl:h-[106px]"
               >
                 <StickerCardAL1
                   item={f}
@@ -298,19 +299,22 @@ export default function AlbumManagePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-dvh bg-paper flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+        </div>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="min-h-dvh bg-paper p-4">
-        <p role="alert" className="text-sm text-red font-body">Álbum não encontrado.</p>
-        <Button size="sm" variant="secondary" className="mt-3" onClick={() => navigate('/albums')}>
-          ← Voltar
-        </Button>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4">
+          <p role="alert" className="text-sm text-red font-body">Álbum não encontrado.</p>
+        </div>
       </div>
     );
   }
@@ -321,14 +325,8 @@ export default function AlbumManagePage() {
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
-      <header className="sticky top-0 z-10 bg-paper border-b border-ink/10 px-4 py-3">
-        <button
-          onClick={() => navigate('/albums')}
-          className="text-sm font-body text-ink/60 hover:text-ink mb-2"
-          aria-label="Voltar para lista de álbuns"
-        >
-          ← Álbuns
-        </button>
+      <AppHeader back />
+      <div className="sticky top-[60px] z-10 bg-paper border-b border-ink/10 px-4 py-3">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide leading-tight">
           {nomeExibido}
         </h1>
@@ -338,7 +336,7 @@ export default function AlbumManagePage() {
         <div className="mt-2">
           <ProgressBar value={album.percentualConclusao} label="Progresso" />
         </div>
-      </header>
+      </div>
 
       {/* Action bar — RN-AL19: PDF loading desabilita todos */}
       <div className="px-4 py-3 border-b border-ink/10 flex gap-2 flex-wrap">
@@ -396,7 +394,7 @@ export default function AlbumManagePage() {
       {arquivarError && <p role="alert" className="px-4 pt-2 text-xs text-red font-body">⚠ {arquivarError}</p>}
 
       {/* Grid de figurinhas por seção */}
-      <div className="flex-1 p-4 flex flex-col gap-3">
+      <div className="flex-1 p-4 xl:px-8 flex flex-col gap-3">
         {figurinhasLoading && (
           <div className="flex justify-center py-8" aria-busy="true" aria-label="Carregando figurinhas">
             <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />

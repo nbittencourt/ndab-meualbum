@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { albumsApi, ApiError } from '@/lib/api';
 import type { AlbumVariante } from '@meualbum/shared';
@@ -65,21 +66,19 @@ export default function CadastroAlbumPage() {
         background: pageBg,
         transition: 'background 0.2s ease',
         minHeight: '100dvh',
-        padding: 16,
         display: 'flex',
         flexDirection: 'column',
-        gap: 24,
         color: textColor,
       }}
     >
-      <header>
-        <h1
-          className="font-display text-xl font-black uppercase tracking-wide"
-          style={{ color: textColor }}
-        >
-          Novo Álbum
-        </h1>
-      </header>
+      <AppHeader back />
+      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 24, flex: 1 }}>
+      <h1
+        className="font-display text-xl font-black uppercase tracking-wide"
+        style={{ color: textColor }}
+      >
+        Novo Álbum
+      </h1>
 
       {tiposLoading && (
         <div className="flex justify-center py-8" aria-busy="true" aria-label="Carregando tipos de álbum">
@@ -220,6 +219,7 @@ export default function CadastroAlbumPage() {
           </Button>
         </div>
       </Modal>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '@/store/authStore';
 import { albumsApi, ApiError } from '@/lib/api';
+import { AppHeader } from '@/components/AppHeader';
 import type { Album, AlbumVariante } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -121,7 +121,6 @@ function AlbumCard({ album, onDesarquivar }: { album: Album; onDesarquivar?: (id
 
 export default function AlbumsPage() {
   const queryClient = useQueryClient();
-  const { user } = useAuthStore();
   const [actionError, setActionError] = useState('');
 
   const { data, isLoading, error } = useQuery({
@@ -142,19 +141,15 @@ export default function AlbumsPage() {
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
-      <header className="sticky top-0 z-10 bg-paper border-b-2 border-ink px-4 py-3 flex items-center justify-between gap-2">
+      <AppHeader />
+      <div className="px-4 py-3 border-b-2 border-ink flex items-center justify-between gap-2">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Meus Álbuns</h1>
-        <div className="flex items-center gap-3">
-          {user?.publicId && (
-            <span className="font-mono text-xs text-ink/50">#{user.publicId}</span>
-          )}
-          <Link to="/albums/novo">
-            <Button size="sm" variant="primary" aria-label="Criar novo álbum">+ Novo</Button>
-          </Link>
-        </div>
-      </header>
+        <Link to="/albums/novo">
+          <Button size="sm" variant="primary" aria-label="Criar novo álbum">+ Novo</Button>
+        </Link>
+      </div>
 
-      <div className="flex-1 p-4 flex flex-col gap-6">
+      <div className="flex-1 p-4 xl:p-8 flex flex-col gap-6">
         {isLoading && (
           <div className="flex justify-center py-12" aria-busy="true" aria-label="Carregando álbuns">
             <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
@@ -183,7 +178,7 @@ export default function AlbumsPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {data.ativos.map((album) => (
                     <AlbumCard key={album._id} album={album} />
                   ))}
@@ -196,7 +191,7 @@ export default function AlbumsPage() {
                 <h2 id="arquivados-heading" className="font-display text-sm font-black uppercase tracking-wide text-ink mb-3">
                   Álbuns arquivados ({data.arquivados.length})
                 </h2>
-                <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {data.arquivados.map((album) => (
                     <AlbumCard key={album._id} album={album} onDesarquivar={(id) => desarquivarMut.mutate(id)} />
                   ))}
