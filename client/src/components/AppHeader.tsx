@@ -21,7 +21,7 @@ export function AppHeader({ back = false }: AppHeaderProps) {
 
   return (
     <>
-      <header style={{
+      <header className="xl:hidden" style={{
         height: 60,
         borderBottom: '2px solid #0A0907',
         background: '#FBF8EE',

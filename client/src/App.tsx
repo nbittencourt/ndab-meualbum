@@ -5,6 +5,8 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
 
+import { DesktopSidebar } from '@/components/DesktopSidebar';
+import { DesktopTopBar } from '@/components/DesktopTopBar';
 import LandingPage from '@/pages/LandingPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
@@ -98,7 +100,9 @@ export default function App() {
       <SkipLink />
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
       <div className="flex flex-col min-h-dvh">
-        <main id="main" className="flex-1 overflow-y-auto">
+        {user && <DesktopSidebar />}
+        <main id="main" className="flex-1 overflow-y-auto xl:pl-[228px]">
+          {user && <DesktopTopBar />}
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
