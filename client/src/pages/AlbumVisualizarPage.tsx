@@ -1,12 +1,10 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { albumsApi } from '@/lib/api';
-import { Button } from '@/components/ui/Button';
 import { AppHeader } from '@/components/AppHeader';
 
 export default function AlbumVisualizarPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const { data: albumData, isLoading } = useQuery({
     queryKey: ['album', id],
