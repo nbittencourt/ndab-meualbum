@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import BottomNav from '@/components/BottomNav';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
 
@@ -21,8 +20,6 @@ import AbrirPacotinhosPage from '@/pages/AbrirPacotinhosPage';
 import ColarFigurinhasPage from '@/pages/ColarFigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
 import ProfilePage from '@/pages/ProfilePage';
-
-const BOTTOM_NAV_ROUTES = ['/home', '/albums', '/abrir', '/colar', '/trocas', '/perfil'];
 
 function GlobalLoader() {
   return (
@@ -61,7 +58,6 @@ function Footer({ authenticated }: { authenticated: boolean }) {
 export default function App() {
   const { checkAuth, setReady, user, isLoading } = useAuthStore();
   const location = useLocation();
-  const showBottomNav = BOTTOM_NAV_ROUTES.some((r) => location.pathname.startsWith(r));
   const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem('cookie-consent'));
 
   useEffect(() => {
@@ -101,8 +97,8 @@ export default function App() {
     <>
       <SkipLink />
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
-      <div className={['flex flex-col min-h-dvh', showBottomNav ? 'max-w-[430px] mx-auto' : ''].join(' ')}>
-        <main id="main" className={['flex-1 overflow-y-auto', showBottomNav ? 'pb-16' : ''].join(' ')}>
+      <div className="flex flex-col min-h-dvh">
+        <main id="main" className="flex-1 overflow-y-auto">
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
@@ -126,8 +122,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        {showBottomNav && <BottomNav />}
-        {!showBottomNav && <Footer authenticated={!!user} />}
+        <Footer authenticated={!!user} />
         {showCookieBanner && (
           <CookieBanner onAccept={() => { localStorage.setItem('cookie-consent', '1'); setShowCookieBanner(false); }} />
         )}
