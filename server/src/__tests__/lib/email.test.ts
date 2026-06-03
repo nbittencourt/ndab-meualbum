@@ -50,7 +50,7 @@ describe('email: produção (com RESEND_API_KEY)', () => {
     const call = mockSend.mock.calls[0][0] as any;
     expect(call.to).toBe('user@example.com');
     expect(call.subject).toContain('Confirme seu cadastro');
-    expect(call.from).toMatch(/naoresponda@/);
+    expect(call.from).toBe('MeuAlbum <naoresponda@mail.nicholas.tec.br>');
   });
 
   it('sendEmailAlteracaoEmail chama Resend com subject correto', async () => {

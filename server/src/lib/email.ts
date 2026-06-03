@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { logger, maskEmail } from './logger.js';
 
-const FROM = 'MeuAlbum <naoresponda@ndab-meualbum-prd.web.app>';
+const FROM = 'MeuAlbum <naoresponda@mail.nicholas.tec.br>';
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
