@@ -50,6 +50,7 @@ export default function AbrirPacotinhosPage() {
   const [colarItem, setColarItem] = useState<PilhaDaSessao | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { data: tiposData, isLoading: tiposLoading } = useQuery({
     queryKey: ['tiposAlbum'],
@@ -140,6 +141,16 @@ export default function AbrirPacotinhosPage() {
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
   });
 
+  const todasRepetidasMut = useMutation({
+    mutationFn: () =>
+      Promise.all(pendentes.map((item) => abrirPacotinhosApi.marcarRepetida(item._id as string))),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      showToast('Todas marcadas como repetidas.', 'info');
+    },
+    onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
+  });
+
   // Bloqueia navegação se há itens pendentes em AP1
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -157,6 +168,32 @@ export default function AbrirPacotinhosPage() {
   useEffect(() => {
     if (tipoId && !pilhaLoading && inputRef.current) inputRef.current.focus();
   }, [pilhaLoading, tipoId]);
+
+  // Pula AP0 automaticamente quando há exatamente 1 tipo de álbum cadastrado
+  useEffect(() => {
+    if (!tiposLoading && !pilhaLoading && tipos.length === 1 && !temRetomada && tipoId === null) {
+      setTipoId(tipos[0]._id);
+    }
+  }, [tipos, tiposLoading, pilhaLoading, tipoId, temRetomada]);
+
+  // Inicializa e libera o stream da câmera
+  useEffect(() => {
+    if (!cameraAtiva) return;
+    let stream: MediaStream | null = null;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((s) => {
+        stream = s;
+        if (videoRef.current) videoRef.current.srcObject = s;
+      })
+      .catch(() => {
+        showToast('Não foi possível acessar a câmera. Verifique as permissões.', 'error');
+        setCameraAtiva(false);
+      });
+    return () => {
+      stream?.getTracks().forEach((t) => t.stop());
+      if (videoRef.current) videoRef.current.srcObject = null;
+    };
+  }, [cameraAtiva]);
 
   const isLoading = tiposLoading || pilhaLoading;
 
@@ -260,11 +297,22 @@ export default function AbrirPacotinhosPage() {
             <p className="font-body text-sm text-ink/70 mt-0.5">{tipoAtual.nome}</p>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap justify-end">
           {pendentes.length > 0 && (
-            <Button size="sm" variant="secondary" onClick={() => setShowDescartar(true)}>
-              Limpar pilha
-            </Button>
+            <>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="hidden lg:inline-flex"
+                loading={todasRepetidasMut.isPending}
+                onClick={() => todasRepetidasMut.mutate()}
+              >
+                Todas P/ Repetidas
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setShowDescartar(true)}>
+                Limpar pilha
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -280,14 +328,13 @@ export default function AbrirPacotinhosPage() {
         <div className="bg-white border-2 border-ink p-4 flex flex-col gap-3">
           {cameraAtiva ? (
             <>
-              <video autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
+              <video ref={videoRef} autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
               <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
                 Fechar câmera
               </Button>
             </>
           ) : (
             <>
-              <p className="text-xs font-body text-ink/60">A câmera não ativa automaticamente. Clique no botão abaixo para iniciar.</p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => setCameraAtiva(true)}>Abrir câmera</Button>
                 <Button size="sm" variant="secondary" onClick={() => setShowCameraPanel(false)}>Cancelar</Button>
