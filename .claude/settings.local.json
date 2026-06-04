@@ -34,7 +34,8 @@
       "PowerShell($email = \"explore_1780527207714@test.com\"; $token = mongosh \"mongodb://localhost:27017/ndab-meualbum\" --quiet --eval \"const u = db.users.findOne\\({email: '$email'}\\); const t = db.tokenconfirmacaocadastros.findOne\\({usuarioId: u._id, usadoEm: null}\\); print\\(t.token\\);\" 2>&1; Write-Output \"TOKEN: $token\")",
       "PowerShell(Get-Command mongo, mongosh, mongo.exe 2>&1)",
       "PowerShell($token = \"9cf832ce-313b-4d03-9b28-910fc2320fd2\"; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/auth/confirmar-cadastro?token=$token\" -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"BODY: $\\($r.Content\\)\")",
-      "PowerShell(gh repo view nbittencourt/ndab-meualbum --json name 2>&1)"
+      "PowerShell(gh repo view nbittencourt/ndab-meualbum --json name 2>&1)",
+      "Bash(python3)"
     ]
   }
 }
