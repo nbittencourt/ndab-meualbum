@@ -1,73 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '@/store/authStore';
 import { homeApi } from '@/lib/api';
 import { AlbumCard } from '@/components/AlbumCard';
 import { StickerRankItem } from '@/components/StickerRankItem';
-
-// ─── Logo ────────────────────────────────────────────────────────────────────
-function LogoMA() {
-  return (
-    <div style={{ width: 28, height: 28, background: '#E5142A', transform: 'rotate(-4deg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <span style={{ color: '#fff', fontFamily: '"Archivo Black", sans-serif', fontSize: 11 }}>MA</span>
-    </div>
-  );
-}
-
-// ─── Header ───────────────────────────────────────────────────────────────────
-function HomeHeader() {
-  const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
-
-  return (
-    <header
-      style={{
-        height: 60,
-        borderBottom: '2px solid #0A0907',
-        background: '#FBF8EE',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 16px',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <LogoMA />
-        <span style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 14, color: '#0A0907' }}>
-          Meu Album
-        </span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ textAlign: 'right' }}>
-          <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, fontWeight: 600, color: '#0A0907', margin: 0, lineHeight: 1.2 }}>
-            {user?.name}
-          </p>
-          <p style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(10,9,7,0.4)', margin: 0, letterSpacing: '0.08em' }}>
-            #{user?.publicId}
-          </p>
-        </div>
-        <button
-          onClick={handleLogout}
-          title="Sair"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(10,9,7,0.5)', padding: 4 }}
-        >
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-        </button>
-      </div>
-    </header>
-  );
-}
+import { AppHeader } from '@/components/AppHeader';
 
 // ─── FAB ──────────────────────────────────────────────────────────────────────
 function FAB() {
@@ -235,7 +172,7 @@ export default function HomePage() {
       `}</style>
 
       <div style={{ maxWidth: 480, margin: '0 auto', position: 'relative' }}>
-      <HomeHeader />
+      <AppHeader />
       <FAB />
 
       <div style={{ paddingBottom: 80 }}>

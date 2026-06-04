@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { profileApi, ApiError } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
+import { AppHeader } from '@/components/AppHeader';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PasswordInput } from '@/components/ui/PasswordInput';
@@ -134,10 +135,10 @@ export default function ProfilePage() {
   });
 
   return (
-    <div className="min-h-dvh bg-paper p-4 flex flex-col gap-6 pb-20">
-      <header>
-        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Perfil</h1>
-      </header>
+    <div className="min-h-dvh bg-paper flex flex-col">
+      <AppHeader />
+      <div className="p-4 xl:px-8 flex flex-col gap-6">
+      <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Perfil</h1>
 
       {user && (
         <Section title="Identificador">
@@ -330,6 +331,7 @@ export default function ProfilePage() {
           onDismiss={() => setToast(null)}
         />
       )}
+      </div>
     </div>
   );
 }

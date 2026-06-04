@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import BottomNav from '@/components/BottomNav';
-import SideNav from '@/components/SideNav';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
 
+import { DesktopSidebar } from '@/components/DesktopSidebar';
+import { DesktopTopBar } from '@/components/DesktopTopBar';
 import LandingPage from '@/pages/LandingPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
@@ -22,8 +22,6 @@ import AbrirPacotinhosPage from '@/pages/AbrirPacotinhosPage';
 import ColarFigurinhasPage from '@/pages/ColarFigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
 import ProfilePage from '@/pages/ProfilePage';
-
-const BOTTOM_NAV_ROUTES = ['/home', '/albums', '/abrir', '/colar', '/trocas', '/perfil'];
 
 function GlobalLoader() {
   return (
@@ -62,11 +60,10 @@ function Footer({ authenticated }: { authenticated: boolean }) {
 export default function App() {
   const { checkAuth, setReady, user, isLoading } = useAuthStore();
   const location = useLocation();
-  const showBottomNav = BOTTOM_NAV_ROUTES.some((r) => location.pathname.startsWith(r));
-  const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem('cookie-consent'));
+  const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem("cookie-consent"));
 
   useEffect(() => {
-    const noAuthRoutes = ['/redefinir-senha', '/confirmar-cadastro', '/confirmar-email', '/register', '/forgot-password'];
+    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password"];
     if (noAuthRoutes.some((r) => location.pathname.startsWith(r))) {
       setReady();
     } else {
@@ -78,21 +75,21 @@ export default function App() {
   // Announce page title changes for screen readers (SPA navigation)
   useEffect(() => {
     const titleMap: Record<string, string> = {
-      '/': 'Início — Meu Álbum Copa 2026',
-      '/register': 'Cadastro — Meu Álbum Copa 2026',
-      '/forgot-password': 'Recuperar Senha — Meu Álbum Copa 2026',
-      '/redefinir-senha': 'Redefinir Senha — Meu Álbum Copa 2026',
-      '/confirmar-cadastro': 'Confirmar Cadastro — Meu Álbum Copa 2026',
-      '/confirmar-email': 'Confirmar Email — Meu Álbum Copa 2026',
-      '/home': 'Início — Meu Álbum Copa 2026',
-      '/albums': 'Álbuns — Meu Álbum Copa 2026',
-      '/albums/novo': 'Novo Álbum — Meu Álbum Copa 2026',
-      '/abrir': 'Abrir Pacotinhos — Meu Álbum Copa 2026',
-      '/colar': 'Colar Figurinhas — Meu Álbum Copa 2026',
-      '/trocas': 'Trocas — Meu Álbum Copa 2026',
-      '/perfil': 'Perfil — Meu Álbum Copa 2026',
+      "/": "Início — Meu Álbum Copa 2026",
+      "/register": "Cadastro — Meu Álbum Copa 2026",
+      "/forgot-password": "Recuperar Senha — Meu Álbum Copa 2026",
+      "/redefinir-senha": "Redefinir Senha — Meu Álbum Copa 2026",
+      "/confirmar-cadastro": "Confirmar Cadastro — Meu Álbum Copa 2026",
+      "/confirmar-email": "Confirmar Email — Meu Álbum Copa 2026",
+      "/home": "Início — Meu Álbum Copa 2026",
+      "/albums": "Álbuns — Meu Álbum Copa 2026",
+      "/albums/novo": "Novo Álbum — Meu Álbum Copa 2026",
+      "/abrir": "Abrir Pacotinhos — Meu Álbum Copa 2026",
+      "/colar": "Colar Figurinhas — Meu Álbum Copa 2026",
+      "/trocas": "Trocas — Meu Álbum Copa 2026",
+      "/perfil": "Perfil — Meu Álbum Copa 2026",
     };
-    const title = titleMap[location.pathname] ?? 'Meu Álbum Copa 2026';
+    const title = titleMap[location.pathname] ?? "Meu Álbum Copa 2026";
     document.title = title;
   }, [location.pathname]);
 
@@ -102,49 +99,41 @@ export default function App() {
     <>
       <SkipLink />
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
-      <div className="flex min-h-dvh">
-        {showBottomNav && <SideNav />}
-        <div className={['flex flex-col flex-1 min-w-0', showBottomNav ? 'lg:ml-[220px]' : ''].join(' ')}>
-          <main
-            id="main"
-            className={[
-              'flex-1 overflow-y-auto',
-              showBottomNav ? 'max-w-[430px] lg:max-w-none mx-auto w-full pb-16 lg:pb-0' : '',
-            ].join(' ')}
-          >
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
-              <Route path="/register" element={user ? <Navigate to="/home" replace /> : <RegisterPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
-              <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
-              <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
+      <div className="flex flex-col min-h-dvh">
+        {user && <DesktopSidebar />}
+        <main id="main" className="flex-1 overflow-y-auto xl:pl-[228px]">
+          {user && <DesktopTopBar />}
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
+            <Route path="/register" element={user ? <Navigate to="/home" replace /> : <RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+            <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
+            <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
 
-              {/* Protected routes */}
-              <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-              <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
-              <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
-              <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
-              <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
-              <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
-              <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
-              <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
-              <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            {/* Protected routes */}
+            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
+            <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
+            <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
+            <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
+            <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
+            <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
+            <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
+            <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-              {/* Redirects para rotas em inglês / nomes antigos */}
-              <Route path="/profile"         element={<Navigate to="/perfil"      replace />} />
-              <Route path="/swaps"           element={<Navigate to="/trocas"      replace />} />
-              <Route path="/albums/cadastro" element={<Navigate to="/albums/novo" replace />} />
+            {/* Redirects para rotas em inglês / nomes antigos */}
+            <Route path="/profile"         element={<Navigate to="/perfil"      replace />} />
+            <Route path="/swaps"           element={<Navigate to="/trocas"      replace />} />
+            <Route path="/albums/cadastro" element={<Navigate to="/albums/novo" replace />} />
 
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          {showBottomNav && <BottomNav />}
-          {!showBottomNav && <Footer authenticated={!!user} />}
-        </div>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <Footer authenticated={!!user} />
         {showCookieBanner && (
-          <CookieBanner onAccept={() => { localStorage.setItem('cookie-consent', '1'); setShowCookieBanner(false); }} />
+          <CookieBanner onAccept={() => { localStorage.setItem("cookie-consent", "1"); setShowCookieBanner(false); }} />
         )}
       </div>
     </>

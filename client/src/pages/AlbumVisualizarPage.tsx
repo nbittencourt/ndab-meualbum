@@ -1,9 +1,9 @@
 import { useMemo, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { albumsApi } from '@/lib/api';
-import { Button } from '@/components/ui/Button';
+import { AppHeader } from '@/components/AppHeader';
 
 type Secao = { _id: string; nome: string; ordem: number; totalFigurinhas: number; figurinhasColadas: number };
 type Faltante = { numero: string; nome: string; secaoId: string };
@@ -15,7 +15,6 @@ type VItem =
 
 export default function AlbumVisualizarPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: albumData, isLoading } = useQuery({
@@ -57,19 +56,22 @@ export default function AlbumVisualizarPage() {
 
   if (isLoading || faltantesLoading) {
     return (
-      <div className="min-h-dvh bg-paper flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+        </div>
       </div>
     );
   }
 
   if (!albumData) {
     return (
-      <div className="min-h-dvh bg-paper p-4">
-        <p role="alert" className="text-sm text-red font-body">Álbum não encontrado.</p>
-        <Button size="sm" variant="secondary" className="mt-3" onClick={() => navigate(`/albums/${id}`)}>
-          ← Voltar
-        </Button>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4">
+          <p role="alert" className="text-sm text-red font-body">Álbum não encontrado.</p>
+        </div>
       </div>
     );
   }
@@ -79,21 +81,13 @@ export default function AlbumVisualizarPage() {
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
-      <header className="sticky top-0 z-10 bg-paper border-b border-ink/10 px-4 py-3">
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={() => navigate(`/albums/${id}`)}
-          className="mb-2"
-          aria-label="Voltar para gerenciamento do álbum"
-        >
-          ← Voltar
-        </Button>
+      <AppHeader back />
+      <div className="sticky top-[60px] z-10 bg-paper border-b border-ink/10 px-4 py-3">
         <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">
           {nomeExibido}
         </h1>
         <p className="text-xs font-mono text-ink/50">{album.percentualConclusao}% completo</p>
-      </header>
+      </div>
 
       <div
         ref={scrollRef}

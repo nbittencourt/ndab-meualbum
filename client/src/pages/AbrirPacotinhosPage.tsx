@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBlocker } from 'react-router-dom';
 import { abrirPacotinhosApi, albumsApi, ApiError } from '@/lib/api';
-import { useAuthStore } from '@/store/authStore';
+import { AppHeader } from '@/components/AppHeader';
 import type { PilhaDaSessao } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -36,7 +36,6 @@ function PilhaTag({ children, bg, color }: { children: React.ReactNode; bg: stri
 
 export default function AbrirPacotinhosPage() {
   const queryClient = useQueryClient();
-  const { logout } = useAuthStore();
 
   // tipoId=null → AP0 (ou retomada); tipoId=string → AP1
   const [tipoId, setTipoId] = useState<string | null>(null);
@@ -51,6 +50,7 @@ export default function AbrirPacotinhosPage() {
   const [colarItem, setColarItem] = useState<PilhaDaSessao | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { data: tiposData, isLoading: tiposLoading } = useQuery({
     queryKey: ['tiposAlbum'],
@@ -141,6 +141,16 @@ export default function AbrirPacotinhosPage() {
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
   });
 
+  const todasRepetidasMut = useMutation({
+    mutationFn: () =>
+      Promise.all(pendentes.map((item) => abrirPacotinhosApi.marcarRepetida(item._id as string))),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      showToast('Todas marcadas como repetidas.', 'info');
+    },
+    onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
+  });
+
   // Bloqueia navegação se há itens pendentes em AP1
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
@@ -159,13 +169,42 @@ export default function AbrirPacotinhosPage() {
     if (tipoId && !pilhaLoading && inputRef.current) inputRef.current.focus();
   }, [pilhaLoading, tipoId]);
 
+  // Pula AP0 automaticamente quando há exatamente 1 tipo de álbum cadastrado
+  useEffect(() => {
+    if (!tiposLoading && !pilhaLoading && tipos.length === 1 && !temRetomada && tipoId === null) {
+      setTipoId(tipos[0]._id);
+    }
+  }, [tipos, tiposLoading, pilhaLoading, tipoId, temRetomada]);
+
+  // Inicializa e libera o stream da câmera
+  useEffect(() => {
+    if (!cameraAtiva) return;
+    let stream: MediaStream | null = null;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((s) => {
+        stream = s;
+        if (videoRef.current) videoRef.current.srcObject = s;
+      })
+      .catch(() => {
+        showToast('Não foi possível acessar a câmera. Verifique as permissões.', 'error');
+        setCameraAtiva(false);
+      });
+    return () => {
+      stream?.getTracks().forEach((t) => t.stop());
+      if (videoRef.current) videoRef.current.srcObject = null;
+    };
+  }, [cameraAtiva]);
+
   const isLoading = tiposLoading || pilhaLoading;
 
   // ── Loading ───────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex items-center justify-center" aria-busy="true" aria-label="Carregando">
-        <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="flex-1 flex items-center justify-center" aria-busy="true" aria-label="Carregando">
+          <div className="w-8 h-8 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+        </div>
       </div>
     );
   }
@@ -173,10 +212,10 @@ export default function AbrirPacotinhosPage() {
   // ── Retomada (sessão pendente) ────────────────────────────────────────────────
   if (temRetomada) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex flex-col gap-6">
-        <header>
-          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
-        </header>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4 xl:px-8 flex flex-col gap-6">
+        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <div className="bg-white border-2 border-ink [box-shadow:3px_3px_0_#0A0907] p-4 flex flex-col gap-4">
           <p className="font-body text-sm text-ink font-semibold">Você tem uma sessão anterior</p>
           <p className="font-body text-sm text-ink/70">
@@ -201,6 +240,7 @@ export default function AbrirPacotinhosPage() {
           </div>
         </div>
         {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+        </div>
       </div>
     );
   }
@@ -208,10 +248,10 @@ export default function AbrirPacotinhosPage() {
   // ── AP0 – Seleção de tipo ─────────────────────────────────────────────────────
   if (tipoId === null) {
     return (
-      <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4">
-        <header>
-          <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
-        </header>
+      <div className="min-h-dvh bg-paper flex flex-col">
+        <AppHeader back />
+        <div className="p-4 xl:px-8 flex flex-col gap-4">
+        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
         <p className="font-body text-sm text-ink/70">Que álbum você está abrindo?</p>
         <div className="flex flex-col gap-2">
           {tipos.map((t) => (
@@ -238,6 +278,7 @@ export default function AbrirPacotinhosPage() {
           Confirmar
         </Button>
         {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+        </div>
       </div>
     );
   }
@@ -246,29 +287,35 @@ export default function AbrirPacotinhosPage() {
   const tipoAtual = tipos.find((t) => t._id === tipoId);
 
   return (
-    <div className="min-h-dvh bg-paper p-4 flex flex-col gap-4 pb-24">
-      <header className="flex items-center justify-between">
+    <div className="min-h-dvh bg-paper flex flex-col">
+      <AppHeader back />
+      <div className="p-4 xl:px-8 flex flex-col gap-4 pb-24 flex-1">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Abrir Pacotinhos</h1>
           {tipoAtual && (
             <p className="font-body text-sm text-ink/70 mt-0.5">{tipoAtual.nome}</p>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap justify-end">
           {pendentes.length > 0 && (
-            <Button size="sm" variant="secondary" onClick={() => setShowDescartar(true)}>
-              Limpar pilha
-            </Button>
+            <>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="hidden lg:inline-flex"
+                loading={todasRepetidasMut.isPending}
+                onClick={() => todasRepetidasMut.mutate()}
+              >
+                Todas P/ Repetidas
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setShowDescartar(true)}>
+                Limpar pilha
+              </Button>
+            </>
           )}
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={async () => { await logout(); window.location.href = '/'; }}
-          >
-            Sair da conta
-          </Button>
         </div>
-      </header>
+      </div>
 
       <div
         ref={statusRef}
@@ -281,14 +328,13 @@ export default function AbrirPacotinhosPage() {
         <div className="bg-white border-2 border-ink p-4 flex flex-col gap-3">
           {cameraAtiva ? (
             <>
-              <video autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
+              <video ref={videoRef} autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
               <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
                 Fechar câmera
               </Button>
             </>
           ) : (
             <>
-              <p className="text-xs font-body text-ink/60">A câmera não ativa automaticamente. Clique no botão abaixo para iniciar.</p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => setCameraAtiva(true)}>Abrir câmera</Button>
                 <Button size="sm" variant="secondary" onClick={() => setShowCameraPanel(false)}>Cancelar</Button>
@@ -509,6 +555,7 @@ export default function AbrirPacotinhosPage() {
       />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
+      </div>
     </div>
   );
 }
