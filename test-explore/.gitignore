@@ -1,0 +1,6 @@
+report/
+.setup-state.json
+screenshots/
+screenshots-mobile*/
+screenshots-desktop*/
+raw-report.json

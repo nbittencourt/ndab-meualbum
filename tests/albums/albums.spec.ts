@@ -51,19 +51,19 @@ test.describe('Álbuns (Gerenciamento)', () => {
     test('deve exibir header global com identificador do usuário', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
       await page.goto('/albums');
-      await expect(page.getByText(identificador)).toBeVisible();
+      await expect(page.locator('header').getByText(identificador)).toBeVisible();
     });
 
     test('deve exibir estado vazio com CTA "Novo álbum" quando sem álbuns', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/albums');
-      await expect(page.getByRole('link', { name: /novo álbum/i })).toBeVisible();
+      await expect(page.getByRole('link', { name: /novo álbum/i }).first()).toBeVisible();
     });
 
     test('deve recarregar lista a cada acesso (RN-AL29)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
       await page.goto('/albums');
-      await expect(page.getByRole('link', { name: /novo álbum/i })).toBeVisible();
+      await expect(page.getByRole('link', { name: /novo álbum/i }).first()).toBeVisible();
 
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');

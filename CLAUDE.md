@@ -35,11 +35,6 @@ Full deployment guide: [`docs/DEPLOY.md`](docs/DEPLOY.md)
 
 ## Environment Variables
 
-### Frontend — build-time (injected into Vite bundle by Cloud Build)
-
-| Variable | Dev value | Description |
-|----------|-----------|-------------|
-| `VITE_API_URL` | `""` (empty) | Not used in production. Frontend always uses relative `/api/**` — Vite proxy in dev, Firebase Hosting rewrite in prod/tst. |
 
 ### Backend — runtime (GCP Secret Manager on Cloud Run)
 

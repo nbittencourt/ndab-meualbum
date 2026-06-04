@@ -75,7 +75,8 @@ test.describe('Perfil do Usuário', () => {
     test('deve iniciar alteração e exibir aviso de EMAIL_PENDENTE', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/perfil');
-      await page.getByLabel('Email').fill(`novo+${Date.now()}@exemplo.com`);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(`novo+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
       await expect(page.getByText(/pendente|aguardando confirmação/i)).toBeVisible();
     });
@@ -84,10 +85,13 @@ test.describe('Perfil do Usuário', () => {
       await usuarioAtivo(page, request);
       await page.goto('/perfil');
 
-      await page.getByLabel('Email').fill(`novo1+${Date.now()}@exemplo.com`);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(`novo1+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
       await expect(page.getByText(/aguardando confirmação/i)).toBeVisible();
 
+      // Após submit bem-sucedido o form fecha; reabrir para segunda tentativa
+      await page.getByRole('button', { name: /alterar email/i }).click();
       await page.getByLabel('Novo email').fill(`novo2+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
 
@@ -98,7 +102,8 @@ test.describe('Perfil do Usuário', () => {
       const { dados: outro } = await criarUsuario(request);
       await usuarioAtivo(page, request);
       await page.goto('/perfil');
-      await page.getByLabel('Email').fill(outro.email as string);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(outro.email as string);
       await page.getByTestId('salvar-email').click();
       await expect(page.getByText(/já está em uso/i)).toBeVisible();
     });
@@ -107,11 +112,13 @@ test.describe('Perfil do Usuário', () => {
       await usuarioAtivo(page, request);
       await page.goto('/perfil');
       const emailNovo = `mesmo+${Date.now()}@exemplo.com`;
-      await page.getByLabel('Email').fill(emailNovo);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(emailNovo);
       await page.getByTestId('salvar-email').click();
 
       await page.goto('/perfil');
-      await page.getByLabel('Email').fill(emailNovo);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(emailNovo);
       await page.getByTestId('salvar-email').click();
       await expect(page.getByText(/já em espera|mesmo email pendente|aguarde/i)).toBeVisible();
     });
@@ -119,7 +126,8 @@ test.describe('Perfil do Usuário', () => {
     test('deve cancelar alteração e retornar status ATIVO (RN-P14)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/perfil');
-      await page.getByLabel('Email').fill(`novo+${Date.now()}@exemplo.com`);
+      await page.getByRole('button', { name: /alterar email/i }).click();
+      await page.getByLabel('Novo email').fill(`novo+${Date.now()}@exemplo.com`);
       await page.getByTestId('salvar-email').click();
       await page.getByRole('button', { name: /cancelar alteração/i }).click();
       await expect(page.getByText(/pendente|aguardando confirmação/i)).not.toBeVisible();

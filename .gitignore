@@ -9,3 +9,5 @@ build/
 Thumbs.db
 .env.tst
 .claude/worktrees/
+.playwright-mcp/
+.playwright-mcp-*

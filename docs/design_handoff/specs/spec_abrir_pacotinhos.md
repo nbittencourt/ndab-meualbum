@@ -95,7 +95,7 @@ Exibida apenas em nova sessão.
 2. Lista de tipos disponíveis no catálogo
 3. Botão "Confirmar" — habilitado após seleção
 
-Mesmo com um único tipo no catálogo, a seleção é explícita — o sistema não pula esta tela.
+**Regra de skip:** quando há exatamente 1 `TipoAlbum` ativo no catálogo, esta tela é pulada automaticamente — o sistema pré-seleciona o único tipo disponível e abre diretamente a Tela AP1 (RN-AP43). A tela AP0 é exibida apenas quando existem 2 ou mais tipos.
 
 ---
 

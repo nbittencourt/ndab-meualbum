@@ -15,6 +15,7 @@
 | 1.3 | red team | **A2** — colagem via MCol usa upsert `(album_id, figurinha_id)`; sem duplicatas em `FigurinhaColada` (RN-AP26). **A4** — comportamento definido quando álbum é arquivado durante colagem (RN-AP27). **M2** — pilha limitada a 100 itens PENDENTES (RN-AP28). **M3** — descarte exige confirmação com exibição do número e nome da figurinha (RN-AP24 atualizado). **M6** — modo offline: fila local com sincronização ao reconectar (seção 9, RN-AP29 a RN-AP31). **B1** — navegação via header global enquanto há itens PENDENTES na pilha aciona o alerta de saída (RN-AP32) |
 | 1.4 | Correção de conflito + WCAG | **Conflito B corrigido:** `FigurinhaColada.origem = DIRETA` para colagens via MCol (figurinha da pilha cola diretamente no álbum sem passar por EstoqueFigurinha). RN-AP14 atualizado; Seção 7.1 atualizada. Requisitos de acessibilidade adicionados (RN-AP33 a RN-AP40). |
 | 1.5 | ajustes UX | Header e footer globais tornados obrigatórios em todas as telas. Botão "Sair" removido da Tela AP1 (redundante com logout do header — RN-AP41). Nome e tipo do álbum da sessão exibidos em destaque no topo da AP1 (RN-AP42). Validação explícita de figurinha fora do catálogo do álbum selecionado (RN-AP04 detalhado). Ativação do modo câmera explicitada na estrutura da tela. |
+| 1.6 | ajuste AP0 | **RN-AP43 adicionado:** quando há exatamente 1 `TipoAlbum` no catálogo, a tela AP0 é pulada automaticamente e o fluxo inicia diretamente na AP1 com o tipo pré-selecionado. |
 
 ---
 
@@ -103,7 +104,7 @@ Exibida apenas em nova sessão.
 2. Lista de tipos disponíveis no catálogo
 3. Botão "Confirmar" — habilitado após seleção
 
-Mesmo com um único tipo no catálogo, a seleção é explícita — o sistema não pula esta tela.
+**Regra de skip:** quando há exatamente 1 `TipoAlbum` ativo no catálogo, esta tela é pulada automaticamente — o sistema pré-seleciona o único tipo disponível e abre diretamente a Tela AP1 (RN-AP43). A tela AP0 é exibida apenas quando existem 2 ou mais tipos.
 
 ---
 

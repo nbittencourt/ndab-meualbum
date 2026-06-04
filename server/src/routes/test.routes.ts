@@ -176,6 +176,18 @@ router.get('/tipo-album-id', async (_req, res) => {
   res.json({ tipoAlbumId: String((tipo as any)._id) });
 });
 
+router.post('/criar-tipo-album', async (req, res) => {
+  const { nome, totalFigurinhas = 0 } = req.body;
+  if (!nome) { res.status(400).json({ error: 'nome obrigatório' }); return; }
+  const tipo = await TipoAlbum.create({ nome, totalFigurinhas });
+  res.json({ tipoAlbumId: String(tipo._id) });
+});
+
+router.delete('/tipo-album/:id', async (req, res) => {
+  await TipoAlbum.deleteOne({ _id: req.params.id });
+  res.json({ ok: true });
+});
+
 router.post('/seed', async (_req, res) => {
   const seedDir = join(process.cwd(), '..', 'tests', '_seed');
   const { tipo_albums }: { tipo_albums: Array<{ id: number; nome: string; total_figurinhas: number }> } =

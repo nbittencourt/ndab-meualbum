@@ -21,14 +21,10 @@ export function AppHeader({ back = false }: AppHeaderProps) {
 
   return (
     <>
-      <header className="xl:hidden" style={{
+      <header className="flex items-center justify-between px-4 xl:px-8" style={{
         height: 60,
         borderBottom: '2px solid #0A0907',
         background: '#FBF8EE',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 16px',
         position: 'sticky',
         top: 0,
         zIndex: 50,
@@ -51,13 +47,14 @@ export function AppHeader({ back = false }: AppHeaderProps) {
               </svg>
             </button>
           ) : null}
+          {/* Menu button: oculto no desktop onde o DesktopSidebar exibe a navegação */}
           <button
+            className="xl:hidden flex items-center gap-2"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menu de navegação"
             aria-expanded={menuOpen}
             aria-haspopup="dialog"
             style={{
-              display: 'flex', alignItems: 'center', gap: 8,
               background: 'transparent', border: 'none', cursor: 'pointer',
               padding: 0,
             }}

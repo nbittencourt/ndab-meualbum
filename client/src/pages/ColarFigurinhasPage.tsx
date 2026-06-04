@@ -127,6 +127,7 @@ export default function ColarFigurinhasPage() {
                 ))}
               </ul>
             )}
+            <Button variant="secondary" onClick={() => navigate(-1)}>Cancelar</Button>
           </>
         )}
         </div>

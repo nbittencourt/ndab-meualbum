@@ -48,6 +48,7 @@ export default function ProfilePage() {
   });
 
   // Email
+  const [emailEdit, setEmailEdit] = useState(false);
   const [emailVal, setEmailVal] = useState('');
   const [emailError, setEmailError] = useState('');
   const emailMut = useMutation({
@@ -55,6 +56,7 @@ export default function ProfilePage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       setEmailVal('');
+      setEmailEdit(false);
       showToast('Email de confirmação enviado.', 'success');
     },
     onError: (err) => {
@@ -193,19 +195,30 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
-        <form onSubmit={(e) => { e.preventDefault(); setEmailError(''); emailMut.mutate(emailVal); }} className="flex flex-col gap-3 mt-3">
-          <Input
-            label="Novo email"
-            type="email"
-            value={emailVal}
-            onChange={(e) => { setEmailVal(e.target.value); setEmailError(''); }}
-            autoComplete="email"
-            error={emailError || undefined}
-          />
-          <Button type="submit" size="sm" loading={emailMut.isPending} disabled={!emailVal.trim()} data-testid="salvar-email">
+        {emailEdit ? (
+          <form onSubmit={(e) => { e.preventDefault(); setEmailError(''); emailMut.mutate(emailVal); }} className="flex flex-col gap-3 mt-3">
+            <Input
+              label="Novo email"
+              type="email"
+              value={emailVal}
+              onChange={(e) => { setEmailVal(e.target.value); setEmailError(''); }}
+              autoComplete="email"
+              error={emailError || undefined}
+            />
+            <div className="flex gap-2">
+              <Button type="submit" size="sm" loading={emailMut.isPending} disabled={!emailVal.trim()} data-testid="salvar-email">
+                Salvar
+              </Button>
+              <Button type="button" size="sm" variant="secondary" onClick={() => { setEmailEdit(false); setEmailVal(''); setEmailError(''); }}>
+                Cancelar
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <Button size="sm" variant="secondary" className="mt-2" onClick={() => setEmailEdit(true)}>
             Alterar email
           </Button>
-        </form>
+        )}
       </Section>
 
       <Section title="Senha">

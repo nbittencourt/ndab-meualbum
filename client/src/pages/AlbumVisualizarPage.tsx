@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -53,6 +53,15 @@ export default function AlbumVisualizarPage() {
     estimateSize: (i) => (allItems[i]?.type === 'header' ? 40 : 44),
     overscan: 12,
   });
+
+  useEffect(() => {
+    if (!albumData) return;
+    const album = (albumData as any).album;
+    const nome = album?.nomePersonalizado || album?.tipoAlbum?.nome;
+    if (!nome) return;
+    document.title = `${nome} — Meu Álbum Copa 2026`;
+    return () => { document.title = 'Meu Álbum Copa 2026'; };
+  }, [albumData]);
 
   if (isLoading || faltantesLoading) {
     return (

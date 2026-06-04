@@ -362,7 +362,7 @@ function CountdownBand() {
 // ─── Stats Scoreboard ─────────────────────────────────────────────────────────
 function StatsScoreboard() {
   const stats = [
-    { value: '980', label: 'Figurinhas' },
+    { value: '994', label: 'Figurinhas' },
     { value: '112', label: 'Páginas' },
     { value: '48', label: 'Seleções' },
     { value: '2026', label: 'Copa' },

@@ -6,7 +6,6 @@ import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
 
 import { DesktopSidebar } from '@/components/DesktopSidebar';
-import { DesktopTopBar } from '@/components/DesktopTopBar';
 import LandingPage from '@/pages/LandingPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
@@ -81,7 +80,7 @@ export default function App() {
       "/redefinir-senha": "Redefinir Senha — Meu Álbum Copa 2026",
       "/confirmar-cadastro": "Confirmar Cadastro — Meu Álbum Copa 2026",
       "/confirmar-email": "Confirmar Email — Meu Álbum Copa 2026",
-      "/home": "Início — Meu Álbum Copa 2026",
+      "/home": "Meus Álbuns — Meu Álbum Copa 2026",
       "/albums": "Álbuns — Meu Álbum Copa 2026",
       "/albums/novo": "Novo Álbum — Meu Álbum Copa 2026",
       "/abrir": "Abrir Pacotinhos — Meu Álbum Copa 2026",
@@ -101,8 +100,7 @@ export default function App() {
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
       <div className="flex flex-col min-h-dvh">
         {user && <DesktopSidebar />}
-        <main id="main" className="flex-1 overflow-y-auto xl:pl-[228px]">
-          {user && <DesktopTopBar />}
+        <main id="main" className={`flex-1 overflow-y-auto xl:pl-[228px]${showCookieBanner ? ' pb-[140px]' : ''}`}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />

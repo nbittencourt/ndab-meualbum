@@ -10,12 +10,13 @@ test.describe('Home', () => {
 
   test('deve exibir CTA "Abrir Pacotinhos" sempre (RN-H14)', async ({ page, request }) => {
     await usuarioAtivo(page, request);
-    await expect(page.getByRole('button', { name: /abrir pacotinhos/i })).toBeVisible();
+    // FAB e CTA Banner são ambos spec-compliant; verifica que ao menos um está visível
+    await expect(page.getByRole('button', { name: /abrir pacotinhos/i }).first()).toBeVisible();
   });
 
   test('deve exibir nome e identificador do usuário no header', async ({ page, request }) => {
     const dados = await usuarioAtivo(page, request);
-    await expect(page.getByText(dados.identificador)).toBeVisible();
+    await expect(page.locator('header').getByText(dados.identificador)).toBeVisible();
   });
 
   test('deve exibir ação "Ver todos os álbuns" na seção Meus Álbuns', async ({ page, request }) => {

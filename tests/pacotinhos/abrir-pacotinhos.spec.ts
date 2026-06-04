@@ -4,15 +4,27 @@ import {
   criarAlbum,
   getTipoAlbumId,
   arquivarAlbum,
+  criarTipoAlbumExtra,
 } from '../support/helpers';
 
 test.describe('Abrir Pacotinhos', () => {
 
   // ── AP0: Seleção de tipo ──────────────────────────────────────────────────────
+  // Testes que validam a UI da AP0 precisam de 2+ TipoAlbums para evitar o
+  // auto-skip de RN-AP43 (com 1 tipo, AP0 é pulada automaticamente).
 
-  test.describe('Tela AP0 – Seleção de tipo', () => {
+  test.describe('Tela AP0 – Seleção de tipo (2+ tipos)', () => {
+    let tipoExtraId: string;
 
-    test('deve exibir AP0 ao iniciar nova sessão', async ({ page, request }) => {
+    test.beforeAll(async ({ request }) => {
+      tipoExtraId = await criarTipoAlbumExtra(request);
+    });
+
+    test.afterAll(async ({ request }) => {
+      if (tipoExtraId) await request.delete(`/api/v1/test/tipo-album/${tipoExtraId}`);
+    });
+
+    test('deve exibir AP0 quando há 2+ TipoAlbums', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
       await expect(page.getByText(/que álbum você está abrindo/i)).toBeVisible();
@@ -24,11 +36,24 @@ test.describe('Abrir Pacotinhos', () => {
       await expect(page.getByRole('button', { name: /confirmar/i })).toBeDisabled();
     });
 
-    test('deve exibir AP0 mesmo com apenas 1 tipo no catálogo (RN-AP20)', async ({ page, request }) => {
-      await usuarioAtivo(page, request);
+    test('"Descartar" deve remover pilha e exibir AP0 (RN-AP17)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
+      });
       await page.goto('/abrir');
+      await page.getByRole('button', { name: /descartar e começar do zero/i }).click();
       await expect(page.getByText(/que álbum você está abrindo/i)).toBeVisible();
     });
+  });
+
+  // RN-AP43: com exatamente 1 TipoAlbum, AP0 é pulada e AP1 abre diretamente
+  test('deve pular AP0 e abrir AP1 diretamente com 1 TipoAlbum (RN-AP43)', async ({ page, request }) => {
+    await usuarioAtivo(page, request);
+    await page.goto('/abrir');
+    await expect(page.getByText(/que álbum você está abrindo/i)).not.toBeVisible();
+    await expect(page.getByRole('textbox')).toBeVisible();
   });
 
   // ── Retomada ─────────────────────────────────────────────────────────────────
@@ -59,30 +84,18 @@ test.describe('Abrir Pacotinhos', () => {
 
       await expect(page.getByText(/que álbum você está abrindo/i)).not.toBeVisible();
     });
-
-    test('"Descartar" deve remover pilha e exibir AP0 (RN-AP17)', async ({ page, request }) => {
-      const { identificador } = await usuarioAtivo(page, request);
-      const tipoId = await getTipoAlbumId(request);
-      await request.post('/api/v1/test/criar-pilha-pendente', {
-        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
-      });
-      await page.goto('/abrir');
-      await page.getByRole('button', { name: /descartar e começar do zero/i }).click();
-
-      await expect(page.getByText(/que álbum você está abrindo/i)).toBeVisible();
-    });
   });
 
   // ── Entrada por digitação ─────────────────────────────────────────────────────
+  // Com 1 TipoAlbum (RN-AP43), AP1 abre diretamente — sem interação com AP0.
 
   test.describe('Entrada por digitação', () => {
 
     test('deve converter entrada para maiúsculas', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
-      await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
-      await page.getByRole('button', { name: /confirmar/i }).click();
       const campo = page.getByRole('textbox');
+      await expect(campo).toBeVisible();
       await campo.fill('abc');
       await expect(campo).toHaveValue('ABC');
     });
@@ -90,9 +103,8 @@ test.describe('Abrir Pacotinhos', () => {
     test('deve exibir erro inline para número inexistente no catálogo (RN-AP04)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
-      await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
-      await page.getByRole('button', { name: /confirmar/i }).click();
       const campo = page.getByRole('textbox');
+      await expect(campo).toBeVisible();
       await campo.fill('INEXISTENTE-999');
       await campo.press('Enter');
       await expect(page.getByText(/Figurinha INEXISTENTE-999 não encontrada no álbum/i)).toBeVisible();
@@ -115,9 +127,8 @@ test.describe('Abrir Pacotinhos', () => {
     test('deve limpar campo e manter foco após adição bem-sucedida', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
-      await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
-      await page.getByRole('button', { name: /confirmar/i }).click();
       const campo = page.getByRole('textbox');
+      await expect(campo).toBeVisible();
       await campo.fill('FWC1');
       await campo.press('Enter');
       await expect(campo).toHaveValue('');
@@ -138,7 +149,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /descartar/i }).first().click();
-      await expect(page.getByText(/FWC1/)).toBeVisible();
+      await expect(page.getByText(/FWC1/).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /confirmar/i })).toBeVisible();
     });
   });
@@ -155,6 +166,8 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      // Abre menu de navegação mobile e navega para Álbuns
+      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
       await page.getByRole('link', { name: /álbum/i }).click();
 
       await expect(page.getByRole('heading', { name: /figurinhas sem destino/i })).toBeVisible();
@@ -168,6 +181,7 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
       await page.getByRole('link', { name: /álbum/i }).click();
       await page.getByRole('button', { name: /ficar/i }).click();
 
@@ -182,7 +196,8 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
-      await page.getByRole('button', { name: /logout|sair da conta/i }).click();
+      // Logout via header (RN-AP32: encerra diretamente sem alerta)
+      await page.locator('header').getByRole('button', { name: 'Sair', exact: true }).click();
 
       await expect(page).toHaveURL('/');
     });
@@ -200,22 +215,24 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
-      await expect(page.getByRole('button', { name: 'Sair', exact: true })).not.toBeVisible();
+      // Apenas o botão de logout do header deve ter o nome "Sair"
+      // AP1 não deve adicionar seu próprio botão de saída dedicado
+      await expect(page.getByRole('button', { name: 'Sair', exact: true })).toHaveCount(1);
+      await expect(page.locator('header').getByRole('button', { name: 'Sair', exact: true })).toBeVisible();
     });
 
     test('deve exibir nome do tipo de álbum da sessão no topo da AP1 (RN-AP42)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
-      await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
-      await page.getByRole('button', { name: /confirmar/i }).click();
+      // Com 1 tipo (RN-AP43), AP1 abre diretamente com tipo pré-selecionado
+      await expect(page.getByRole('textbox')).toBeVisible();
       await expect(page.getByText(/FIFA World Cup 2026/i)).toBeVisible();
     });
 
     test('câmera não ativa automaticamente — requer ação explícita (RN-AP43)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
-      await page.getByRole('button', { name: /FIFA World Cup 2026/i }).click();
-      await page.getByRole('button', { name: /confirmar/i }).click();
+      // Com 1 tipo, AP1 abre diretamente
       await page.getByRole('button', { name: /fotografar|câmera/i }).click();
       await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
       await expect(page.locator('video')).not.toBeVisible();

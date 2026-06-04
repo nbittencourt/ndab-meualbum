@@ -707,13 +707,13 @@ TokenOperacao (token UUID PK, usuario_identificador FK, tipo ENUM, email_novo,
 | `/redefinir-senha?token=<UUID>` | Redefinição (L3/L4) | Público |
 | `/confirmar-email?token=<UUID>` | Confirmação alteração de email (P2) | Público |
 | `/home` | Home | ATIVO · EMAIL_PENDENTE |
-| `/packs/open` | Abrir Pacotinhos (AP0/AP1) | ATIVO · EMAIL_PENDENTE |
-| `/albums/new` | Cadastro de Álbum (CA1/CA2) | ATIVO · EMAIL_PENDENTE |
+| `/abrir` | Abrir Pacotinhos (AP0/AP1) | ATIVO · EMAIL_PENDENTE |
+| `/albums/novo` | Cadastro de Álbum (CA1/CA2) | ATIVO · EMAIL_PENDENTE |
 | `/albums` | Lista de Álbuns (AL0) | ATIVO · EMAIL_PENDENTE |
 | `/albums/:id` | Gerenciamento (AL1) | ATIVO · EMAIL_PENDENTE |
-| `/albums/:id/stickers` | Colar Figurinhas (CF1) | ATIVO |
-| `/stickers` | Colar Figurinhas sem contexto (CF0) | ATIVO |
-| `/profile` | Perfil do Usuário (P1) | ATIVO · EMAIL_PENDENTE · PENDENTE (via link) |
+| `/colar` | Colar Figurinhas sem contexto (CF0) | ATIVO |
+| `/colar?albumId=:id` | Colar Figurinhas com álbum pré-selecionado (CF1) | ATIVO |
+| `/perfil` | Perfil do Usuário (P1) | ATIVO · EMAIL_PENDENTE · PENDENTE (via link) |
 
 ---
 

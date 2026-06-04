@@ -244,7 +244,7 @@ test.describe('Cadastro de Usuários', () => {
     test('deve encerrar sessão de outro usuário ao confirmar cadastro (RN-19)', async ({ page, request }) => {
       // Usuário A faz login
       const { identificador: idA } = await usuarioAtivo(page, request);
-      await expect(page.getByText(idA)).toBeVisible();
+      await expect(page.locator('header').getByText(idA)).toBeVisible();
 
       // Usuário B cria conta (PENDENTE) e obtém token de confirmação
       const { identificador: idB } = await criarUsuario(request);
@@ -260,7 +260,7 @@ test.describe('Cadastro de Usuários', () => {
       await page.waitForURL(/\/home/);
 
       // Identificador do usuário B deve aparecer no header
-      await expect(page.getByText(idB)).toBeVisible();
+      await expect(page.locator('header').getByText(idB)).toBeVisible();
     });
   });
 

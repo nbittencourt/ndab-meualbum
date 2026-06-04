@@ -14,6 +14,7 @@
 | 1.2 | revisão | RN-H01 atualizado: acesso permitido também para `EMAIL_PENDENTE` |
 | 1.3 | red team | **B2** — `variante` passa a ser obrigatório (não nulo), com valor padrão `BROCHURA`; RN-H16 atualizado. **M8** — `TipoAlbum.total_figurinhas` e `Secao.total_figurinhas` definidos como desnormalizados com regra de invalidação de cache (RN-H17, RN-H18) |
 | 1.4 | WCAG | Links externos do footer atualizados com indicador de nova aba. Requisitos de acessibilidade adicionados (RN-H19 a RN-H26). |
+| 1.6 | ajuste conteúdo | **Total de figurinhas corrigido:** 980 → 994 (alinhado com catálogo real do seed). Links para FIFA e Panini Comics removidos do footer por questões de direitos autorais — RN-H25 descontinuado. Footer contém apenas "Política de Privacidade" e "Gerenciar cookies". |
 | 1.5 | ajustes UX | **RN-H27** — recarga obrigatória da seção "Meus Álbuns" ao acessar a Home. **RN-H28** — recarga obrigatória ao retornar do fluxo de Cadastro de Álbum. **RN-H29** — identidade visual do card reflete a variante do álbum. Header e footer globais tornados obrigatórios em todas as telas da aplicação (alinhamento com demais specs). |
 
 ---
@@ -44,7 +45,7 @@ A página também contém header global (navegação de perfil e logout) e rodap
 | `criado_em` | Timestamp | Data de criação do álbum |
 | `arquivado_em` | Timestamp \| null | Preenchido no arquivamento; `null` enquanto ativo. Definido em spec_albums |
 
-> Um usuário pode ter múltiplos álbuns do mesmo `tipo_album_id`. A `variante` descreve o acabamento físico e não altera o catálogo de figurinhas — todos os álbuns do mesmo `tipo_album_id` compartilham as mesmas 980 posições coláveis.
+> Um usuário pode ter múltiplos álbuns do mesmo `tipo_album_id`. A `variante` descreve o acabamento físico e não altera o catálogo de figurinhas — todos os álbuns do mesmo `tipo_album_id` compartilham as mesmas 994 posições coláveis (sendo 993 que contam para fechamento do álbum).
 
 **Variantes disponíveis — Copa do Mundo 2026 (Panini):**
 
@@ -175,7 +176,7 @@ Total consolidado de figurinhas no estoque e ranking das 5 com maior quantidade.
 - **Estado vazio:** mensagem informativa quando o estoque não possui nenhuma figurinha.
 
 **Footer**
-Links externos para a página oficial da Copa do Mundo 2026 (FIFA) e para a página do álbum na Panini Comics — ambos abrem em nova aba com indicação textual "(abre em nova aba)" (conforme RN-WG24 de spec_privacidade_lgpd). Link "Política de Privacidade" e link "Gerenciar cookies" (reabre painel de preferências de cookies — spec_privacidade_lgpd RN-PR16).
+Link "Política de Privacidade" (abre em nova aba) e link "Gerenciar cookies" (reabre painel de preferências de cookies — spec_privacidade_lgpd RN-PR16). Links externos para FIFA e Panini Comics foram removidos por questões de direitos autorais.
 
 ---
 
@@ -213,6 +214,6 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-H22 | O skeleton/placeholder de carregamento DEVE marcar o contêiner com `aria-busy="true"`; ao concluir, o conteúdo real DEVE ser disponibilizado sem anúncio intrusivo |
 | RN-H23 | O controle de paginação DEVE expor a página atual com `aria-current="page"`; botões de navegação DEVEM ter `aria-label` descritivo (ex.: "Ir para página 2 de 5") |
 | RN-H24 | O ranking de figurinhas repetidas DEVE ser lista ordenada com cada item descrevendo posição, número da figurinha, nome e quantidade em texto legível por TA |
-| RN-H25 | Os links externos do footer (FIFA, Panini) DEVEM indicar abertura em nova aba via `aria-label` (ex.: "Copa do Mundo 2026 — site oficial (abre em nova aba)") e atributos `target="_blank" rel="noopener noreferrer"` |
+| ~~RN-H25~~ | ~~Links externos do footer (FIFA, Panini)~~ — **descontinuado** (v1.6): links removidos por direitos autorais. |
 | RN-H26 | O header global DEVE conter um link "Pular para o conteúdo principal" como primeiro elemento focável da página, para que usuários de teclado possam pular a navegação repetida a cada tela |
 | RN-H30 | A identidade visual da variante (RN-H29) DEVE ser comunicada também por texto acessível no card — não apenas por cor ou elemento gráfico — garantindo leitura por tecnologias assistivas |

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -296,6 +296,14 @@ export default function AlbumManagePage() {
       setPdfLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (!data?.album) return;
+    const nome = (data.album as any).nomePersonalizado || (data.album as any).tipoAlbum?.nome;
+    if (!nome) return;
+    document.title = `${nome} — Meu Álbum Copa 2026`;
+    return () => { document.title = 'Meu Álbum Copa 2026'; };
+  }, [data]);
 
   if (isLoading) {
     return (

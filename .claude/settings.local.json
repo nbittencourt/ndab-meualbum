@@ -35,7 +35,27 @@
       "PowerShell(Get-Command mongo, mongosh, mongo.exe 2>&1)",
       "PowerShell($token = \"9cf832ce-313b-4d03-9b28-910fc2320fd2\"; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/auth/confirmar-cadastro?token=$token\" -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"BODY: $\\($r.Content\\)\")",
       "PowerShell(gh repo view nbittencourt/ndab-meualbum --json name 2>&1)",
-      "Bash(python3)"
+      "Bash(python3)",
+      "Bash(curl -s http://localhost:5173/ -o /dev/null -w \"%{http_code}\")",
+      "Bash(node test-explore/qa-desktop-r2.mjs)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in d.get\\('scripts',{}\\).items\\(\\)]\")",
+      "Bash(curl -s http://localhost:3000/api/v1/test/reset-db -X POST)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000\")",
+      "Bash(findstr \"LISTENING\")",
+      "Bash(findstr \":5173\")",
+      "Bash(taskkill /PID 98704 /F)",
+      "Bash(taskkill /PID 108120 /F)",
+      "Bash(curl -s http://localhost:5173)",
+      "PowerShell(Stop-Process -Id 98704 -Force)",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_type"
     ]
   }
 }

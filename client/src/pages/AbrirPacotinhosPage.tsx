@@ -443,7 +443,11 @@ export default function AbrirPacotinhosPage() {
                   {/* Ações para PENDENTE */}
                   {isPendente && (
                     confirmandoDescartar ? (
-                      <div className="flex gap-1 flex-wrap">
+                      <div className="flex flex-col gap-2">
+                        <p className="text-xs font-body text-ink/70">
+                          Descartar <strong>{item.figurinhaNumero}</strong>{item.figurinhaNome && ` — ${item.figurinhaNome}`}?
+                        </p>
+                        <div className="flex gap-1 flex-wrap">
                         <Button
                           size="sm"
                           variant="primary"
@@ -455,6 +459,7 @@ export default function AbrirPacotinhosPage() {
                         <Button size="sm" variant="secondary" onClick={() => setDescartarItemId(null)}>
                           Cancelar
                         </Button>
+                        </div>
                       </div>
                     ) : (
                       <div className="flex gap-1 flex-wrap">

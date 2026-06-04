@@ -6,7 +6,7 @@ test.describe('Cadastro de Álbum', () => {
   test('deve exibir formulário com campos Tipo, Variante e Nome personalizado', async ({ page, request }) => {
     await usuarioAtivo(page, request);
     await page.goto('/albums/novo');
-    await expect(page.getByText(/novo álbum/i)).toBeVisible();
+    await expect(page.getByText(/novo álbum/i).first()).toBeVisible();
     await expect(page.getByRole('radio', { name: /brochura/i })).toBeVisible();
     await expect(page.getByLabel(/nome personalizado/i)).toBeVisible();
   });
