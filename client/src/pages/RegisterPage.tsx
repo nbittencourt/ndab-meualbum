@@ -165,6 +165,10 @@ export default function RegisterPage() {
               </p>
             )}
 
+            <p className="text-xs font-body text-ink/60">
+              Após criar a conta, enviaremos um link de confirmação para o seu email.
+            </p>
+
             <Button
               type="submit"
               loading={loading}

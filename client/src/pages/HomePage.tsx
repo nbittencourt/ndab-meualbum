@@ -76,8 +76,8 @@ function FAB() {
       <button
         style={{
           position: 'fixed',
-          bottom: 16,
-          right: 16,
+          bottom: 80,
+          right: 'max(16px, calc((100vw - 430px) / 2 + 16px))',
           background: '#E5142A',
           border: '2px solid #0A0907',
           color: '#fff',
@@ -93,6 +93,7 @@ function FAB() {
           alignItems: 'center',
           gap: 6,
         }}
+        aria-label="Abrir pacotinhos"
         onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '5px 5px 0 #0A0907'; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '3px 3px 0 #0A0907'; }}
       >
@@ -396,27 +397,12 @@ export default function HomePage() {
           style={{
             borderTop: '1px solid rgba(10,9,7,0.1)',
             padding: '16px',
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 24,
+            textAlign: 'center',
           }}
         >
-          <a
-            href="https://www.fifaworld.cup/pt"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.45)', textDecoration: 'none' }}
-          >
-            FIFA 2026 →
-          </a>
-          <a
-            href="https://paninicomics.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.45)', textDecoration: 'none' }}
-          >
-            Panini Comics →
-          </a>
+          <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.4)', margin: 0 }}>
+            Não-oficial · Feito por colecionadores · 2026
+          </p>
         </footer>
       </div>
       </div>

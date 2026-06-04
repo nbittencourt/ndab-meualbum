@@ -4,11 +4,11 @@ import { TipoAlbum } from '../models/TipoAlbum.js';
 const router = Router();
 
 const TIPOS_COPA_2026 = [
-  { nome: 'Copa do Mundo 2026 — Panini (Brochura)', variante: 'BROCHURA', totalFigurinhas: 980 },
-  { nome: 'Copa do Mundo 2026 — Panini (Capa Dura)', variante: 'CAPA_DURA', totalFigurinhas: 980 },
-  { nome: 'Copa do Mundo 2026 — Panini (Capa Dura Prata)', variante: 'CAPA_DURA_PRATA', totalFigurinhas: 980 },
-  { nome: 'Copa do Mundo 2026 — Panini (Capa Dura Ouro)', variante: 'CAPA_DURA_OURO', totalFigurinhas: 980 },
-  { nome: 'Copa do Mundo 2026 — Panini (Box Premium)', variante: 'BOX_PREMIUM', totalFigurinhas: 980 },
+  { nome: 'Copa do Mundo 2026 (Brochura)',        variante: 'BROCHURA',       totalFigurinhas: 980 },
+  { nome: 'Copa do Mundo 2026 (Capa Dura)',        variante: 'CAPA_DURA',      totalFigurinhas: 980 },
+  { nome: 'Copa do Mundo 2026 (Capa Dura Prata)', variante: 'CAPA_DURA_PRATA', totalFigurinhas: 980 },
+  { nome: 'Copa do Mundo 2026 (Capa Dura Ouro)',  variante: 'CAPA_DURA_OURO',  totalFigurinhas: 980 },
+  { nome: 'Copa do Mundo 2026 (Box Premium)',      variante: 'BOX_PREMIUM',     totalFigurinhas: 980 },
 ];
 
 router.post('/tipos-album', async (_req, res) => {

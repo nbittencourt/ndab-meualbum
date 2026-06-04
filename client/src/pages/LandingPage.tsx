@@ -68,11 +68,6 @@ function Nav() {
           Meu Album
         </span>
       </div>
-      <Link to="/register">
-        <Button size="sm" variant="primary">
-          Criar conta grátis
-        </Button>
-      </Link>
     </nav>
   );
 }

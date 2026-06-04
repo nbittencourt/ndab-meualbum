@@ -10,11 +10,68 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`SideNav.tsx`** — novo componente de navegação lateral para desktop (`hidden lg:flex`, `fixed left-0 top-0 h-full w-[220px]`). Exibe logo, os mesmos três links do BottomNav (ícones Lucide: `BookOpen`, `ArrowRightLeft`, `User`) e informações do usuário com botão de logout na parte inferior.
+
 - **`GET /api/v1/albums/:id/figurinhas`** — novo endpoint que retorna todas as figurinhas de um álbum agrupadas por seção, com status de colagem (`colada`) e quantidade em estoque (`quantidade`).
 - **`FigurinhaGridItem` e `SecaoGrid`** — novos tipos no pacote `shared` para tipar a resposta do endpoint acima.
 - **`albumsApi.getFigurinhas(id)`** — novo método no API client do frontend para consumir o endpoint de figurinhas.
 
 ### Changed
+
+#### `App.tsx`
+
+- **Layout responsivo**: o container global foi reestruturado de coluna única `max-w-[430px]` para layout `flex` com `SideNav` fixo à esquerda em desktop. Em `lg:`, a coluna de conteúdo recebe `ml-[220px]` e `max-w-none`; em mobile o `max-w-[430px]` é mantido no `<main>`.
+- **`noAuthRoutes`**: adicionados `/register` e `/forgot-password` ao array de rotas que saltam o `checkAuth()`, eliminando erros 401 no console ao acessar essas páginas sem sessão ativa.
+- **Redirects**: adicionadas rotas `/profile → /perfil`, `/swaps → /trocas` e `/albums/cadastro → /albums/novo` antes do catch-all `*`.
+- **`BottomNav`**: adicionado `lg:hidden` para ocultar a nav inferior em desktop quando o `SideNav` está visível.
+
+#### `BottomNav.tsx`
+
+Reescrito para substituir emojis por ícones **Lucide React** (`BookOpen`, `ArrowRightLeft`, `User`) e corrigir paleta conforme wireframe `shared-chrome.jsx`:
+
+- `bg-album-gold` → `bg-paper` (`#FBF8EE`); `border-album-gold-dark` → `border-ink/20`
+- Ativo: `text-red` com `strokeWidth={2.5}`; inativo: `text-ink/50`
+- `aria-label` adicionado ao `<nav>` e `aria-hidden="true"` em cada ícone
+
+#### `HomePage.tsx`
+
+- **FAB**: `bottom` corrigido de `16` para `80` (limpa os 64 px do BottomNav). `right` alterado para `max(16px, calc((100vw - 430px) / 2 + 16px))` para manter o botão dentro da coluna de conteúdo em viewports largos.
+- **Rodapé**: substituídos links externos para FIFA e Panini Comics pelo texto neutro **"Não-oficial · Feito por colecionadores · 2026"**, em conformidade com os requisitos legais do projeto.
+
+#### `LandingPage.tsx`
+
+Removido o botão CTA "Criar conta grátis" do componente `Nav()`. O CTA já existe na seção hero; no header competia visualmente com o formulário de login.
+
+#### `CadastroAlbumPage.tsx`
+
+Adicionado texto de orientação `"↑ Selecione uma capa acima para criar seu álbum"` exibido quando nenhuma variante está selecionada e não há erro ativo. Guia o usuário sem esconder o estado desabilitado do botão de submit.
+
+#### `RegisterPage.tsx`
+
+Adicionado aviso `"Após criar a conta, enviaremos um link de confirmação para o seu email."` imediatamente antes do botão de submit, definindo expectativa clara de fluxo de confirmação.
+
+#### `SwapsPage.tsx`
+
+Substituído placeholder de 9 linhas por empty state completo com:
+- Header "Trocas" + badge `EM BREVE`
+- Card com borda dashed listando as três etapas do fluxo futuro (figurinhas repetidas automáticas, publicar oferta, match de colecionadores)
+
+#### `AlbumVisualizarPage.tsx`
+
+Implementada virtualização completa da lista de figurinhas usando **`@tanstack/react-virtual` v3** (`useVirtualizer`). As seções são achatadas em um único array tipado (`header | faltante | colada`); apenas os itens visíveis são renderizados no DOM, com `overscan: 12` e `estimateSize` diferenciada por tipo (40 px header, 44 px itens). O elemento de scroll é o `<div ref={scrollRef}>` interno da página.
+
+#### `server/src/routes/seed.ts`
+
+Removida a marca "Panini" dos nomes de `TipoAlbum`. Nomes atualizados para:
+- "Copa do Mundo 2026 (Brochura)"
+- "Copa do Mundo 2026 (Capa Dura)"
+- "Copa do Mundo 2026 (Capa Dura Prata)"
+- "Copa do Mundo 2026 (Capa Dura Ouro)"
+- "Copa do Mundo 2026 (Box Premium)"
+
+> Registros existentes no banco (com nomes antigos) precisam ser re-seedados via `POST /api/v1/seed/tipos-album`.
+
+---
 
 #### `AlbumVarianteCard.tsx`
 

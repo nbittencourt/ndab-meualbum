@@ -23,7 +23,18 @@
       "Bash(curl -s http://localhost:3000/api/v1/test/tipo-album-id)",
       "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(typeof a, typeof a.create\\);\")",
       "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(typeof a, JSON.stringify\\(Object.keys\\(a\\)\\)\\);\")",
-      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\), typeof a.Archiver, typeof a.default\\);\")"
+      "Bash(node --input-type=module -e \"import { createRequire } from 'module'; const r = createRequire\\(new URL\\('file:///C:/Users/nbitt/OneDrive/Desenvolvimento/MeuAlbum/server/src/test.mjs'\\)\\); const a = r\\('archiver'\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\), typeof a.Archiver, typeof a.default\\);\")",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/api/health\" -UseBasicParsing 2>&1)",
+      "PowerShell($env:NODE_ENV)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/api/test/tipo-album-id\" -UseBasicParsing 2>&1)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:3000/api/test/tipo-album-id\" -UseBasicParsing 2>&1; $r.StatusCode; $r.Content)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/test/tipo-album-id\" -UseBasicParsing 2>&1; \"$\\($r.StatusCode\\) $\\($r.Content\\)\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/test/tipo-album-id\" -UseBasicParsing -ErrorAction SilentlyContinue; if \\($r\\) { \"$\\($r.StatusCode\\) $\\($r.Content\\)\" } else { \"Request failed\" }; $body = [System.Text.Encoding]::UTF8.GetString\\(\\(Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"test@t.com\",\"senha\":\"X\"}' -UseBasicParsing -ErrorAction SilentlyContinue\\).Content\\); $body)",
+      "PowerShell($timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds\\(\\); $email = \"explore_$timestamp@test.com\"; $body = @{ name = \"Explorador Teste\"; email = $email; password = \"Explore@1234!\"; declaracaoMaioridade = $true } | ConvertTo-Json; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/auth/register\" -Method POST -ContentType \"application/json\" -Body $body -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"BODY: $\\($r.Content\\)\"; Write-Output \"EMAIL: $email\")",
+      "PowerShell($email = \"explore_1780527207714@test.com\"; $token = mongosh \"mongodb://localhost:27017/ndab-meualbum\" --quiet --eval \"const u = db.users.findOne\\({email: '$email'}\\); const t = db.tokenconfirmacaocadastros.findOne\\({usuarioId: u._id, usadoEm: null}\\); print\\(t.token\\);\" 2>&1; Write-Output \"TOKEN: $token\")",
+      "PowerShell(Get-Command mongo, mongosh, mongo.exe 2>&1)",
+      "PowerShell($token = \"9cf832ce-313b-4d03-9b28-910fc2320fd2\"; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/v1/auth/confirmar-cadastro?token=$token\" -UseBasicParsing; Write-Output \"STATUS: $\\($r.StatusCode\\)\"; Write-Output \"BODY: $\\($r.Content\\)\")",
+      "PowerShell(gh repo view nbittencourt/ndab-meualbum --json name 2>&1)"
     ]
   }
 }

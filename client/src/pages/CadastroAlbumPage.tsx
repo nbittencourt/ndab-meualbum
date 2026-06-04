@@ -181,6 +181,12 @@ export default function CadastroAlbumPage() {
             </p>
           </div>
 
+          {!varianteSelecionada && !error && (
+            <p className="text-xs font-body text-ink/50 mt-1">
+              ↑ Selecione uma capa acima para criar seu álbum
+            </p>
+          )}
+
           {error && <p role="alert" className="text-xs font-body" style={{ color: '#E5142A' }}>⚠ {error}</p>}
 
           <div className="flex gap-3">

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import BottomNav from '@/components/BottomNav';
+import SideNav from '@/components/SideNav';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
 
@@ -65,7 +66,7 @@ export default function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem('cookie-consent'));
 
   useEffect(() => {
-    const noAuthRoutes = ['/redefinir-senha', '/confirmar-cadastro', '/confirmar-email'];
+    const noAuthRoutes = ['/redefinir-senha', '/confirmar-cadastro', '/confirmar-email', '/register', '/forgot-password'];
     if (noAuthRoutes.some((r) => location.pathname.startsWith(r))) {
       setReady();
     } else {
@@ -101,33 +102,47 @@ export default function App() {
     <>
       <SkipLink />
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
-      <div className={['flex flex-col min-h-dvh', showBottomNav ? 'max-w-[430px] mx-auto' : ''].join(' ')}>
-        <main id="main" className={['flex-1 overflow-y-auto', showBottomNav ? 'pb-16' : ''].join(' ')}>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
-            <Route path="/register" element={user ? <Navigate to="/home" replace /> : <RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
-            <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
-            <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
+      <div className="flex min-h-dvh">
+        {showBottomNav && <SideNav />}
+        <div className={['flex flex-col flex-1 min-w-0', showBottomNav ? 'lg:ml-[220px]' : ''].join(' ')}>
+          <main
+            id="main"
+            className={[
+              'flex-1 overflow-y-auto',
+              showBottomNav ? 'max-w-[430px] lg:max-w-none mx-auto w-full pb-16 lg:pb-0' : '',
+            ].join(' ')}
+          >
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
+              <Route path="/register" element={user ? <Navigate to="/home" replace /> : <RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+              <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
+              <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
 
-            {/* Protected routes */}
-            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
-            <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
-            <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
-            <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
-            <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
-            <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
-            <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
-            <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              {/* Protected routes */}
+              <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+              <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
+              <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
+              <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
+              <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
+              <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
+              <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
+              <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
+              <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-        {showBottomNav && <BottomNav />}
-        {!showBottomNav && <Footer authenticated={!!user} />}
+              {/* Redirects para rotas em inglês / nomes antigos */}
+              <Route path="/profile"         element={<Navigate to="/perfil"      replace />} />
+              <Route path="/swaps"           element={<Navigate to="/trocas"      replace />} />
+              <Route path="/albums/cadastro" element={<Navigate to="/albums/novo" replace />} />
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+          {showBottomNav && <BottomNav />}
+          {!showBottomNav && <Footer authenticated={!!user} />}
+        </div>
         {showCookieBanner && (
           <CookieBanner onAccept={() => { localStorage.setItem('cookie-consent', '1'); setShowCookieBanner(false); }} />
         )}
