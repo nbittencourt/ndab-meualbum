@@ -141,6 +141,36 @@ test.describe('Álbuns (Gerenciamento)', () => {
     });
   });
 
+  // ── Percentual de conclusão ───────────────────────────────────────────────────
+
+  test.describe('Percentual de conclusão (RN-AL15)', () => {
+
+    test('percentual deve ser 0% para álbum recém-criado', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const res = await request.get(`/api/v1/albums/${album._id ?? album.id}`);
+      const { album: albumData } = await res.json();
+      expect(albumData.percentualConclusao).toBe(0);
+      void page;
+    });
+
+    test('percentual deve ser calculado corretamente após colar uma figurinha (não excede 100)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
+      await request.post('/api/v1/colar-figurinhas/colar/direta', {
+        data: { albumId: album._id ?? album.id, figurinhaNumero: 'FWC1' },
+      });
+      const res = await request.get(`/api/v1/albums/${album._id ?? album.id}`);
+      const { album: albumData } = await res.json();
+      expect(albumData.percentualConclusao).toBeGreaterThan(0);
+      expect(albumData.percentualConclusao).toBeLessThanOrEqual(100);
+      void page;
+    });
+  });
+
   // ── Tela AL1 — Gerenciamento do Álbum ────────────────────────────────────────
 
   test.describe('Tela AL1 — Gerenciamento do Álbum', () => {

@@ -177,9 +177,13 @@ router.get('/tipo-album-id', async (_req, res) => {
 });
 
 router.post('/criar-tipo-album', async (req, res) => {
-  const { nome, totalFigurinhas = 0 } = req.body;
+  const { nome, totalFigurinhas } = req.body;
   if (!nome) { res.status(400).json({ error: 'nome obrigatório' }); return; }
-  const tipo = await TipoAlbum.create({ nome, totalFigurinhas });
+  if (totalFigurinhas !== undefined && totalFigurinhas <= 0) {
+    res.status(400).json({ error: 'totalFigurinhas deve ser maior que zero' });
+    return;
+  }
+  const tipo = await TipoAlbum.create({ nome, totalFigurinhas: totalFigurinhas ?? 100 });
   res.json({ tipoAlbumId: String(tipo._id) });
 });
 

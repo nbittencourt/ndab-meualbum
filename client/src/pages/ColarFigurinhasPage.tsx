@@ -33,6 +33,7 @@ export default function ColarFigurinhasPage() {
   const [mfnNumero, setMfnNumero] = useState('');
   const [mfnError, setMfnError] = useState('');
   const mfnKeepOpenRef = useRef(false);
+  const mfnInputRef = useRef<HTMLInputElement>(null);
 
   const resultsId = useId();
 
@@ -75,10 +76,12 @@ export default function ColarFigurinhasPage() {
       colarFigurinhasApi.colarDireta(numero, albumIdTarget),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque', albumId] });
+      queryClient.invalidateQueries({ queryKey: ['albums'] });
       if (mfnKeepOpenRef.current) {
         setMfnNumero('');
         setMfnError('');
         mfnKeepOpenRef.current = false;
+        mfnInputRef.current?.focus();
       } else {
         setShowMfnModal(false);
         setMfnNumero('');
@@ -217,6 +220,7 @@ export default function ColarFigurinhasPage() {
           Digite o número da figurinha que deseja colar diretamente no álbum (sem passar pelo estoque).
         </p>
         <Input
+          ref={mfnInputRef}
           label="Número da figurinha"
           value={mfnNumero}
           onChange={(e) => { setMfnNumero(e.target.value.toUpperCase()); setMfnError(''); }}
@@ -229,7 +233,10 @@ export default function ColarFigurinhasPage() {
           <Button
             loading={mfnMut.isPending}
             disabled={!mfnNumero.trim()}
-            onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
+            onClick={() => {
+              mfnKeepOpenRef.current = true;
+              mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId });
+            }}
           >
             Colar
           </Button>
@@ -237,12 +244,9 @@ export default function ColarFigurinhasPage() {
             variant="secondary"
             loading={mfnMut.isPending}
             disabled={!mfnNumero.trim()}
-            onClick={() => {
-              mfnKeepOpenRef.current = true;
-              mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId });
-            }}
+            onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
           >
-            Colar e Outra
+            Colar e Fechar
           </Button>
           <Button variant="secondary" onClick={() => { setShowMfnModal(false); setMfnError(''); }}>Cancelar</Button>
         </div>

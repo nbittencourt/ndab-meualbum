@@ -113,6 +113,7 @@ export default function AbrirPacotinhosPage() {
     mutationFn: (itemId: string) => abrirPacotinhosApi.marcarRepetida(itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque'] });
       showToast('Figurinha marcada como repetida.', 'info');
     },
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
@@ -146,6 +147,7 @@ export default function AbrirPacotinhosPage() {
       Promise.all(pendentes.map((item) => abrirPacotinhosApi.marcarRepetida(item._id as string))),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque'] });
       showToast('Todas marcadas como repetidas.', 'info');
     },
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
@@ -326,21 +328,10 @@ export default function AbrirPacotinhosPage() {
 
       {showCameraPanel && (
         <div className="bg-white border-2 border-ink p-4 flex flex-col gap-3">
-          {cameraAtiva ? (
-            <>
-              <video ref={videoRef} autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
-              <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
-                Fechar câmera
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => setCameraAtiva(true)}>Abrir câmera</Button>
-                <Button size="sm" variant="secondary" onClick={() => setShowCameraPanel(false)}>Cancelar</Button>
-              </div>
-            </>
-          )}
+          <video ref={videoRef} autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
+          <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
+            Fechar câmera
+          </Button>
         </div>
       )}
 
@@ -363,7 +354,7 @@ export default function AbrirPacotinhosPage() {
             ref={inputRef}
             label="Número da figurinha"
             type="text"
-            inputMode="numeric"
+            inputMode="text"
             pattern="[0-9A-Za-z]+"
             value={numero}
             onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
@@ -381,7 +372,7 @@ export default function AbrirPacotinhosPage() {
             type="button"
             variant="secondary"
             aria-label="Fotografar"
-            onClick={() => { setShowCameraPanel(true); setCameraAtiva(false); }}
+            onClick={() => { setShowCameraPanel(true); setCameraAtiva(true); }}
           >
             Fotografar
           </Button>
