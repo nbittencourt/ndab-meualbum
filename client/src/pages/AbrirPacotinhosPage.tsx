@@ -101,8 +101,11 @@ export default function AbrirPacotinhosPage() {
   const colarMut = useMutation({
     mutationFn: ({ itemId, albumId }: { itemId: string; albumId: string }) =>
       abrirPacotinhosApi.colarItem(itemId, albumId),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      queryClient.invalidateQueries({ queryKey: ['albums'] });
+      queryClient.invalidateQueries({ queryKey: ['album', variables.albumId] });
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', variables.albumId] });
       setColarItem(null);
       showToast('Figurinha colada!', 'success');
     },

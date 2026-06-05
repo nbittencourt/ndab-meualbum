@@ -66,6 +66,8 @@ export default function ColarFigurinhasPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque', albumId] });
       queryClient.invalidateQueries({ queryKey: ['albums'] });
+      queryClient.invalidateQueries({ queryKey: ['album', albumId] });
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', albumId] });
       showToast('Figurinha colada!', 'success');
     },
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro ao colar.', 'error'),
@@ -77,6 +79,8 @@ export default function ColarFigurinhasPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque', albumId] });
       queryClient.invalidateQueries({ queryKey: ['albums'] });
+      queryClient.invalidateQueries({ queryKey: ['album', albumId] });
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', albumId] });
       if (mfnKeepOpenRef.current) {
         setMfnNumero('');
         setMfnError('');
