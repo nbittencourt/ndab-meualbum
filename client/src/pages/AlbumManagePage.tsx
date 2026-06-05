@@ -328,7 +328,7 @@ export default function AlbumManagePage() {
   }
 
   const { album } = data;
-  const nomeExibido = album.nomePersonalizado || album.tipoAlbum.nome;
+  const nomeExibido = album.nomePersonalizado || album.tipoAlbum?.nome ?? 'Álbum';
   const actionsDisabled = pdfLoading || arquivarMut.isPending;
 
   return (
@@ -339,7 +339,7 @@ export default function AlbumManagePage() {
           {nomeExibido}
         </h1>
         <p className="text-xs font-mono text-ink/50 mt-0.5">
-          {album.tipoAlbum.nome} · {VARIANTE_LABEL[album.variante] ?? album.variante}
+          {album.tipoAlbum?.nome} · {VARIANTE_LABEL[album.variante] ?? album.variante}
         </p>
         <div className="mt-2">
           <ProgressBar value={album.percentualConclusao} label="Progresso" />

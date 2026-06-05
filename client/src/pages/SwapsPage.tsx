@@ -15,19 +15,25 @@ export default function SwapsPage() {
             <li className="flex items-start gap-3">
               <span className="font-mono text-xs text-ink/40 mt-0.5 shrink-0">01</span>
               <p className="text-sm font-body text-ink/70 leading-relaxed">
-                Suas figurinhas repetidas ficam listadas automaticamente — sem precisar cadastrar nada.
+                Cadastre suas figurinhas repetidas abrindo pacotinhos ou marcando-as no estoque.
               </p>
             </li>
             <li className="flex items-start gap-3">
               <span className="font-mono text-xs text-ink/40 mt-0.5 shrink-0">02</span>
               <p className="text-sm font-body text-ink/70 leading-relaxed">
-                Publique uma oferta indicando o que você tem e o que precisa.
+                Envie seu código de usuário a um amigo para que ele veja suas figurinhas disponíveis para troca.
               </p>
             </li>
             <li className="flex items-start gap-3">
               <span className="font-mono text-xs text-ink/40 mt-0.5 shrink-0">03</span>
               <p className="text-sm font-body text-ink/70 leading-relaxed">
-                O sistema encontra outros colecionadores com combinações de troca compatíveis.
+                O app faz o match entre suas figurinhas repetidas e as repetidas do seu amigo que você precisa.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="font-mono text-xs text-ink/40 mt-0.5 shrink-0">04</span>
+              <p className="text-sm font-body text-ink/70 leading-relaxed">
+                Vocês trocam as figurinhas e confirmam no app, atualizando as listas automaticamente.
               </p>
             </li>
           </ul>

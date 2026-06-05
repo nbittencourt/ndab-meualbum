@@ -229,13 +229,14 @@ test.describe('Abrir Pacotinhos', () => {
       await expect(page.getByText(/FIFA World Cup 2026/i)).toBeVisible();
     });
 
-    test('câmera não ativa automaticamente — requer ação explícita (RN-AP43)', async ({ page, request }) => {
+    test('câmera ativa imediatamente ao clicar em "Fotografar" (RN-AP43)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       await page.goto('/abrir');
       // Com 1 tipo, AP1 abre diretamente
       await page.getByRole('button', { name: /fotografar|câmera/i }).click();
-      await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
-      await expect(page.locator('video')).not.toBeVisible();
+      // Câmera ativa direto — painel aparece com botão para fechar
+      await expect(page.getByRole('button', { name: /fechar câmera/i })).toBeVisible();
+      await expect(page.locator('video')).toBeAttached();
     });
   });
 
@@ -300,6 +301,69 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /colar/i }).first().click();
       await expect(page.getByRole('radio', { name: /brochura/i })).not.toBeVisible();
       await expect(page.getByRole('radio', { name: /capa dura/i })).toBeVisible();
+    });
+  });
+
+  // ── Invalidação de cache ──────────────────────────────────────────────────────
+
+  test.describe('Invalidação de cache', () => {
+
+    test('AP-CACHE-01 — figurinha adicionada aparece na pilha imediatamente (mesmo-página)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      await page.goto('/abrir');
+      await page.getByRole('textbox').fill('FWC1');
+      await page.getByRole('textbox').press('Enter');
+      await expect(page.getByText('FWC1')).toBeVisible();
+      await expect(page.getByText(/pilha \(1\)/i)).toBeVisible();
+    });
+
+    test('AP-CACHE-02 — enviar para repetidas → figurinha aparece no estoque de Colar Figurinhas', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto('/abrir');
+      await page.getByRole('textbox').fill('FWC1');
+      await page.getByRole('textbox').press('Enter');
+      await page.getByRole('button', { name: /enviar para repetidas/i }).click();
+      await expect(page.getByText(/repetida/i)).toBeVisible();
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await expect(page.getByText('FWC1')).toBeVisible();
+    });
+
+    test('AP-CACHE-03 — colar da pilha → álbum atualizado em Gerenciar Álbum (cross-page)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
+      });
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      await page.getByRole('button', { name: /colar/i }).first().click();
+      await page.getByRole('button', { name: /confirmar colagem/i }).click();
+      await expect(page.getByText(/colada/i)).toBeVisible();
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
+    });
+
+    test('AP-CACHE-04 — sair com pilha ativa → figurinhas coladas refletidas em Gerenciar Álbum', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1', 'FWC2'], identificador },
+      });
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      await page.getByRole('button', { name: /colar/i }).first().click();
+      await page.getByRole('button', { name: /confirmar colagem/i }).click();
+      await expect(page.getByText(/colada/i)).toBeVisible();
+      await page.getByRole('button', { name: /sair/i, exact: true }).click();
+      await page.getByRole('button', { name: /sair assim mesmo/i }).click();
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
     });
   });
 });

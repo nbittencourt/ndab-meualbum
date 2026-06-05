@@ -76,9 +76,9 @@ export async function arquivarAlbum(request: APIRequestContext, albumId: string)
   await request.post('/api/v1/test/arquivar-album', { data: { albumId } });
 }
 
-export async function criarTipoAlbumExtra(request: APIRequestContext, nome = 'Álbum Extra Teste'): Promise<string> {
+export async function criarTipoAlbumExtra(request: APIRequestContext, nome = 'Álbum Extra Teste', totalFigurinhas = 100): Promise<string> {
   const res = await request.post('/api/v1/test/criar-tipo-album', {
-    data: { nome, totalFigurinhas: 0 },
+    data: { nome, totalFigurinhas },
   });
   const json = await res.json();
   return String(json.tipoAlbumId);

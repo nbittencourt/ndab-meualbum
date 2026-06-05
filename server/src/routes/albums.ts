@@ -21,10 +21,11 @@ const createAlbumSchema = z.object({
 });
 
 function serializeAlbum(album: any, tipo: any, percentualConclusao: number) {
+  if (!tipo?._id) throw new Error('TipoAlbum não encontrado para este álbum');
   return {
     _id: String(album._id),
     usuarioId: String(album.usuarioId),
-    tipoAlbum: tipo ? { _id: String(tipo._id), nome: tipo.nome, totalFigurinhas: tipo.totalFigurinhas } : null,
+    tipoAlbum: { _id: String(tipo._id), nome: tipo.nome, totalFigurinhas: tipo.totalFigurinhas },
     variante: album.variante as AlbumVariante,
     nomePersonalizado: album.nomePersonalizado ?? null,
     criadoEm: album.criadoEm,
@@ -34,9 +35,9 @@ function serializeAlbum(album: any, tipo: any, percentualConclusao: number) {
 }
 
 async function calcPercent(albumId: any, totalFigurinhas: number): Promise<number> {
+  if (!totalFigurinhas || totalFigurinhas <= 0) return 0;
   const coladas = await FigurinhaColada.countDocuments({ albumId });
-  const total = totalFigurinhas || 1;
-  return Math.round((coladas / total) * 1000) / 10;
+  return Math.round((coladas / totalFigurinhas) * 1000) / 10;
 }
 
 router.post('/', requireAuth, async (req: AuthRequest, res) => {
@@ -78,7 +79,8 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
 
   const serialize = async (album: any) => {
     const tipo = album.tipoAlbumId as any;
-    const percent = await calcPercent(album._id, tipo?.totalFigurinhas ?? 0);
+    if (!tipo?._id) return null;
+    const percent = await calcPercent(album._id, tipo.totalFigurinhas ?? 0);
     return serializeAlbum(album, tipo, percent);
   };
 
@@ -87,7 +89,10 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
     Promise.all(arquivados.map(serialize)),
   ]);
 
-  res.json({ ativos: albumsAtivos, arquivados: albumsArquivados });
+  res.json({
+    ativos: albumsAtivos.filter(Boolean),
+    arquivados: albumsArquivados.filter(Boolean),
+  });
 });
 
 router.get('/tipos', requireAuth, async (_req, res) => {
@@ -109,9 +114,13 @@ router.get('/:id', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
   const tipo = album.tipoAlbumId as any;
-  const percent = await calcPercent(album._id, tipo?.totalFigurinhas ?? 0);
+  if (!tipo?._id) {
+    res.status(500).json({ error: 'Álbum com configuração inválida: tipo não encontrado' });
+    return;
+  }
+  const percent = await calcPercent(album._id, tipo.totalFigurinhas ?? 0);
 
-  const secoes = await Secao.find({ tipoAlbumId: tipo?._id }).sort({ ordem: 1 }).lean();
+  const secoes = await Secao.find({ tipoAlbumId: tipo._id }).sort({ ordem: 1 }).lean();
   const coladasPorSecao = await FigurinhaColada.aggregate([
     { $match: { albumId: album._id } },
     { $lookup: { from: 'stickers', localField: 'figurinhaId', foreignField: '_id', as: 'fig' } },
@@ -221,6 +230,10 @@ router.patch('/:id/arquivar', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
   const tipo = album.tipoAlbumId as any;
+  if (!tipo?._id) {
+    res.status(500).json({ error: 'Álbum com configuração inválida: tipo não encontrado' });
+    return;
+  }
   res.json({ album: serializeAlbum(album, tipo, 0) });
 });
 
@@ -240,7 +253,11 @@ router.patch('/:id/desarquivar', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
   const tipo = album.tipoAlbumId as any;
-  const percent = await calcPercent(album._id, tipo?.totalFigurinhas ?? 0);
+  if (!tipo?._id) {
+    res.status(500).json({ error: 'Álbum com configuração inválida: tipo não encontrado' });
+    return;
+  }
+  const percent = await calcPercent(album._id, tipo.totalFigurinhas ?? 0);
   res.json({ album: serializeAlbum(album, tipo, percent) });
 });
 
