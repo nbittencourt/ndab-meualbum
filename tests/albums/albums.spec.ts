@@ -219,6 +219,21 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await page.getByRole('button', { name: /colar figurinhas/i }).click();
       await expect(page).toHaveURL(/\/colar/);
     });
+
+    test('AL-CACHE-01 — colar figurinha → voltar para AL1 → percentual atualizado sem reload', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      await page.getByRole('button', { name: /colar figurinhas/i }).click();
+      await expect(page).toHaveURL(/\/colar/);
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
+      await page.getByRole('button', { name: /voltar/i }).click();
+      await expect(page).toHaveURL(new RegExp(`/albums/${album._id ?? album.id}`));
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
+    });
   });
 
   // ── PDF de Figurinhas Faltantes ───────────────────────────────────────────────

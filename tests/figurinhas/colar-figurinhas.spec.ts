@@ -200,14 +200,14 @@ test.describe('Colar Figurinhas', () => {
       await expect(page.getByRole('textbox')).toBeVisible();
     });
 
-    test('deve manter modal aberto e limpar campo com "Colar e Outra" (RN-CF26)', async ({ page, request }) => {
+    test('deve manter modal aberto e limpar campo com "Colar" (RN-CF26)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       await page.getByRole('button', { name: /figurinha não registrada/i }).click();
       await page.getByRole('dialog').getByRole('textbox').fill('FWC1');
-      await page.getByRole('dialog').getByRole('button', { name: /colar e outra/i }).click();
+      await page.getByRole('dialog').getByRole('button', { name: /^colar$/i }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       await expect(page.getByRole('dialog').getByRole('textbox')).toHaveValue('');
     });
@@ -220,6 +220,54 @@ test.describe('Colar Figurinhas', () => {
       await page.getByRole('button', { name: /figurinha não registrada/i }).click();
       await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
       await expect(page.locator('video')).not.toBeVisible();
+    });
+  });
+
+  // ── Invalidação de cache ──────────────────────────────────────────────────────
+
+  test.describe('Invalidação de cache', () => {
+
+    test('CF-CACHE-01 — colar do estoque → percentual atualizado em Gerenciar Álbum (cross-page)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
+      await expect(page.getByText(/colada/i)).toBeVisible();
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
+    });
+
+    test('CF-CACHE-02 — colar via MFN ("Colar e Fechar") → álbum atualizado em Gerenciar Álbum (cross-page)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.getByRole('button', { name: /figurinha não registrada/i }).click();
+      await page.getByRole('dialog').getByRole('textbox').fill('FWC1');
+      await page.getByRole('dialog').getByRole('button', { name: /colar e fechar/i }).click();
+      await expect(page.getByRole('dialog')).not.toBeVisible();
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
+    });
+
+    test('CF-CACHE-03 — colar via MFN ("Colar" — mantém aberto) → álbum atualizado ao fechar (cross-page)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.getByRole('button', { name: /figurinha não registrada/i }).click();
+      await page.getByRole('dialog').getByRole('textbox').fill('FWC1');
+      await page.getByRole('dialog').getByRole('button', { name: /^colar$/i }).click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+      await expect(page.getByRole('dialog').getByRole('textbox')).toHaveValue('');
+      await page.getByRole('dialog').getByRole('button', { name: /cancelar/i }).click();
+      await page.goto(`/albums/${album._id ?? album.id}`);
+      const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
+      expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
     });
   });
 });
