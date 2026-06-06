@@ -5,6 +5,8 @@ import { SideMenu } from './SideMenu';
 
 interface AppHeaderProps {
   back?: boolean;
+  breadcrumb?: string;
+  title?: string;
 }
 
 const PAGE_TITLES: Record<string, string> = {
@@ -17,7 +19,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/perfil': 'Perfil',
 };
 
-export function AppHeader({ back = false }: AppHeaderProps) {
+export function AppHeader({ back = false, breadcrumb, title }: AppHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -94,18 +96,42 @@ export function AppHeader({ back = false }: AppHeaderProps) {
 
           {/* Page title — desktop only (≥lg). Modelo MATopBar: marca na sidebar, header mostra contexto. */}
           <div
-            className="hidden lg:flex items-center"
+            className="hidden lg:flex items-center gap-1"
             aria-hidden="true"
           >
-            <span style={{
-              fontFamily: '"Archivo Black", sans-serif',
-              fontSize: 14,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: '#0A0907',
-            }}>
-              {pageTitle}
-            </span>
+            {breadcrumb ? (
+              <>
+                <span style={{
+                  fontFamily: '"Archivo Black", sans-serif',
+                  fontSize: 14,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(10,9,7,0.45)',
+                }}>
+                  {breadcrumb}
+                </span>
+                <span style={{ color: 'rgba(10,9,7,0.3)', fontSize: 14, fontFamily: '"Archivo Black", sans-serif' }}>/</span>
+                <span style={{
+                  fontFamily: '"Archivo Black", sans-serif',
+                  fontSize: 14,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: '#0A0907',
+                }}>
+                  {title ?? pageTitle}
+                </span>
+              </>
+            ) : (
+              <span style={{
+                fontFamily: '"Archivo Black", sans-serif',
+                fontSize: 14,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: '#0A0907',
+              }}>
+                {title ?? pageTitle}
+              </span>
+            )}
           </div>
         </div>
 
