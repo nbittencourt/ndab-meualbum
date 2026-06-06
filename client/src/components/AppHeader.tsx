@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { SideMenu } from './SideMenu';
 
@@ -7,10 +7,21 @@ interface AppHeaderProps {
   back?: boolean;
 }
 
+const PAGE_TITLES: Record<string, string> = {
+  '/home': 'Início',
+  '/albums': 'Meus Álbuns',
+  '/albums/novo': 'Novo Álbum',
+  '/abrir': 'Abrir Pacotinhos',
+  '/colar': 'Colar Figurinhas',
+  '/trocas': 'Trocas',
+  '/perfil': 'Perfil',
+};
+
 export function AppHeader({ back = false }: AppHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
@@ -19,9 +30,15 @@ export function AppHeader({ back = false }: AppHeaderProps) {
 
   const handleBack = () => navigate(-1);
 
+  // Resolve page title: match exact path, or strip dynamic segment for base match
+  const pageTitle =
+    PAGE_TITLES[location.pathname] ??
+    PAGE_TITLES[location.pathname.replace(/\/[^/]+$/, '')] ??
+    'Meu Álbum';
+
   return (
     <>
-      <header className="flex items-center justify-between px-4 xl:px-8" style={{
+      <header className="flex items-center justify-between px-4 lg:px-8" style={{
         height: 60,
         borderBottom: '2px solid #0A0907',
         background: '#FBF8EE',
@@ -47,9 +64,10 @@ export function AppHeader({ back = false }: AppHeaderProps) {
               </svg>
             </button>
           ) : null}
-          {/* Menu button: oculto no desktop onde o DesktopSidebar exibe a navegação */}
+
+          {/* Hamburger brand — mobile only (<lg). No desktop: marca vive na sidebar. */}
           <button
-            className="xl:hidden flex items-center gap-2"
+            className="lg:hidden flex items-center gap-2"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menu de navegação"
             aria-expanded={menuOpen}
@@ -73,6 +91,22 @@ export function AppHeader({ back = false }: AppHeaderProps) {
               Meu Album
             </span>
           </button>
+
+          {/* Page title — desktop only (≥lg). Modelo MATopBar: marca na sidebar, header mostra contexto. */}
+          <div
+            className="hidden lg:flex items-center"
+            aria-hidden="true"
+          >
+            <span style={{
+              fontFamily: '"Archivo Black", sans-serif',
+              fontSize: 14,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: '#0A0907',
+            }}>
+              {pageTitle}
+            </span>
+          </div>
         </div>
 
         {/* User block */}

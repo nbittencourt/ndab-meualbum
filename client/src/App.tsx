@@ -30,7 +30,7 @@ function GlobalLoader() {
   );
 }
 
-function Footer({ authenticated }: { authenticated: boolean }) {
+function Footer() {
   return (
     <footer className="border-t border-ink/10 bg-paper py-4 px-5">
       <nav aria-label="Links de rodapé" className="flex flex-wrap gap-4 justify-center text-xs font-body text-ink/60">
@@ -43,14 +43,6 @@ function Footer({ authenticated }: { authenticated: boolean }) {
           Política de Privacidade
           <span className="sr-only"> (abre em nova aba)</span>
         </a>
-        {authenticated && (
-          <button
-            onClick={() => document.dispatchEvent(new CustomEvent('abrir-cookie-banner'))}
-            className="hover:text-ink underline focus:outline-none focus:ring-2 focus:ring-red rounded"
-          >
-            Gerenciar cookies
-          </button>
-        )}
       </nav>
     </footer>
   );
@@ -100,7 +92,7 @@ export default function App() {
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
       <div className="flex flex-col min-h-dvh">
         {user && <DesktopSidebar />}
-        <main id="main" className={`flex-1 overflow-y-auto lg:pl-[228px]${showCookieBanner ? ' pb-[140px]' : ''}`}>
+        <main id="main" className={`flex-1 overflow-y-auto lg:pl-[228px] ${showCookieBanner ? 'pb-[140px]' : ''}`}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
@@ -129,7 +121,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        <Footer authenticated={!!user} />
+        <Footer />
         {showCookieBanner && (
           <CookieBanner onAccept={() => { localStorage.setItem("cookie-consent", "1"); setShowCookieBanner(false); }} />
         )}

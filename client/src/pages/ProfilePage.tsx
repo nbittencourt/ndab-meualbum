@@ -285,15 +285,6 @@ export default function ProfilePage() {
             <a href="/privacidade#direitos" className="text-ink underline hover:brightness-75">
               Exercer direitos de privacidade
             </a>
-            <button
-              type="button"
-              className="text-ink underline hover:brightness-75 text-left"
-              onClick={() => {
-                document.dispatchEvent(new CustomEvent('abrir-cookie-banner'));
-              }}
-            >
-              Gerenciar cookies
-            </button>
           </div>
         </div>
       </Section>
