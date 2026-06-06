@@ -175,7 +175,7 @@ export default function HomePage() {
       <AppHeader />
       <FAB />
 
-      <div style={{ paddingBottom: 80 }}>
+      <div style={{ paddingBottom: 112 }}>
         {/* CTA Banner — RN-H14 sempre visível */}
         <CTABanner />
 

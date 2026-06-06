@@ -561,34 +561,6 @@ function Footer() {
           Meu Album
         </span>
       </div>
-      <div style={{ display: 'flex', gap: 24 }}>
-        <a
-          href="https://www.fifaworld.cup/pt"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: '"Geist", sans-serif',
-            fontSize: 12,
-            color: 'rgba(255,255,255,0.5)',
-            textDecoration: 'none',
-          }}
-        >
-          FIFA 2026 →
-        </a>
-        <a
-          href="https://paninicomics.com.br"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: '"Geist", sans-serif',
-            fontSize: 12,
-            color: 'rgba(255,255,255,0.5)',
-            textDecoration: 'none',
-          }}
-        >
-          Panini Comics →
-        </a>
-      </div>
       <p
         style={{
           fontFamily: '"Geist Mono", monospace',

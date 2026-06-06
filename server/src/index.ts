@@ -63,6 +63,9 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 
 const server = app.listen(PORT, () => logger.info('server:started', { port: PORT }));
 process.on('SIGTERM', () => server.close(() => process.exit(0)));
+process.on('unhandledRejection', (reason) => {
+  logger.error('unhandled-rejection', { reason: String(reason) });
+});
 
 connectDB().catch((err) => {
   logger.error('db:fatal', { err: err?.message });

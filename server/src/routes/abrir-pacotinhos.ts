@@ -15,7 +15,7 @@ const LIMITE_PILHA = 100;
 router.get('/pilha', requireAuth, async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const { tipoAlbumId } = req.query;
-  const filtro: any = { usuarioId, statusDestino: 'PENDENTE' };
+  const filtro: any = { usuarioId };
   if (tipoAlbumId && Types.ObjectId.isValid(tipoAlbumId as string)) {
     filtro.tipoAlbumId = new Types.ObjectId(tipoAlbumId as string);
   }

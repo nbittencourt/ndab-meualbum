@@ -44,12 +44,12 @@ function Footer({ authenticated }: { authenticated: boolean }) {
           <span className="sr-only"> (abre em nova aba)</span>
         </a>
         {authenticated && (
-          <a
-            href="/perfil#cookies"
+          <button
+            onClick={() => document.dispatchEvent(new CustomEvent('abrir-cookie-banner'))}
             className="hover:text-ink underline focus:outline-none focus:ring-2 focus:ring-red rounded"
           >
             Gerenciar cookies
-          </a>
+          </button>
         )}
       </nav>
     </footer>
@@ -100,7 +100,7 @@ export default function App() {
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
       <div className="flex flex-col min-h-dvh">
         {user && <DesktopSidebar />}
-        <main id="main" className={`flex-1 overflow-y-auto xl:pl-[228px]${showCookieBanner ? ' pb-[140px]' : ''}`}>
+        <main id="main" className={`flex-1 overflow-y-auto lg:pl-[228px]${showCookieBanner ? ' pb-[140px]' : ''}`}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />

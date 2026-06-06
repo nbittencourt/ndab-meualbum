@@ -160,7 +160,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
       const tipoId = await getTipoAlbumId(request);
       const album = await criarAlbum(request, tipoId, 'BROCHURA');
       await adicionarEstoque(request, identificador, 'FWC1', 1);
-      await request.post('/api/v1/colar-figurinhas/colar/direta', {
+      await request.post('/api/v1/colar/direta', {
         data: { albumId: album._id ?? album.id, figurinhaNumero: 'FWC1' },
       });
       const res = await request.get(`/api/v1/albums/${album._id ?? album.id}`);
@@ -193,7 +193,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      const secoes = page.locator('button[aria-expanded]');
+      const secoes = page.getByTestId('section-toggle');
       await expect(secoes.first()).toBeVisible();
       const count = await secoes.count();
       expect(count).toBeGreaterThan(0);
@@ -205,7 +205,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      await page.locator('button[aria-expanded]').first().click();
+      await page.getByTestId('section-toggle').first().click();
       const itens = page.locator('[data-testid="figurinha-faltante"], [aria-label*="faltante"]');
       await expect(itens.first()).toBeVisible();
     });

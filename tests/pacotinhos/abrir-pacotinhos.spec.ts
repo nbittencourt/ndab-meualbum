@@ -168,7 +168,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       // Abre menu de navegação mobile e navega para Álbuns
       await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
-      await page.getByRole('link', { name: /álbum/i }).click();
+      await page.getByRole('link', { name: /álbuns/i }).click();
 
       await expect(page.getByRole('heading', { name: /figurinhas sem destino/i })).toBeVisible();
     });
@@ -182,7 +182,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
-      await page.getByRole('link', { name: /álbum/i }).click();
+      await page.getByRole('link', { name: /álbuns/i }).click();
       await page.getByRole('button', { name: /ficar/i }).click();
 
       await expect(page).toHaveURL(/\/abrir/);
@@ -325,7 +325,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('textbox').fill('FWC1');
       await page.getByRole('textbox').press('Enter');
       await page.getByRole('button', { name: /enviar para repetidas/i }).click();
-      await expect(page.getByText(/repetida/i)).toBeVisible();
+      await expect(page.getByText(/repetida/i).first()).toBeVisible();
       await page.goto(`/colar?albumId=${album._id ?? album.id}`);
       await expect(page.getByText('FWC1')).toBeVisible();
     });
@@ -359,7 +359,9 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /colar/i }).first().click();
       await page.getByRole('button', { name: /confirmar colagem/i }).click();
       await expect(page.getByText(/colada/i)).toBeVisible();
-      await page.getByRole('button', { name: /sair/i, exact: true }).click();
+      // Navega via menu (aciona alerta — FWC2 ainda pendente); logout não aciona por RN-AP32
+      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
+      await page.getByRole('link', { name: /álbuns/i }).click();
       await page.getByRole('button', { name: /sair assim mesmo/i }).click();
       await page.goto(`/albums/${album._id ?? album.id}`);
       const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();

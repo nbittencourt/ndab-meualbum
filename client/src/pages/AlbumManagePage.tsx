@@ -180,6 +180,7 @@ function SecaoGrid({
     <div style={{ background: '#ffffff', border: '2px solid #0A0907', boxShadow: '2px 2px 0 #0A0907' }}>
       <button
         type="button"
+        data-testid="section-toggle"
         className="w-full flex items-center justify-between p-3 text-left"
         aria-expanded={expanded}
         onClick={() => setExpanded((v) => !v)}
@@ -214,38 +215,37 @@ function SecaoGrid({
 
       {expanded && (
         <div className="border-t border-ink/10 p-3">
-          {/* Legenda */}
-          <p className="text-[10px] font-mono text-ink/50 mb-3">
-            <span style={{ color: '#0A9145' }}>━</span> Colada
-            {' · '}
-            <span>○</span> Faltante
-            {' · '}
-            <span style={{ color: '#E5142A' }}>×2</span> Repetida
-          </p>
-
-          {/* Grid de figurinhas */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 8,
-            }}
-            className="xl:[grid-template-columns:repeat(5,1fr)] xl:[gap:10px]"
-          >
-            {secao.figurinhas.map((f) => (
+          {coladas === total ? (
+            <p className="text-sm font-body text-center py-4" style={{ color: '#0A9145' }}>
+              ✓ Seção completa — todas as figurinhas coladas!
+            </p>
+          ) : (
+            <>
+              {/* Grid de figurinhas faltantes */}
               <div
-                key={f._id}
-                style={{ height: 94 }}
-                className="xl:h-[106px]"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 8,
+                }}
+                className="xl:[grid-template-columns:repeat(5,1fr)] xl:[gap:10px]"
               >
-                <StickerCardAL1
-                  item={f}
-                  albumId={albumId}
-                  disabled={pdfLoading}
-                />
+                {secao.figurinhas.filter((f) => !f.colada).map((f) => (
+                  <div
+                    key={f._id}
+                    style={{ height: 94 }}
+                    className="xl:h-[106px]"
+                  >
+                    <StickerCardAL1
+                      item={f}
+                      albumId={albumId}
+                      disabled={pdfLoading}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       )}
     </div>
@@ -328,7 +328,7 @@ export default function AlbumManagePage() {
   }
 
   const { album } = data;
-  const nomeExibido = album.nomePersonalizado || album.tipoAlbum?.nome ?? 'Álbum';
+  const nomeExibido = album.nomePersonalizado || (album.tipoAlbum?.nome ?? 'Álbum');
   const actionsDisabled = pdfLoading || arquivarMut.isPending;
 
   return (
@@ -348,6 +348,14 @@ export default function AlbumManagePage() {
 
       {/* Action bar — RN-AL19: PDF loading desabilita todos */}
       <div className="px-4 py-3 border-b border-ink/10 flex gap-2 flex-wrap">
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={actionsDisabled}
+          onClick={() => navigate(`/albums/${album._id}/visualizar`)}
+        >
+          Ver Álbum
+        </Button>
         <Button
           size="sm"
           variant="primary"
@@ -377,6 +385,9 @@ export default function AlbumManagePage() {
         )}
         {confirmarArquivar && (
           <>
+            <p className="w-full text-sm text-ink/70 font-body">
+              Arquivar este álbum? Ele ficará oculto das listas principais e não poderá receber novas colagens enquanto arquivado.
+            </p>
             <Button
               size="sm"
               loading={arquivarMut.isPending}

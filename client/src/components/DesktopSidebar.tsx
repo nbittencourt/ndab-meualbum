@@ -12,7 +12,7 @@ const NAV_LINKS = [
 export function DesktopSidebar() {
   return (
     <aside
-      className="hidden xl:flex flex-col"
+      className="hidden lg:flex flex-col"
       style={{
         position: 'fixed',
         left: 0,

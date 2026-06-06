@@ -168,8 +168,14 @@ export function AlbumCard({ album }: AlbumCardProps) {
             {pct.toFixed(1)}%
           </span>
         </div>
-        {/* Progress bar */}
+        {/* Progress bar — RN-H21 */}
         <div
+          role="progressbar"
+          aria-valuenow={Math.round(pct * 10) / 10}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${pct.toFixed(1)}% concluído`}
+          aria-label="Progresso de conclusão do álbum"
           style={{
             height: 8,
             background: isPremium ? 'rgba(255,255,255,0.12)' : 'rgba(10,9,7,0.1)',

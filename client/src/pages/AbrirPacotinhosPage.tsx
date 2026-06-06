@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBlocker } from 'react-router-dom';
 import { abrirPacotinhosApi, albumsApi, ApiError } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { AppHeader } from '@/components/AppHeader';
 import type { PilhaDaSessao } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
@@ -36,6 +37,7 @@ function PilhaTag({ children, bg, color }: { children: React.ReactNode; bg: stri
 
 export default function AbrirPacotinhosPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
 
   // tipoId=null → AP0 (ou retomada); tipoId=string → AP1
   const [tipoId, setTipoId] = useState<string | null>(null);
@@ -156,9 +158,10 @@ export default function AbrirPacotinhosPage() {
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
   });
 
-  // Bloqueia navegação se há itens pendentes em AP1
+  // Bloqueia navegação se há itens pendentes em AP1 (RN-AP32: logout bypassa — user já é null quando navigate é chamado)
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
+      !!user &&
       tipoId !== null &&
       pendentes.length > 0 &&
       currentLocation.pathname !== nextLocation.pathname
