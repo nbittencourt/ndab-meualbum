@@ -54,8 +54,8 @@ export const VARIANT_STYLES: Record<AlbumVariante, VariantStyle> = {
 
 export const VARIANT_LABELS: Record<AlbumVariante, string> = {
   BROCHURA: 'Brochura',
-  CAPA_DURA: 'Capa dura',
-  CAPA_DURA_PRATA: 'Capa dura prata',
-  CAPA_DURA_OURO: 'Capa dura ouro',
-  BOX_PREMIUM: 'Box premium',
+  CAPA_DURA: 'Capa Dura',
+  CAPA_DURA_PRATA: 'Capa Dura Prata',
+  CAPA_DURA_OURO: 'Capa Dura Ouro',
+  BOX_PREMIUM: 'Box Premium',
 };

@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
+import { hasValidConsent, saveConsent } from '@/lib/cookieConsent';
 
 import { DesktopSidebar } from '@/components/DesktopSidebar';
 import LandingPage from '@/pages/LandingPage';
@@ -51,7 +52,7 @@ function Footer() {
 export default function App() {
   const { checkAuth, setReady, user, isLoading } = useAuthStore();
   const location = useLocation();
-  const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem("cookie-consent"));
+  const [showCookieBanner, setShowCookieBanner] = useState(() => !hasValidConsent());
 
   useEffect(() => {
     const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password"];
@@ -123,7 +124,10 @@ export default function App() {
         </main>
         <Footer />
         {showCookieBanner && (
-          <CookieBanner onAccept={() => { localStorage.setItem("cookie-consent", "1"); setShowCookieBanner(false); }} />
+          <CookieBanner
+            onAccept={() => { saveConsent(true, true); setShowCookieBanner(false); }}
+            onDecline={() => { saveConsent(false, false); setShowCookieBanner(false); }}
+          />
         )}
       </div>
     </>

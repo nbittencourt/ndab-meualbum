@@ -9,15 +9,13 @@ import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Toast';
 import { StickerStatusBadge } from '@/components/StickerStatusBadge';
+import { VARIANT_LABELS } from '@/lib/albumVariant';
+import { CameraModal } from '@/components/CameraModal';
 
 type ToastVariant = 'success' | 'error' | 'info';
 type ToastState = { message: string; variant: ToastVariant } | null;
 
-const VARIANT_LABELS: Record<string, string> = {
-  BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
-  CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
-};
-function variantLabel(v: string) { return VARIANT_LABELS[v] ?? v; }
+function variantLabel(v: string) { return VARIANT_LABELS[v as keyof typeof VARIANT_LABELS] ?? v; }
 
 export default function ColarFigurinhasPage() {
   const [searchParams] = useSearchParams();
@@ -35,6 +33,8 @@ export default function ColarFigurinhasPage() {
   const [mfnPasted, setMfnPasted] = useState(false);
   const mfnKeepOpenRef = useRef(false);
   const mfnInputRef = useRef<HTMLInputElement>(null);
+  /** Modal Câmera no MFN — RN-CF27 */
+  const [showMfnCamera, setShowMfnCamera] = useState(false);
 
   const resultsId = useId();
 
@@ -263,12 +263,30 @@ export default function ColarFigurinhasPage() {
             </>
           )}
         </div>
+        {/* Botão "Abrir câmera" — RN-CF27: ativação explícita, não automática */}
         <div className="mt-3 pt-3 border-t border-ink/10">
-          <Button size="sm" variant="secondary" onClick={() => {}}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setShowMfnCamera(true)}
+            aria-label="Abrir câmera para reconhecer número da figurinha"
+          >
             Abrir câmera
           </Button>
         </div>
       </Modal>
+
+      {/* Modal Câmera no MFN — RN-CF27 */}
+      <CameraModal
+        open={showMfnCamera}
+        onClose={() => setShowMfnCamera(false)}
+        onConfirm={async (numero) => {
+          await mfnMut.mutateAsync({ numero, albumIdTarget: albumId });
+          setMfnPasted(true);
+        }}
+        confirmLoading={mfnMut.isPending}
+        nextLabel="Colar e Outra"
+      />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
       </div>
