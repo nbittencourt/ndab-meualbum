@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* === Design Handoff Tokens === */
+  --color-ink: #0A0907;
+  --color-red: #E5142A;
+  --color-green: #0A9145;
+  --color-blue: #0B2A66;
+  --color-dark: #0A1024;
+  --color-cream: #F0E9D6;
+  --color-paper: #FBF8EE;
+
+  /* === Legacy album tokens (used by AlbumPage, SwapsPage, ProfilePage) === */
+  --color-album-cream: #faf3e0;
+  --color-album-gold: #d4a537;
+  --color-album-gold-dark: #b8891e;
+  --color-album-brown: #5c3d1e;
+  --color-album-red: #c0392b;
+  --color-album-green: #1a6b3c;
+  --color-album-blue: #1a3a6b;
+
+  /* === Typography === */
+  --font-family-display: "Archivo Black", Helvetica, Arial, sans-serif;
+  --font-family-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+}
+
+body {
+  background-color: var(--color-paper);
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Safe area padding for devices with notch/home indicator */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Flat shadow utilities */
+.shadow-flat-ink {
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
+.shadow-flat-red {
+  box-shadow: 4px 4px 0 var(--color-red);
+}
+.shadow-flat-ink-lg {
+  box-shadow: 8px 8px 0 var(--color-ink);
+}
+.shadow-flat-red-lg {
+  box-shadow: 8px 8px 0 var(--color-red);
+}

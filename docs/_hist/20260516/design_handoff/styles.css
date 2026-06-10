@@ -1,0 +1,112 @@
+/* Meu Album — landing tokens
+   Tokens consumed by all three variations. Tweaks panel updates the
+   --paleta-*, --font-*, and --density-* CSS vars on :root. */
+
+:root {
+  /* Default tricolor anfitriões — vibrant, sport-energetic */
+  --c-red:   #E5142A;
+  --c-green: #0A9145;
+  --c-blue:  #0B2A66;
+  --c-dark:  #0A1024;
+  --c-ink:   #0A0907;
+  --c-cream: #F0E9D6;
+  --c-paper: #FBF8EE;
+  --c-line:  rgba(10,9,7,0.22);
+
+  /* Typography */
+  --font-display: "Archivo Black", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body:    "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Density scale (multiplier) */
+  --d: 1;
+  --pad-x: calc(72px * var(--d));
+  --pad-y: calc(72px * var(--d));
+  --gap-md: calc(20px * var(--d));
+  --gap-lg: calc(40px * var(--d));
+}
+
+/* Reset within artboards */
+.ma-root *, .ma-root *::before, .ma-root *::after { box-sizing: border-box; }
+.ma-root { font-family: var(--font-body); color: var(--c-ink); }
+.ma-root button { font-family: inherit; }
+.ma-root input { font-family: inherit; }
+
+/* Reusable building blocks */
+.ma-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 500;
+}
+
+.ma-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.ma-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: calc(14px * var(--d)) calc(22px * var(--d));
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: transform .12s ease, background .15s ease, color .15s ease;
+}
+.ma-btn:active { transform: translateY(1px); }
+.ma-btn-primary { background: var(--c-red); color: #fff; }
+.ma-btn-primary:hover { background: #c51024; }
+.ma-btn-ghost { background: transparent; color: currentColor; border: 1px solid currentColor; }
+
+.ma-input {
+  width: 100%;
+  padding: calc(14px * var(--d)) calc(14px * var(--d));
+  border: 1px solid var(--c-line);
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+  color: var(--c-ink);
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ma-input:focus {
+  border-color: var(--c-red);
+  box-shadow: 0 0 0 3px rgba(229,20,42,0.18);
+}
+.ma-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(20,17,13,0.6);
+  margin-bottom: 6px;
+}
+
+/* Pitch lines pattern (used in stadium variant) */
+.ma-pitch-pattern {
+  background-image:
+    linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Diagonal tricolor stripes */
+.ma-tristripe {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      var(--c-red) 0, var(--c-red) 24px,
+      #fff 24px, #fff 48px,
+      var(--c-green) 48px, var(--c-green) 72px,
+      #fff 72px, #fff 96px
+    );
+}

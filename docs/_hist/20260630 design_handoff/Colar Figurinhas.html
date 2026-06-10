@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meu Album — Colar Figurinhas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>html,body{margin:0;padding:0;background:#f0eee9;}#root{min-height:100vh;}</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="colar-figurinhas-wf.jsx"></script>
+  <script type="text/babel">
+    function App() {
+      return (
+        <DesignCanvas>
+
+          <DCSection
+            id="cf0"
+            title="CF0 · Seleção de Álbum — Mobile (390 px)"
+            subtitle="Exibida somente na entrada C (sem contexto pré-definido) · RN-CF02 / RN-CF03 / RN-CF04"
+          >
+            <DCArtboard id="cf0-normal" label="CF0 · Lista de álbuns — seleção manual" width={390} height={800}>
+              <CF0Mobile />
+            </DCArtboard>
+            <DCArtboard id="cf0-empty" label="CF0 · Estado vazio — sem álbuns cadastrados (RN-CF04)" width={390} height={560}>
+              <CF0EmptyMobile />
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection
+            id="cf1-mobile"
+            title="CF1 · Colagem — Mobile (390 px)"
+            subtitle="Tela principal · estoque com 3 estados de elegibilidade · confirmação inline · RN-CF05 a CF18"
+          >
+            <DCArtboard id="cf1-normal" label="CF1 · Estado normal — 3 estados de elegibilidade no estoque" width={390} height={1180}>
+              <CF1Mobile state="normal" />
+            </DCArtboard>
+            <DCArtboard id="cf1-colar-cima" label="CF1 · 'Colar por cima' — confirmação inline para figurinha já colada (RN-CF09)" width={390} height={1300}>
+              <CF1Mobile state="colar-cima" showAnnotations={false} />
+            </DCArtboard>
+            <DCArtboard id="cf1-estoque-vazio" label="CF1 · Estoque vazio — botão 'Figurinha não registrada' permanece disponível" width={390} height={680}>
+              <CF1Mobile state="estoque-vazio" showAnnotations={false} />
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection
+            id="cf1-desktop"
+            title="CF1 · Colagem — Desktop (1280 px)"
+            subtitle="Sidebar + layout 2 colunas: lista de estoque à esquerda · painel do álbum ativo à direita (sticky)"
+          >
+            <DCArtboard id="cf1-desk" label="CF1 desktop · estoque em tabela · painel de álbum sticky" width={1280} height={960}>
+              <CF1Desktop />
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection
+            id="mfn"
+            title="Modal MFN · Figurinha Não Registrada"
+            subtitle="Sobrepõe CF1 · modos Digitar e Fotografar · colagem direta (origem DIRETA) · RN-CF11 / RN-CF16"
+          >
+            <DCArtboard id="mfn-digitar" label="MFN · Modo Digitar — número validado + resultado positivo" width={390} height={820}>
+              <MFNModal mode="digitar" />
+            </DCArtboard>
+            <DCArtboard id="mfn-camera" label="MFN · Modo Fotografar — viewfinder com guia OCR" width={390} height={740}>
+              <MFNModal mode="camera" showAnnotations={false} />
+            </DCArtboard>
+          </DCSection>
+
+        </DesignCanvas>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "tst": "ndab-meualbum-tst-497511",
+    "prd": "ndab-meualbum-prd",
+    "default": "ndab-meualbum-tst-497511"
+  },
+  "targets": {},
+  "etags": {}
+}

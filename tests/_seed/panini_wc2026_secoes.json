@@ -1,0 +1,367 @@
+{
+  "_meta": {
+    "descricao": "Seed de inicialização — seções do álbum Panini FIFA World Cup 2026",
+    "tipo_album_id": 1,
+    "total_secoes": 51,
+    "data_geracao": "2026-05-31"
+  },
+  "secoes": [
+    {
+      "id": 1,
+      "nome": "Página Inicial",
+      "grupo": null,
+      "sigla_time": null,
+      "tipo_album_id": 1
+    },
+    {
+      "id": 2,
+      "nome": "México",
+      "grupo": "A",
+      "sigla_time": "MEX",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 3,
+      "nome": "África do Sul",
+      "grupo": "A",
+      "sigla_time": "RSA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 4,
+      "nome": "Coreia do Sul",
+      "grupo": "A",
+      "sigla_time": "KOR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 5,
+      "nome": "República Tcheca",
+      "grupo": "A",
+      "sigla_time": "CZE",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 6,
+      "nome": "Canadá",
+      "grupo": "B",
+      "sigla_time": "CAN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 7,
+      "nome": "Bósnia e Herzegovina",
+      "grupo": "B",
+      "sigla_time": "BIH",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 8,
+      "nome": "Catar",
+      "grupo": "B",
+      "sigla_time": "QAT",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 9,
+      "nome": "Suíça",
+      "grupo": "B",
+      "sigla_time": "SUI",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 10,
+      "nome": "Brasil",
+      "grupo": "C",
+      "sigla_time": "BRA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 11,
+      "nome": "Marrocos",
+      "grupo": "C",
+      "sigla_time": "MAR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 12,
+      "nome": "Haiti",
+      "grupo": "C",
+      "sigla_time": "HAI",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 13,
+      "nome": "Escócia",
+      "grupo": "C",
+      "sigla_time": "SCO",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 14,
+      "nome": "Estados Unidos",
+      "grupo": "D",
+      "sigla_time": "USA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 15,
+      "nome": "Paraguai",
+      "grupo": "D",
+      "sigla_time": "PAR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 16,
+      "nome": "Austrália",
+      "grupo": "D",
+      "sigla_time": "AUS",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 17,
+      "nome": "Turquia",
+      "grupo": "D",
+      "sigla_time": "TUR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 18,
+      "nome": "Alemanha",
+      "grupo": "E",
+      "sigla_time": "GER",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 19,
+      "nome": "Curaçao",
+      "grupo": "E",
+      "sigla_time": "CUW",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 20,
+      "nome": "Costa do Marfim",
+      "grupo": "E",
+      "sigla_time": "CIV",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 21,
+      "nome": "Equador",
+      "grupo": "E",
+      "sigla_time": "ECU",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 22,
+      "nome": "Holanda",
+      "grupo": "F",
+      "sigla_time": "NED",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 23,
+      "nome": "Japão",
+      "grupo": "F",
+      "sigla_time": "JPN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 24,
+      "nome": "Suécia",
+      "grupo": "F",
+      "sigla_time": "SWE",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 25,
+      "nome": "Tunísia",
+      "grupo": "F",
+      "sigla_time": "TUN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 26,
+      "nome": "Bélgica",
+      "grupo": "G",
+      "sigla_time": "BEL",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 27,
+      "nome": "Egito",
+      "grupo": "G",
+      "sigla_time": "EGY",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 28,
+      "nome": "Irã",
+      "grupo": "G",
+      "sigla_time": "IRN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 29,
+      "nome": "Nova Zelândia",
+      "grupo": "G",
+      "sigla_time": "NZL",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 30,
+      "nome": "Espanha",
+      "grupo": "H",
+      "sigla_time": "ESP",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 31,
+      "nome": "Cabo Verde",
+      "grupo": "H",
+      "sigla_time": "CPV",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 32,
+      "nome": "Arábia Saudita",
+      "grupo": "H",
+      "sigla_time": "KSA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 33,
+      "nome": "Uruguai",
+      "grupo": "H",
+      "sigla_time": "URU",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 34,
+      "nome": "França",
+      "grupo": "I",
+      "sigla_time": "FRA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 35,
+      "nome": "Senegal",
+      "grupo": "I",
+      "sigla_time": "SEN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 36,
+      "nome": "Iraque",
+      "grupo": "I",
+      "sigla_time": "IRQ",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 37,
+      "nome": "Noruega",
+      "grupo": "I",
+      "sigla_time": "NOR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 38,
+      "nome": "Argentina",
+      "grupo": "J",
+      "sigla_time": "ARG",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 39,
+      "nome": "Argélia",
+      "grupo": "J",
+      "sigla_time": "ALG",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 40,
+      "nome": "Áustria",
+      "grupo": "J",
+      "sigla_time": "AUT",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 41,
+      "nome": "Jordânia",
+      "grupo": "J",
+      "sigla_time": "JOR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 42,
+      "nome": "Portugal",
+      "grupo": "K",
+      "sigla_time": "POR",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 43,
+      "nome": "Congo RD",
+      "grupo": "K",
+      "sigla_time": "COD",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 44,
+      "nome": "Uzbequistão",
+      "grupo": "K",
+      "sigla_time": "UZB",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 45,
+      "nome": "Colômbia",
+      "grupo": "K",
+      "sigla_time": "COL",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 46,
+      "nome": "Inglaterra",
+      "grupo": "L",
+      "sigla_time": "ENG",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 47,
+      "nome": "Croácia",
+      "grupo": "L",
+      "sigla_time": "CRO",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 48,
+      "nome": "Gana",
+      "grupo": "L",
+      "sigla_time": "GHA",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 49,
+      "nome": "Panamá",
+      "grupo": "L",
+      "sigla_time": "PAN",
+      "tipo_album_id": 1
+    },
+    {
+      "id": 50,
+      "nome": "FIFA World Cup History",
+      "grupo": null,
+      "sigla_time": null,
+      "tipo_album_id": 1
+    },
+    {
+      "id": 51,
+      "nome": "Coca-Cola",
+      "grupo": null,
+      "sigla_time": null,
+      "tipo_album_id": 1
+    }
+  ]
+}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Meu Album · Grade Tricolor de Figurinhas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+@page { size: A4 portrait; margin: 7mm; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  width: 210mm; min-height: 297mm; margin: 0 auto;
+  background: #fff; font-family: 'DM Sans', system-ui, sans-serif;
+  color: #0A0907; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+/* HEADER */
+.hdr { background:#0A0907; padding:7px 10px; display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #E5142A; }
+.hdr-l { display:flex; align-items:center; gap:6px; }
+.ma-sq { width:20px; height:20px; background:#E5142A; border:1.5px solid rgba(255,255,255,0.8); display:flex; align-items:center; justify-content:center; font-family:'Archivo Black',sans-serif; font-size:9px; color:white; transform:rotate(-4deg); flex-shrink:0; }
+.hdr-sep { width:1px; height:18px; background:rgba(255,255,255,0.15); margin:0 4px; }
+.hdr-brand { font-family:'Archivo Black',sans-serif; font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:white; line-height:1; }
+.hdr-doc { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.38); margin-top:2px; }
+.hdr-r { text-align:right; }
+.hdr-album { font-family:'Archivo Black',sans-serif; font-size:8px; text-transform:uppercase; letter-spacing:0.05em; color:rgba(255,255,255,0.8); display:block; line-height:1.3; }
+.hdr-user { font-family:'DM Mono',monospace; font-size:6.5px; letter-spacing:0.1em; color:rgba(255,255,255,0.35); display:block; margin-top:2px; }
+/* STATS */
+.stats { background:#0A0907; padding:3.5px 10px; display:flex; align-items:center; }
+.stt { display:flex; align-items:center; gap:4px; font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.08em; color:rgba(255,255,255,0.45); margin-right:10px; }
+.stt-dot { width:7px; height:7px; flex-shrink:0; }
+.stt b { font-weight:500; color:white; }
+.prog-wrap { flex:1; height:3px; background:rgba(255,255,255,0.15); margin:0 8px; position:relative; }
+.prog-fill { position:absolute; left:0; top:0; bottom:0; background:#0A9145; }
+.pct { font-family:'Archivo Black',sans-serif; font-size:14px; color:white; margin-right:3px; line-height:1; }
+.pct-l { font-family:'DM Mono',monospace; font-size:6.5px; color:rgba(255,255,255,0.35); letter-spacing:0.1em; }
+/* CONTENT */
+.content { padding:4px 8px 2px; display:flex; flex-direction:column; gap:2px; }
+/* SPECIAL SECTIONS */
+.spec { border:0.8px solid rgba(10,9,7,0.13); background:white; }
+.spec-hdr { padding:2px 5px; display:flex; justify-content:space-between; align-items:center; }
+.spec-code { font-family:'DM Mono',monospace; font-size:5px; letter-spacing:0.14em; color:rgba(255,255,255,0.55); display:block; }
+.spec-name { font-family:'Archivo Black',sans-serif; font-size:6.5px; text-transform:uppercase; letter-spacing:0.03em; color:white; display:block; }
+.spec-prog { font-family:'DM Mono',monospace; font-size:6px; color:rgba(255,255,255,0.55); }
+.spec-cells { display:flex; flex-wrap:nowrap; gap:1px; padding:2px; }
+.spec-cells .cell { width:17px; flex-shrink:0; }
+/* GROUP SECTIONS */
+.grp { border:0.8px solid rgba(10,9,7,0.13); background:white; }
+.grp-hdr { padding:2px 6px; background:#fafafa; border-left:3px solid #E5142A; border-bottom:0.8px solid rgba(10,9,7,0.1); display:flex; justify-content:space-between; align-items:center; }
+.grp-id { font-family:'Archivo Black',sans-serif; font-size:7.5px; text-transform:uppercase; letter-spacing:0.08em; color:#0A0907; }
+.grp-stats { font-family:'DM Mono',monospace; font-size:6px; color:rgba(10,9,7,0.4); }
+.grp-countries { display:grid; grid-template-columns:repeat(4,1fr); border-top:0.8px solid rgba(10,9,7,0.12); }
+.ctry { padding:2px 3px 2px; border-right:0.7px solid rgba(10,9,7,0.09); }
+.ctry:last-child { border-right:none; }
+.ctry-head { display:flex; justify-content:space-between; align-items:baseline; padding:2px 3px 1.5px; margin-bottom:2px; }
+.ctry-label { display:flex; align-items:baseline; gap:2px; min-width:0; overflow:hidden; }
+.ctry-name { font-family:'Archivo Black',sans-serif; font-size:6px; text-transform:uppercase; letter-spacing:0.02em; color:#0A0907; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ctry-code { font-family:'DM Mono',monospace; font-size:5px; letter-spacing:0.1em; color:rgba(10,9,7,0.4); flex-shrink:0; white-space:nowrap; }
+.ctry-prog { font-family:'DM Mono',monospace; font-size:5.5px; color:rgba(10,9,7,0.35); flex-shrink:0; white-space:nowrap; margin-left:2px; }
+.ctry-cells { display:grid; grid-template-columns:repeat(10,1fr); gap:1px; }
+/* CELLS */
+.cell { height:13px; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:7px; line-height:1; flex-shrink:0; }
+.cell.c { background:rgba(10,145,69,0.15); border:1px solid rgba(10,145,69,0.48); color:#0A9145; }
+.cell.f { background:transparent; border:1.5px dashed rgba(10,9,7,0.22); color:rgba(10,9,7,0.28); }
+.cell.r { background:rgba(229,20,42,0.1); border:1.5px solid #E5142A; color:#E5142A; border-radius:7px; font-size:7px; }
+/* LEGEND */
+.legend { padding:3px 8px; display:flex; align-items:center; gap:10px; border-top:0.8px solid rgba(10,9,7,0.08); border-bottom:0.8px solid rgba(10,9,7,0.08); background:white; }
+.leg { display:flex; align-items:center; gap:3px; }
+.leg-sq { width:9px; height:9px; border:0.6px solid rgba(10,9,7,0.14); flex-shrink:0; }
+.leg span { font-family:'DM Mono',monospace; font-size:6.5px; letter-spacing:0.07em; color:rgba(10,9,7,0.5); }
+/* FOOTER */
+.footer { background:#0A0907; border-top:3px solid #E5142A; padding:6px 10px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.footer-qr { width:50px; height:50px; background:white; padding:2px; flex-shrink:0; }
+.footer-qr img { width:46px; height:46px; display:block; }
+.footer-mid { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.footer-url { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.06em; color:white; text-decoration:none; }
+.footer-note { font-family:'DM Mono',monospace; font-size:6.5px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.28); }
+.footer-logo { display:flex; align-items:center; gap:5px; flex-shrink:0; }
+.footer-logo-text { font-family:'Archivo Black',sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.04em; color:rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="ma-sq">MA</div>
+    <div><div class="hdr-brand">Meu Album</div><div class="hdr-doc">Lista de Figurinhas · Copa do Mundo 2026 · V1 Grade Tricolor</div></div>
+    <div class="hdr-sep"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.28);text-transform:uppercase">Panini Oficial</div>
+  </div>
+  <div class="hdr-r">
+    <span class="hdr-album">Copa do Mundo 2026 — Panini · "Meu Ouro"</span>
+    <span class="hdr-user" id="hdr-user">João S. · #XB3K29 · gerado em <span id="gen-date"></span></span>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stt"><span style="font-size:9px;color:#0A9145">■</span><b id="tc">—</b>&nbsp;coladas</div>
+  <div class="stt"><span style="font-size:9px;color:rgba(255,255,255,0.35)">□</span><b id="tf">—</b>&nbsp;faltantes</div>
+  <div class="stt"><span style="font-size:9px;color:#E5142A">⬤</span><b id="tr">—</b>&nbsp;repetidas</div>
+  <div class="prog-wrap"><div class="prog-fill" id="pf"></div></div>
+  <div class="pct" id="pct">—%</div><div class="pct-l">completo · <span id="tt">—</span> total</div>
+</div>
+
+<div class="content" id="content"></div>
+
+<div class="legend">
+  <div class="leg"><div style="width:11px;height:11px;background:rgba(10,145,69,0.15);border:1px solid rgba(10,145,69,0.48);flex-shrink:0"></div><span style="color:#0A9145">Colada</span></div>
+  <div class="leg"><div style="width:11px;height:11px;background:transparent;border:1.5px dashed rgba(10,9,7,0.22);flex-shrink:0"></div><span>Faltante</span></div>
+  <div class="leg"><div style="width:11px;height:11px;background:rgba(229,20,42,0.1);border:1.5px solid #E5142A;border-radius:6px;flex-shrink:0"></div><span style="color:#E5142A">Repetida</span></div>
+  <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:6px;color:rgba(10,9,7,0.28)">★ Sede · meualbum.nicholas.tec.br</span>
+</div>
+
+<footer class="footer">
+  <div class="footer-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=http%3A%2F%2Fmeualbum.nicholas.tec.br&ecc=M&margin=2&color=0A0907&bgcolor=FFFFFF" alt="QR Code" loading="eager"></div>
+  <div class="footer-mid">
+    <a class="footer-url" href="http://meualbum.nicholas.tec.br">http://meualbum.nicholas.tec.br</a>
+    <div class="footer-note">Não-oficial · Feito por colecionadores · Copa do Mundo 2026</div>
+  </div>
+  <div class="footer-logo">
+    <div class="ma-sq" style="width:24px;height:24px;font-size:11px">MA</div>
+    <span class="footer-logo-text">Meu Album</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('gen-date').textContent = new Date().toLocaleDateString('pt-BR');
+
+const SPECIALS = [
+  { code:'FWC', name:'Abertura · Página Inicial', color:'#B8860B',
+    nums: Array.from({length:9},(_,i)=>String(i).padStart(2,'0')), prefix:'FWC0' },
+  { code:'FWC', name:'FIFA World Cup History',    color:'#8B6914',
+    nums: Array.from({length:11},(_,i)=>String(i+9)), prefix:'FWC' },
+  { code:'CC',  name:'Coca-Cola Fan Zone',        color:'#D40000',
+    nums: Array.from({length:14},(_,i)=>String(i+1)), prefix:'CC' },
+];
+
+const GROUPS = [
+  {id:'A', countries:[
+    {code:'MEX',name:'México',         n:20,clr:'#006847',isHost:true},
+    {code:'KOR',name:'Coreia do Sul',  n:20,clr:'#CD2E3A'},
+    {code:'RSA',name:'África do Sul',  n:20,clr:'#007A4D'},
+    {code:'CZE',name:'Rep. Tcheca',    n:20,clr:'#D7141A'},
+  ]},
+  {id:'B', countries:[
+    {code:'CAN',name:'Canadá',         n:20,clr:'#FF0000',isHost:true},
+    {code:'QAT',name:'Catar',          n:20,clr:'#8D1B3D'},
+    {code:'SUI',name:'Suíça',          n:20,clr:'#DA0001'},
+    {code:'BIH',name:'Bósnia-Herzeg.', n:20,clr:'#002395'},
+  ]},
+  {id:'C', countries:[
+    {code:'BRA',name:'Brasil',         n:20,clr:'#0A9145'},
+    {code:'HAI',name:'Haiti',          n:20,clr:'#00209F'},
+    {code:'SCO',name:'Escócia',        n:20,clr:'#003F87'},
+    {code:'MAR',name:'Marrocos',       n:20,clr:'#C1272D'},
+  ]},
+  {id:'D', countries:[
+    {code:'USA',name:'Estados Unidos', n:20,clr:'#0A3161',isHost:true},
+    {code:'PAR',name:'Paraguai',       n:20,clr:'#D52B1E'},
+    {code:'AUS',name:'Austrália',      n:20,clr:'#00843D'},
+    {code:'TUR',name:'Turquia',        n:20,clr:'#E30A17'},
+  ]},
+  {id:'E', countries:[
+    {code:'GER',name:'Alemanha',       n:20,clr:'#484848'},
+    {code:'CIV',name:'Costa do Marfim',n:20,clr:'#F77F00'},
+    {code:'ECU',name:'Equador',        n:20,clr:'#FFD100'},
+    {code:'CUW',name:'Curaçao',        n:20,clr:'#003082'},
+  ]},
+  {id:'F', countries:[
+    {code:'NED',name:'Países Baixos',  n:20,clr:'#FF4F00'},
+    {code:'JPN',name:'Japão',          n:20,clr:'#BC002D'},
+    {code:'TUN',name:'Tunísia',        n:20,clr:'#E70013'},
+    {code:'SWE',name:'Suécia',         n:20,clr:'#006AA7'},
+  ]},
+  {id:'G', countries:[
+    {code:'IRN',name:'Irã',            n:20,clr:'#239F40'},
+    {code:'BEL',name:'Bélgica',        n:20,clr:'#EF3340'},
+    {code:'EGY',name:'Egito',          n:20,clr:'#CE1126'},
+    {code:'NZL',name:'Nova Zelândia',  n:20,clr:'#00247D'},
+  ]},
+  {id:'H', countries:[
+    {code:'ESP',name:'Espanha',        n:20,clr:'#AA151B'},
+    {code:'KSA',name:'Arábia Saudita', n:20,clr:'#006C35'},
+    {code:'URU',name:'Uruguai',        n:20,clr:'#0B2A66'},
+    {code:'CPV',name:'Cabo Verde',     n:20,clr:'#003893'},
+  ]},
+  {id:'I', countries:[
+    {code:'FRA',name:'França',         n:20,clr:'#003189'},
+    {code:'SEN',name:'Senegal',        n:20,clr:'#00853F'},
+    {code:'NOR',name:'Noruega',        n:20,clr:'#EF2B2D'},
+    {code:'BOL',name:'Bolívia',        n:20,clr:'#D52B1E'},
+  ]},
+  {id:'J', countries:[
+    {code:'ARG',name:'Argentina',      n:20,clr:'#74ACDF'},
+    {code:'ALG',name:'Argélia',        n:20,clr:'#006233'},
+    {code:'AUT',name:'Áustria',        n:20,clr:'#ED2939'},
+    {code:'JOR',name:'Jordânia',       n:20,clr:'#007A3D'},
+  ]},
+  {id:'K', countries:[
+    {code:'POR',name:'Portugal',       n:20,clr:'#006600'},
+    {code:'UZB',name:'Uzbequistão',    n:20,clr:'#1EB53A'},
+    {code:'COL',name:'Colômbia',       n:20,clr:'#FCD116'},
+    {code:'COD',name:'Rep. D. Congo',  n:20,clr:'#007FFF'},
+  ]},
+  {id:'L', countries:[
+    {code:'ENG',name:'Inglaterra',     n:20,clr:'#012169'},
+    {code:'GHA',name:'Gana',           n:20,clr:'#006B3F'},
+    {code:'PAN',name:'Panamá',         n:20,clr:'#DA121A'},
+    {code:'CRO',name:'Croácia',        n:20,clr:'#FF0000'},
+  ]},
+];
+
+function stStatus(key, i) {
+  let h = 0;
+  for (let c = 0; c < key.length; c++) h = (Math.imul(h, 31) + key.charCodeAt(c)) | 0;
+  const v = ((Math.imul(h, 97) + Math.imul(i, 31)) * 1664525 + 1013904223) >>> 0;
+  const r = v / 4294967296;
+  return r < 0.44 ? 'c' : r < 0.60 ? 'r' : 'f';
+}
+
+let tC=0,tF=0,tR=0,tT=0;
+const cont = document.getElementById('content');
+
+// Helper: render one special section
+function renderSpecial(sp) {
+  let cc=0, cells='';
+  sp.nums.forEach((num,i) => {
+    const v = stStatus(sp.prefix+num, i);
+    cells += `<div class="cell ${v}">${num}</div>`;
+    if(v==='c'){cc++;tC++;}else if(v==='r'){tR++;}else tF++;
+    tT++;
+  });
+  const pct = Math.round(cc/sp.nums.length*100);
+  const el = document.createElement('div');
+  el.className = 'spec';
+  el.innerHTML = `
+    <div class="spec-hdr" style="background:${sp.color}">
+      <div><span class="spec-code">${sp.code}</span><span class="spec-name">${sp.name}</span></div>
+      <span class="spec-prog">${cc}/${sp.nums.length} · ${pct}%</span>
+    </div>
+    <div class="spec-cells">${cells}</div>`;
+  cont.appendChild(el);
+}
+
+// Abertura first
+renderSpecial(SPECIALS[0]);
+
+// Render groups A–L
+GROUPS.forEach(g => {
+  let gc=0,gt=0;
+  let cHtml = '';
+
+  g.countries.forEach(c => {
+    let cc=0, cells='';
+    for(let i=1;i<=20;i++) {
+      const v = stStatus(c.code, i);
+      cells += `<div class="cell ${v}">${String(i).padStart(2,'0')}</div>`;
+      if(v==='c'){cc++;tC++;gc++;}else if(v==='r'){tR++;}else tF++;
+      tT++;gt++;
+    }
+    const pct = Math.round(cc/c.n*100);
+    const hostMark = c.isHost ? ' ★' : '';
+    cHtml += `<div class="ctry"><div class="ctry-head" style="border-bottom:1.5px solid ${c.clr}"><div class="ctry-label"><span class="ctry-name">${c.name}</span><span class="ctry-code">&nbsp;${c.code}${c.isHost?' ★':''}</span></div><span class="ctry-prog">${cc}/20 · ${pct}%</span></div><div class="ctry-cells">${cells}</div></div>`;
+  });
+
+  const gpct = Math.round(gc/gt*100);
+  const el = document.createElement('div');
+  el.className = 'grp';
+  el.innerHTML = `
+    <div class="grp-hdr">
+      <span class="grp-id">Grupo ${g.id}</span>
+      <span class="grp-stats">${gc}/${gt} · ${gpct}%</span>
+    </div>
+    <div class="grp-countries">${cHtml}</div>`;
+  cont.appendChild(el);
+});
+
+// History + Coca-Cola at the end
+renderSpecial(SPECIALS[1]);
+renderSpecial(SPECIALS[2]);
+
+document.getElementById('tc').textContent=tC;
+document.getElementById('tf').textContent=tF;
+document.getElementById('tr').textContent=tR;
+document.getElementById('tt').textContent=tT;
+const p=Math.round(tC/tT*100);
+document.getElementById('pct').textContent=p+'%';
+document.getElementById('pf').style.width=p+'%';
+</script>
+</body>
+</html>
