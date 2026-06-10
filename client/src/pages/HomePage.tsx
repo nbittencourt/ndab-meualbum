@@ -278,7 +278,7 @@ export default function HomePage() {
                   Meus Álbuns
                 </h2>
                 <Link to="/albums" style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.5)', textDecoration: 'underline' }}>
-                  Ver todos
+                  Ver todos os álbuns
                 </Link>
               </div>
               <Link to="/albums/novo">

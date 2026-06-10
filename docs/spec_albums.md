@@ -76,7 +76,7 @@ Campo adicionado:
         │
         ├── [Card ativo — "Gerenciar"] → Tela AL1  (ver RN-AL28)
         ├── [Card ativo — "Colar figurinhas"] → fluxo Colar Figurinhas
-        ├── [Card ativo — "Baixar PDF"] → geração síncrona com spinner bloqueante (ver RN-AL30)
+        ├── [Card ativo — "Figurinhas que faltam"] → geração síncrona com spinner bloqueante (ver RN-AL30)
         └── [Card arquivado — "Desarquivar"] → executa direto
                 │
                 ▼
@@ -84,7 +84,7 @@ Campo adicionado:
         │
         ├── [Seção — expandir] → lista figurinhas faltantes
         ├── ["Ver Álbum"] → Tela AL2 — visualização completa por seção (ver RN-AL31)
-        ├── ["Baixar PDF"] → geração síncrona com spinner bloqueante
+        ├── ["Figurinhas que faltam"] → geração síncrona com spinner bloqueante
         ├── ["Colar figurinhas"] → fluxo Colar Figurinhas
         └── ["Arquivar"] → confirmação inline → executa → redireciona para AL0
 ```
@@ -108,7 +108,7 @@ A Home recebe, na seção "Meus Álbuns", ação secundária "Ver todos os álbu
 Comportamento, ordenação e paginação idênticos à Home (5 por página, `criado_em DESC`). Cada card inclui identidade visual da variante (RN-AL33) e as seguintes ações:
 
 - **"Colar figurinhas"** — redireciona para o fluxo Colar Figurinhas com este álbum como contexto.
-- **"Baixar PDF"** — gera PDF de figurinhas faltantes diretamente do card, com o mesmo comportamento síncrono da AL1 (spinner bloqueante no card; demais ações do card desabilitadas durante a geração). Ver RN-AL30.
+- **"Figurinhas que faltam"** — gera PDF de figurinhas faltantes diretamente do card, com o mesmo comportamento síncrono da AL1 (spinner bloqueante no card; demais ações do card desabilitadas durante a geração). Ver RN-AL30.
 - **"Gerenciar"** — redireciona para a Tela AL1 deste álbum. Ver RN-AL28.
 
 Estado vazio: mensagem informativa e CTA para Cadastro de Álbum.
@@ -136,7 +136,7 @@ Acessada exclusivamente para álbuns ativos via botão "Gerenciar" na AL0.
 **Barra de ações:**
 - **"Colar figurinhas"** — redireciona para Colar Figurinhas com este álbum como contexto
 - **"Ver Álbum"** — abre a Tela AL2 (visualização completa por seção). Ver RN-AL31.
-- **"Baixar PDF"** — geração síncrona com spinner bloqueante (ver 5.4)
+- **"Figurinhas que faltam"** — geração síncrona com spinner bloqueante (ver 5.4)
 - **"Arquivar"** — confirmação inline (ver 5.5)
 
 **Lista de seções**
@@ -174,8 +174,8 @@ Cada figurinha exibe: número, nome, e indicador de estado. Seções completamen
 
 ### 5.5 PDF de Figurinhas Faltantes
 
-Gerado de forma **síncrona** ao acionar "Baixar PDF" — disponível na AL0 (card) e na AL1 (barra de ações). Durante a geração:
-- O botão "Baixar PDF" é substituído por spinner bloqueante com rótulo "Gerando PDF..."
+Gerado de forma **síncrona** ao acionar "Figurinhas que faltam" — disponível na AL0 (card) e na AL1 (barra de ações). Durante a geração:
+- O botão "Figurinhas que faltam" é substituído por spinner bloqueante com rótulo "Gerando PDF..."
 - As demais ações do escopo (barra de ações na AL1; ações do card na AL0) são desabilitadas durante a geração
 - Ao concluir: download iniciado automaticamente; estado retorna ao normal
 
@@ -234,11 +234,11 @@ Acionado via "Desarquivar" no card arquivado de AL0. Executa diretamente, sem co
 | RN-AL17 | O PDF é gerado sob demanda e reflete o estado atual do álbum; não há cache |
 | RN-AL18 | Um álbum arquivado não pode receber novas figurinhas coladas; tentativas direcionadas a ele pelo backend são rejeitadas com erro |
 | RN-AL18a | Quando o backend rejeitar colagem por álbum arquivado (RN-AL18), o comportamento de UX varia por fluxo: **Abrir Pacotinhos (MCol)** — mensagem de erro exibida no modal; botão "Colar" desabilitado para aquele álbum; outros álbuns elegíveis permanecem disponíveis. **Colar Figurinhas** — mensagem de erro inline na tela; a tela permanece aberta; botões de colagem para aquele álbum são desabilitados |
-| RN-AL19 | A geração do PDF é **síncrona**: ao acionar "Baixar PDF", spinner bloqueante substitui o botão e as demais ações do escopo ficam desabilitadas até conclusão ou falha. Conteúdo do PDF restrito a: identificação do álbum, data de geração, totais e lista de faltantes em colunas (número + nome apenas, sem imagens). O PDF **DEVE ser gerado como PDF tagged** (conforme padrão PDF/UA), com estrutura de headings, listas e metadados de idioma declarados, de modo que leitores de tela possam percorrer o conteúdo de forma estruturada |
+| RN-AL19 | A geração do PDF é **síncrona**: ao acionar "Figurinhas que faltam", spinner bloqueante substitui o botão e as demais ações do escopo ficam desabilitadas até conclusão ou falha. Conteúdo do PDF restrito a: identificação do álbum, data de geração, totais e lista de faltantes em colunas (número + nome apenas, sem imagens). O PDF **DEVE ser gerado como PDF tagged** (conforme padrão PDF/UA), com estrutura de headings, listas e metadados de idioma declarados, de modo que leitores de tela possam percorrer o conteúdo de forma estruturada |
 | RN-AL20 | `Secao.total_figurinhas` é um campo **desnormalizado**, equivalente a `COUNT(Figurinha WHERE secao_id = X)`. Deve ser recalculado e atualizado sempre que figurinhas forem adicionadas ou removidas da seção correspondente. Essa operação é administrativa, ocorre fora dos fluxos de usuário e deve ser executada atomicamente com a alteração do catálogo |
 | RN-AL28 | Cada card de álbum ativo na Tela AL0 DEVE exibir o botão "Gerenciar", que redireciona para a Tela AL1 daquele álbum. O botão é exclusivo para álbuns ativos; cards de álbuns arquivados não exibem esta ação |
 | RN-AL29 | A lista de álbuns da Tela AL0 DEVE ser sempre recarregada do backend ao acessar a tela, independente da origem da navegação. Cache local da listagem não é permitido entre navegações |
-| RN-AL30 | O botão "Baixar PDF" está disponível tanto na Tela AL0 (card de álbum ativo) quanto na Tela AL1 (barra de ações). Em ambos os contextos, o comportamento é idêntico: geração síncrona com spinner bloqueante, desabilitação das demais ações do escopo e download automático ao concluir. A geração acionada pelo card da AL0 não requer navegação para a AL1 |
+| RN-AL30 | O botão "Figurinhas que faltam" está disponível tanto na Tela AL0 (card de álbum ativo) quanto na Tela AL1 (barra de ações). Em ambos os contextos, o comportamento é idêntico: geração síncrona com spinner bloqueante, desabilitação das demais ações do escopo e download automático ao concluir. A geração acionada pelo card da AL0 não requer navegação para a AL1 |
 | RN-AL31 | O botão "Ver Álbum" na barra de ações da Tela AL1 redireciona para a Tela AL2, que exibe todas as figurinhas do álbum (coladas e faltantes), organizadas por seção. A Tela AL2 é somente leitura — não expõe ações de colagem, arquivamento ou geração de PDF |
 | RN-AL32 | O botão de confirmação no modal de arquivamento ("Confirmar arquivamento") DEVE ser apresentado com sombra/destaque em **preto**. O uso de vermelho neste elemento é incorreto e não deve ocorrer |
 | RN-AL33 | O card de cada álbum na AL0, o cabeçalho da AL1 e o cabeçalho da AL2 DEVEM aplicar identidade visual correspondente à `variante` do álbum, em alinhamento com RN-H29 de spec_home_albums. Cada variante possui tratamento visual distinto; cards ou cabeçalhos de variantes diferentes não podem ter aparência idêntica |
@@ -268,7 +268,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | # | Regra |
 |---|---|
 | RN-AL21 | As barras de progresso por seção (coladas/total) DEVEM usar `role="progressbar"` com `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax` e `aria-valuetext` descrevendo o progresso em linguagem natural (ex.: "12 de 30 figurinhas, 40%") |
-| RN-AL22 | O botão "Baixar PDF" em estado de loading DEVE ter seu rótulo atualizado para "Gerando PDF..." e `aria-busy="true"` enquanto em processamento; ao concluir, o foco DEVE retornar ao botão com rótulo restaurado |
+| RN-AL22 | O botão "Figurinhas que faltam" em estado de loading DEVE ter seu rótulo atualizado para "Gerando PDF..." e `aria-busy="true"` enquanto em processamento; ao concluir, o foco DEVE retornar ao botão com rótulo restaurado |
 | RN-AL23 | Seções das Telas AL1 e AL2 DEVEM ser implementadas como regiões expandíveis (`aria-expanded`, `aria-controls`) com botão de controle que descreva o conteúdo (ex.: "Expandir seção Brasil — 12 de 30 figurinhas") |
 | RN-AL24 | A mensagem de confirmação de seção completa DEVE ser anunciada via live region ao tornar-se visível |
 | RN-AL25 | O diálogo de confirmação de arquivamento (seção 5.6) DEVE seguir padrão de modal acessível: `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, focus trap, retorno de foco ao fechar |

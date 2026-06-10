@@ -656,10 +656,7 @@ export default function AlbumManagePage() {
           {pdfLoading ? (
             'Gerando…'
           ) : (
-            <>
-              <span className="hidden lg:inline">Baixar PDF</span>
-              <span className="lg:hidden">Figurinhas que faltam</span>
-            </>
+            'Figurinhas que faltam'
           )}
         </button>
 

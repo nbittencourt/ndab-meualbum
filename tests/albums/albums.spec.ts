@@ -90,12 +90,12 @@ test.describe('Álbuns (Gerenciamento)', () => {
         await expect(page.getByRole('button', { name: /colar figurinhas/i }).first()).toBeVisible();
       });
 
-      test('deve exibir botão "Baixar PDF" no card ativo (RN-AL30)', async ({ page, request }) => {
+      test('deve exibir botão "Figurinhas que faltam" no card ativo (RN-AL30)', async ({ page, request }) => {
         await usuarioAtivo(page, request);
         const tipoId = await getTipoAlbumId(request);
         await criarAlbum(request, tipoId, 'BROCHURA');
         await page.goto('/albums');
-        await expect(page.getByRole('button', { name: /baixar pdf/i }).first()).toBeVisible();
+        await expect(page.getByRole('button', { name: /figurinhas que faltam/i }).first()).toBeVisible();
       });
 
       test('botão "Gerenciar" redireciona para Tela AL1 (RN-AL28)', async ({ page, request }) => {
@@ -136,7 +136,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
         const secaoArquivados = page.getByText(/álbuns arquivados/i).locator('..').locator('..');
         await expect(secaoArquivados.getByRole('button', { name: /desarquivar/i })).toBeVisible();
         await expect(secaoArquivados.getByRole('button', { name: /gerenciar/i })).not.toBeVisible();
-        await expect(secaoArquivados.getByRole('button', { name: /baixar pdf/i })).not.toBeVisible();
+        await expect(secaoArquivados.getByRole('button', { name: /figurinhas que faltam/i })).not.toBeVisible();
       });
     });
   });
@@ -181,9 +181,9 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      await expect(page.getByText(/brochura/i)).toBeVisible();
+      await expect(page.getByText(/brochura/i).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /colar figurinhas/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /baixar pdf/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: /figurinhas que faltam/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /arquivar/i })).toBeVisible();
     });
 
@@ -240,7 +240,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
 
   test.describe.skip('PDF de Figurinhas Faltantes (RN-AL19, AL30)', () => {
 
-    test('botão "Baixar PDF" no card da AL0 inicia download sem navegar para AL1 (RN-AL30)', async ({ page, request }) => {
+    test('botão "Figurinhas que faltam" no card da AL0 inicia download sem navegar para AL1 (RN-AL30)', async ({ page, request }) => {
       test.setTimeout(60_000);
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
@@ -248,13 +248,13 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await page.goto('/albums');
       const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.getByRole('button', { name: /baixar pdf/i }).first().click(),
+        page.getByRole('button', { name: /figurinhas que faltam/i }).first().click(),
       ]);
       expect(download.suggestedFilename()).toMatch(/\.pdf$/i);
       await expect(page).toHaveURL(/\/albums$/);
     });
 
-    test('botão "Baixar PDF" na AL1 desabilita outras ações durante geração (RN-AL19)', async ({ page, request }) => {
+    test('botão "Figurinhas que faltam" na AL1 desabilita outras ações durante geração (RN-AL19)', async ({ page, request }) => {
       test.setTimeout(60_000);
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
@@ -266,7 +266,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
         await new Promise<void>((r) => setTimeout(r, 1500));
         await route.continue();
       });
-      await page.getByRole('button', { name: /baixar pdf/i }).click();
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
       await expect(page.getByRole('button', { name: /colar figurinhas/i })).toBeDisabled();
       await expect(page.getByRole('button', { name: /arquivar/i })).toBeDisabled();
     });

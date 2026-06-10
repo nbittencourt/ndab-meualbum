@@ -84,7 +84,7 @@ function AlbumCard({ album, onDesarquivar }: { album: Album; onDesarquivar?: (id
               Colar figurinhas
             </Button>
             <Button size="sm" variant="secondary" loading={pdfLoading} onClick={handleBaixarPdf}>
-              Baixar PDF
+              Figurinhas que faltam
             </Button>
           </>
         )}

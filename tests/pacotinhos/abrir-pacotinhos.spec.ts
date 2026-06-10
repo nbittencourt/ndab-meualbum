@@ -369,7 +369,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /colar/i }).first().click();
       await page.getByRole('button', { name: /confirmar colagem/i }).click();
-      await expect(page.getByText(/colada/i)).toBeVisible();
+      await expect(page.getByText('Figurinha colada!')).toBeVisible();
       await page.goto(`/albums/${album._id ?? album.id}`);
       const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
       expect(parseFloat(pctText!.replace(',', '.'))).toBeGreaterThan(0);
@@ -386,7 +386,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /colar/i }).first().click();
       await page.getByRole('button', { name: /confirmar colagem/i }).click();
-      await expect(page.getByText(/colada/i)).toBeVisible();
+      await expect(page.getByText('Figurinha colada!')).toBeVisible();
       // Navega via menu (aciona alerta — FWC2 ainda pendente); logout não aciona por RN-AP32
       await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
       await page.getByRole('link', { name: /álbuns/i }).click();
