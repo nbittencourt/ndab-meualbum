@@ -15,6 +15,7 @@
 | 1.3 | red team | **B2** — `variante` passa a ser obrigatório (não nulo), com valor padrão `BROCHURA`; RN-H16 atualizado. **M8** — `TipoAlbum.total_figurinhas` e `Secao.total_figurinhas` definidos como desnormalizados com regra de invalidação de cache (RN-H17, RN-H18) |
 | 1.4 | WCAG | Links externos do footer atualizados com indicador de nova aba. Requisitos de acessibilidade adicionados (RN-H19 a RN-H26). |
 | 1.6 | ajuste conteúdo | **Total de figurinhas corrigido:** 980 → 994 (alinhado com catálogo real do seed). Links para FIFA e Panini Comics removidos do footer por questões de direitos autorais — RN-H25 descontinuado. Footer contém apenas "Política de Privacidade" e "Gerenciar cookies". |
+| 1.7 | 2026-06-10 | **DEC-2** — Clique no card de álbum da Home navega para `/albums/:id`. RN-H31 adicionado. RN-H20 complementado com acessibilidade do card como alvo navegável. (Issue #20) |
 | 1.5 | ajustes UX | **RN-H27** — recarga obrigatória da seção "Meus Álbuns" ao acessar a Home. **RN-H28** — recarga obrigatória ao retornar do fluxo de Cadastro de Álbum. **RN-H29** — identidade visual do card reflete a variante do álbum. Header e footer globais tornados obrigatórios em todas as telas da aplicação (alinhamento com demais specs). |
 
 ---
@@ -209,7 +210,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | # | Regra |
 |---|---|
 | RN-H19 | O CTA "Abrir Pacotinhos" DEVE ter rótulo descritivo que comunique a ação ao ser lido isoladamente por leitor de tela; ícone decorativo associado DEVE ser `aria-hidden="true"` |
-| RN-H20 | Cada card de álbum DEVE ter hierarquia de heading adequada; o botão "Colar figurinhas" DEVE ter `aria-label` que inclua o nome do álbum (ex.: "Colar figurinhas em Copa do Mundo 2026 — Brochura") para distinguir entre múltiplos cards |
+| RN-H20 | Cada card de álbum DEVE ter hierarquia de heading adequada; o botão "Colar figurinhas" DEVE ter `aria-label` que inclua o nome do álbum (ex.: "Colar figurinhas em Copa do Mundo 2026 — Brochura") para distinguir entre múltiplos cards. O card como alvo navegável (RN-H31) DEVE ter `aria-label` descritivo (ex.: "Gerenciar álbum Copa do Mundo 2026 — Brochura") que comunique o destino da navegação a leitores de tela. |
 | RN-H21 | A barra de progresso de conclusão de cada card DEVE usar `role="progressbar"` com `aria-valuenow`, `aria-valuemin`, `aria-valuemax` e `aria-valuetext` com o percentual em linguagem natural |
 | RN-H22 | O skeleton/placeholder de carregamento DEVE marcar o contêiner com `aria-busy="true"`; ao concluir, o conteúdo real DEVE ser disponibilizado sem anúncio intrusivo |
 | RN-H23 | O controle de paginação DEVE expor a página atual com `aria-current="page"`; botões de navegação DEVEM ter `aria-label` descritivo (ex.: "Ir para página 2 de 5") |
@@ -217,3 +218,4 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | ~~RN-H25~~ | ~~Links externos do footer (FIFA, Panini)~~ — **descontinuado** (v1.6): links removidos por direitos autorais. |
 | RN-H26 | O header global DEVE conter um link "Pular para o conteúdo principal" como primeiro elemento focável da página, para que usuários de teclado possam pular a navegação repetida a cada tela |
 | RN-H30 | A identidade visual da variante (RN-H29) DEVE ser comunicada também por texto acessível no card — não apenas por cor ou elemento gráfico — garantindo leitura por tecnologias assistivas |
+| RN-H31 | Clicar ou acionar por teclado (tecla Enter) o card de álbum na Home navega para a página de gerenciamento do álbum (`/albums/:id`); o card DEVE ter `role="link"`, `tabIndex="0"` e `aria-label` descritivo (ex.: "Gerenciar álbum Copa do Mundo 2026 — Brochura"). O botão "Colar figurinhas" dentro do card DEVE impedir a propagação do evento de clique (`stopPropagation`) para preservar sua navegação independente. (Issue #20 · DEC-2) |
