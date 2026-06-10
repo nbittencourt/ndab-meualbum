@@ -10,6 +10,7 @@
 | Versão | Data | Alterações |
 |---|---|---|
 | 1.0 | inicial | Versão original — framework de privacidade e acessibilidade |
+| 1.1 | 2026-06-06 | Banner simplificado para modelo binário (Aceitar / Remover não essenciais); removido painel "Gerenciar preferências"; removido link "Gerenciar cookies" do rodapé e do Perfil; reescritas RN-PR05/06/07/12; RN-PR16 atualizada; §5.4/§5.5 atualizados; §8.1 / §8.4 revisados |
 
 ---
 
@@ -156,12 +157,10 @@ O banner DEVE ser exibido quando **qualquer** das condições abaixo for verdade
         │
         ▼
 [Banner de Cookies exibido]
-  Usuário escolhe uma das três opções:
+  Usuário escolhe uma das duas opções:
         │
-        ├── "Aceitar todos" → analytics = true; publicidade = true
-        ├── "Rejeitar não essenciais" → analytics = false; publicidade = false
-        └── "Gerenciar preferências" → exibe painel com toggles por categoria
-                  └── Usuário configura e clica "Salvar preferências"
+        ├── "Aceitar" → analytics = true; publicidade = true
+        └── "Remover não essenciais" → analytics = false; publicidade = false
         │
         ▼
   Sistema persiste ConsentimentoCookie
@@ -173,33 +172,28 @@ O banner DEVE ser exibido quando **qualquer** das condições abaixo for verdade
 
 ### 5.5 Conteúdo do banner
 
-**Texto principal:** "Usamos cookies para garantir o funcionamento da plataforma, melhorar sua experiência e, com sua autorização, para fins de publicidade personalizada. Cookies essenciais são sempre ativos."
+**Texto principal:** "Usamos cookies essenciais para o funcionamento do serviço e, com sua autorização, cookies de analytics e publicidade. Saiba mais na nossa [Política de Privacidade]."
 
-**Botões (em destaque de forma equivalente):**
-1. "Aceitar todos"
-2. "Rejeitar não essenciais"
-3. "Gerenciar preferências" — abre painel inline
+**Botões (dois, com destaque visual equivalente — sem dark pattern de hierarquia):**
+1. "Aceitar" — ativa analytics e publicidade; persiste consentimento
+2. "Remover não essenciais" — mantém apenas essenciais; analytics=false, publicidade=false
 
-**Painel "Gerenciar preferências":**
-- **Essenciais:** rótulo + descrição + indicação "Sempre ativo" (sem toggle)
-- **Analytics e Desempenho:** rótulo + descrição + toggle (padrão: ativo)
-- **Publicidade:** rótulo + descrição + toggle (padrão: inativo)
-- Botão "Salvar preferências"
+**Link obrigatório no banner:** "Saiba mais na nossa [Política de Privacidade]."
 
-**Link obrigatório no banner:** "Saiba mais em nossa [Política de Privacidade]."
+> **Removido (v1.1):** painel "Gerenciar preferências" com toggles por categoria. O modelo binário é suficiente para conformidade e reduz complexidade de interface.
 
 ### 5.6 Regras de Negócio
 
 | # | Regra |
 |---|---|
-| RN-PR05 | O banner é exibido nas condições definidas em 5.3; nenhuma categoria não-essencial é ativada antes da escolha do usuário |
-| RN-PR06 | O cookie de publicidade (BL-01) é opt-in: nunca pré-marcado; exige ação afirmativa explícita do usuário |
-| RN-PR07 | O cookie de analytics (BL-09) é opt-out: pré-ativo por legítimo interesse, mas o usuário pode desativá-lo sem prejuízo ao serviço |
+| RN-PR05 | O banner é exibido nas condições definidas em 5.3; nenhuma categoria não-essencial é ativada antes da escolha do usuário. O modelo binário (Aceitar / Remover não essenciais) é suficiente para cumprir este requisito |
+| RN-PR06 | O cookie de publicidade (BL-01) é opt-in: ativado somente quando o usuário clica "Aceitar"; a opção "Remover não essenciais" mantém publicidade inativa |
+| RN-PR07 | O cookie de analytics (BL-09): ativado apenas via "Aceitar"; "Remover não essenciais" mantém analytics inativo. *Nota: a base legal BL-09 (legítimo interesse) permite tratamento sem consentimento, mas o modelo binário opta por exigir consentimento também para analytics, simplificando o compliance e alinhando ao padrão de menor surpresa ao titular* |
 | RN-PR08 | A escolha é armazenada por 12 meses; após expiração, o banner é reapresentado |
 | RN-PR09 | Quando a versão da política de privacidade muda de forma material, o registro `versao_politica` é atualizado no sistema e todos os consentimentos registrados com versão anterior são invalidados; o banner é reapresentado |
 | RN-PR10 | O banner deve ser operável exclusivamente por teclado e compatível com leitores de tela (ver Seção 9) |
 | RN-PR11 | O registro de consentimento (incluindo revogações) é retido por 5 anos conforme R-BAS-002 do guia LGPD |
-| RN-PR12 | Os três botões do banner devem ter destaque visual equivalente; nenhum pode ser suprimido ou ter contraste menor que os demais (vedação a dark patterns — R-PBD-007) |
+| RN-PR12 | Os dois botões do banner devem ter destaque visual equivalente; nenhum pode ser suprimido ou ter contraste menor que o outro (vedação a dark patterns — R-PBD-007) |
 | RN-PR13 | Ao fazer login após ter dado consentimento pré-login, o sistema associa o `ConsentimentoCookie` existente ao `usuario_id`, atualizando o registro |
 
 ---
@@ -257,7 +251,7 @@ Na ausência de DPO formalmente designado, o controlador DEVE identificar na Pol
 | D-03 — Correção | Seções Nome e Email na Tela P1 (spec_perfil_usuario) |
 | D-05 — Portabilidade | Botão "Exportar meus dados" na Tela P1 — CSV estruturado por entidade |
 | D-06 — Eliminação | Seção "Excluir conta" na Tela P1 (spec_perfil_usuario) |
-| D-09 — Revogação de consentimento (publicidade/analytics) | Painel de preferências de cookies (banner ou link de reabertura) |
+| D-09 — Revogação de consentimento (publicidade/analytics) | Reapresentação automática do banner após expiração (12 meses) ou mudança material de política; canal de contato declarado na Política de Privacidade para solicitação antecipada |
 
 ### 8.2 Direitos atendidos via canal de contato (Política de Privacidade)
 
@@ -275,7 +269,7 @@ Na ausência de DPO formalmente designado, o controlador DEVE identificar na Pol
 
 ### 8.4 Reabertura das preferências de cookies
 
-**RN-PR16:** O rodapé de todas as telas autenticadas DEVE conter link "Gerenciar cookies" ou equivalente, que reabre o painel de preferências da Seção 5 sem exigir reapresentação do banner completo.
+**RN-PR16 (v1.1 — revisada):** O rodapé das telas autenticadas **não precisa** conter link "Gerenciar cookies". A revogação do consentimento é atendida pela reapresentação automática do banner (expiração em 12 meses — RN-PR08 — ou mudança material de política — RN-PR09) e pelo canal de contato declarado na Política de Privacidade (RN-PR15). A supressão do link "Gerenciar cookies" não configura violação do Art. 9º ou Art. 18 LGPD, pois o canal alternativo é acessível.
 
 ---
 

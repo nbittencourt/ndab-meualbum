@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { CookieBanner } from '@/components/CookieBanner';
+import { hasValidConsent, saveConsent } from '@/lib/cookieConsent';
 
 import { DesktopSidebar } from '@/components/DesktopSidebar';
 import LandingPage from '@/pages/LandingPage';
@@ -30,7 +31,7 @@ function GlobalLoader() {
   );
 }
 
-function Footer({ authenticated }: { authenticated: boolean }) {
+function Footer() {
   return (
     <footer className="border-t border-ink/10 bg-paper py-4 px-5">
       <nav aria-label="Links de rodapé" className="flex flex-wrap gap-4 justify-center text-xs font-body text-ink/60">
@@ -43,14 +44,6 @@ function Footer({ authenticated }: { authenticated: boolean }) {
           Política de Privacidade
           <span className="sr-only"> (abre em nova aba)</span>
         </a>
-        {authenticated && (
-          <a
-            href="/perfil#cookies"
-            className="hover:text-ink underline focus:outline-none focus:ring-2 focus:ring-red rounded"
-          >
-            Gerenciar cookies
-          </a>
-        )}
       </nav>
     </footer>
   );
@@ -59,7 +52,7 @@ function Footer({ authenticated }: { authenticated: boolean }) {
 export default function App() {
   const { checkAuth, setReady, user, isLoading } = useAuthStore();
   const location = useLocation();
-  const [showCookieBanner, setShowCookieBanner] = useState(() => !localStorage.getItem("cookie-consent"));
+  const [showCookieBanner, setShowCookieBanner] = useState(() => !hasValidConsent());
 
   useEffect(() => {
     const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password"];
@@ -100,7 +93,7 @@ export default function App() {
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="route-announcer" />
       <div className="flex flex-col min-h-dvh">
         {user && <DesktopSidebar />}
-        <main id="main" className={`flex-1 overflow-y-auto xl:pl-[228px]${showCookieBanner ? ' pb-[140px]' : ''}`}>
+        <main id="main" className={`flex-1 overflow-y-auto lg:pl-[228px] ${showCookieBanner ? 'pb-[140px]' : ''}`}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
@@ -129,9 +122,12 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        <Footer authenticated={!!user} />
+        <Footer />
         {showCookieBanner && (
-          <CookieBanner onAccept={() => { localStorage.setItem("cookie-consent", "1"); setShowCookieBanner(false); }} />
+          <CookieBanner
+            onAccept={() => { saveConsent(true, true); setShowCookieBanner(false); }}
+            onDecline={() => { saveConsent(false, false); setShowCookieBanner(false); }}
+          />
         )}
       </div>
     </>

@@ -145,7 +145,7 @@ export default function ProfilePage() {
       {user && (
         <Section title="Identificador">
           <p className="text-xs font-body text-ink/60 mb-3">
-            Seu código único para trocas e suporte. Não compartilhe com desconhecidos.
+            Este código é público e identifica você na plataforma.
           </p>
           <Identifier value={user.publicId} />
         </Section>
@@ -223,13 +223,18 @@ export default function ProfilePage() {
 
       <Section title="Senha">
         <form onSubmit={(e) => { e.preventDefault(); setSenhaError(''); senhaMut.mutate(); }} className="flex flex-col gap-3" noValidate>
-          <PasswordInput
-            label="Senha atual"
-            value={senhaAtual}
-            onChange={(e) => setSenhaAtual(e.target.value)}
-            autoComplete="current-password"
-            required
-          />
+          <div className="flex flex-col gap-1">
+            <PasswordInput
+              label="Senha atual"
+              value={senhaAtual}
+              onChange={(e) => setSenhaAtual(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+            <a href="/forgot-password" className="text-xs text-primary underline font-body self-start">
+              Esqueci minha senha
+            </a>
+          </div>
           <div className="flex flex-col gap-1">
             <PasswordInput
               label="Nova senha"
@@ -280,15 +285,6 @@ export default function ProfilePage() {
             <a href="/privacidade#direitos" className="text-ink underline hover:brightness-75">
               Exercer direitos de privacidade
             </a>
-            <button
-              type="button"
-              className="text-ink underline hover:brightness-75 text-left"
-              onClick={() => {
-                document.dispatchEvent(new CustomEvent('abrir-cookie-banner'));
-              }}
-            >
-              Gerenciar cookies
-            </button>
           </div>
         </div>
       </Section>

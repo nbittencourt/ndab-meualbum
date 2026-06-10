@@ -1,155 +1,261 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { albumsApi, ApiError } from '@/lib/api';
 import type { FigurinhaGridItem } from '@meualbum/shared';
-import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { VARIANT_STYLES, VARIANT_LABELS } from '@/lib/albumVariant';
 
-const VARIANTE_LABEL: Record<string, string> = {
-  BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
-  CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
-};
+const INK   = '#0A0907';
+const GREEN  = '#0A9145';
+const RED    = '#E5142A';
+const LINE   = 'rgba(10,9,7,0.18)';
+const MUTE   = 'rgba(10,9,7,0.55)';
+const FONT_D = '"Archivo Black", sans-serif';
+const FONT_B = '"Geist", sans-serif';
+const FONT_M = '"Geist Mono", "Courier New", monospace';
+
+// ─── Barra de progresso simples ───────────────────────────────────────────────
+function SGProgressBar({ pct, height = 6, color = INK }: { pct: number; height?: number; color?: string }) {
+  return (
+    <div style={{ height, background: LINE, position: 'relative', width: '100%' }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${Math.min(100, pct)}%`, background: color }} />
+    </div>
+  );
+}
+
+// ─── Card-Herói do álbum ──────────────────────────────────────────────────────
+interface AlbumHeroProps {
+  tipoNome: string;
+  variante: string;
+  nomePersonalizado?: string;
+  pct: number;
+  coladas: number;
+  total: number;
+}
+
+function AlbumHero({ tipoNome, variante, nomePersonalizado, pct, coladas, total }: AlbumHeroProps) {
+  const style = VARIANT_STYLES[variante as keyof typeof VARIANT_STYLES] ?? VARIANT_STYLES.BROCHURA;
+  const label = VARIANT_LABELS[variante as keyof typeof VARIANT_LABELS] ?? variante;
+  const pctFormatted = pct.toFixed(1);
+
+  return (
+    <div style={{ background: style.background, border: style.border, boxShadow: style.shadow }}>
+      {/* Desktop layout: 1fr auto */}
+      <div className="hidden lg:grid" style={{ gridTemplateColumns: '1fr auto', gap: 24, padding: '20px 24px', alignItems: 'center' }}>
+        <div>
+          <span style={{
+            display: 'inline-block',
+            padding: '3px 8px',
+            background: style.tagBg,
+            color: style.tagText,
+            fontFamily: FONT_M,
+            fontSize: 9,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            border: `1px solid ${style.tagBg}`,
+            marginBottom: 8,
+          }}>
+            {label}
+          </span>
+          <div style={{ fontFamily: FONT_D, fontSize: 22, textTransform: 'uppercase', lineHeight: 1.05, color: style.text }}>
+            {tipoNome}
+          </div>
+          {nomePersonalizado && (
+            <div style={{ fontFamily: FONT_B, fontSize: 13, color: MUTE, marginTop: 3 }}>
+              "{nomePersonalizado}"
+            </div>
+          )}
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div
+            role="progressbar"
+            aria-valuenow={Math.round(pct * 10) / 10}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuetext={`${pctFormatted}% concluído`}
+            aria-label="Progresso de conclusão do álbum"
+          >
+            <div style={{ fontFamily: FONT_D, fontSize: 48, lineHeight: 1, color: style.text }}>
+              {pctFormatted}<span style={{ fontFamily: FONT_M, fontSize: 16 }}>%</span>
+            </div>
+            <div style={{ width: 200, marginTop: 8 }}>
+              <SGProgressBar pct={pct} height={8} />
+            </div>
+            <div style={{ fontFamily: FONT_M, fontSize: 9, color: MUTE, marginTop: 4, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              {coladas} / {total} figurinhas
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile layout: empilhado */}
+      <div className="lg:hidden" style={{ padding: '16px 16px 14px', borderTop: 'none' }}>
+        <span style={{
+          display: 'inline-block',
+          padding: '3px 8px',
+          background: style.tagBg,
+          color: style.tagText,
+          fontFamily: FONT_M,
+          fontSize: 9,
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          marginBottom: 8,
+        }}>
+          {label}
+        </span>
+        <div style={{ fontFamily: FONT_D, fontSize: 18, textTransform: 'uppercase', lineHeight: 1.1, color: style.text }}>
+          {tipoNome}
+        </div>
+        {nomePersonalizado && (
+          <div style={{ fontFamily: FONT_B, fontSize: 12, color: MUTE, marginTop: 2 }}>
+            "{nomePersonalizado}"
+          </div>
+        )}
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+            <span style={{ fontFamily: FONT_M, fontSize: 10, color: MUTE, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Progresso
+            </span>
+            <span
+              role="progressbar"
+              aria-valuenow={Math.round(pct * 10) / 10}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuetext={`${pctFormatted}% concluído`}
+              aria-label="Progresso de conclusão do álbum"
+              style={{ fontFamily: FONT_D, fontSize: 26, color: style.text }}
+            >
+              {pctFormatted}<span style={{ fontFamily: FONT_M, fontSize: 11 }}>%</span>
+            </span>
+          </div>
+          <SGProgressBar pct={pct} height={10} />
+          <div style={{ fontFamily: FONT_M, fontSize: 9, color: MUTE, marginTop: 5, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            {coladas} de {total} figurinhas coladas
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Badge ×N ─────────────────────────────────────────────────────────────────
 function QuantidadeBadge({ quantidade }: { quantidade: number }) {
-  let bg: string;
-  let fg: string;
-  if (quantidade === 0) {
-    bg = 'rgba(10,9,7,0.06)';
-    fg = 'rgba(10,9,7,0.55)';
-  } else if (quantidade === 1) {
-    bg = 'rgba(10,145,69,0.12)';
-    fg = '#0A9145';
-  } else {
-    bg = '#E5142A';
-    fg = '#ffffff';
-  }
+  const bg = quantidade >= 2 ? RED : quantidade === 1 ? 'rgba(10,145,69,0.12)' : 'rgba(10,9,7,0.06)';
+  const fg = quantidade >= 2 ? '#fff' : quantidade === 1 ? GREEN : MUTE;
   return (
-    <span
-      style={{
-        background: bg,
-        color: fg,
-        fontFamily: '"Geist Mono", "Courier New", monospace',
-        fontSize: 9,
-        fontWeight: 700,
-        padding: '1px 4px',
-        flexShrink: 0,
-      }}
-    >
+    <span style={{
+      background: bg, color: fg,
+      fontFamily: FONT_M, fontWeight: 700,
+      fontSize: 9, padding: '1px 5px',
+      letterSpacing: '0.04em', flexShrink: 0,
+    }}>
       ×{quantidade}
     </span>
   );
 }
 
-// ─── Card individual ──────────────────────────────────────────────────────────
+// ─── Card individual (Variante B) ─────────────────────────────────────────────
 function StickerCardAL1({
   item,
   albumId,
   disabled,
+  isDesktop,
 }: {
   item: FigurinhaGridItem;
   albumId: string;
   disabled: boolean;
+  isDesktop: boolean;
 }) {
   const navigate = useNavigate();
-  const isRepetida = item.quantidade >= 2;
-  const isFaltante = !item.colada && item.quantidade === 0;
+  const isColada   = item.colada;
+  const isRepetida = !item.colada && item.quantidade >= 2;
+  const CARD_H = isDesktop ? 106 : 94;
+  const BTN_H  = isDesktop ? 28 : 25;
 
   let cardBg: string;
   let cardBorder: string;
-  if (item.colada) {
-    cardBg = 'rgba(10,145,69,0.04)';
-    cardBorder = '1.5px solid rgba(10,145,69,0.3)';
+  if (isColada) {
+    cardBg     = 'rgba(10,145,69,0.04)';
+    cardBorder = `1.5px solid rgba(10,145,69,0.3)`;
   } else if (isRepetida) {
-    cardBg = '#ffffff';
-    cardBorder = '1.5px solid #0A0907';
+    cardBg     = '#fff';
+    cardBorder = `1.5px solid ${INK}`;
   } else {
-    cardBg = '#ffffff';
-    cardBorder = isFaltante ? '1.5px dashed rgba(10,9,7,0.18)' : '1.5px solid rgba(10,9,7,0.18)';
+    cardBg     = '#fff';
+    cardBorder = `1.5px solid ${LINE}`;
   }
+
+  const statusLabel = isColada ? 'colada' : isRepetida ? 'repetida' : 'faltante';
 
   return (
     <article
       style={{
         background: cardBg,
         border: cardBorder,
-        boxSizing: 'border-box',
+        padding: isDesktop ? '10px 10px 9px' : '8px 7px 7px',
         display: 'flex',
         flexDirection: 'column',
-        padding: '5px 6px 0',
-        overflow: 'hidden',
+        height: CARD_H,
+        boxSizing: 'border-box',
+        minWidth: 0,
       }}
-      aria-label={`Figurinha ${item.numero}${item.nome ? `, ${item.nome}` : ''}, ${item.colada ? 'colada' : item.quantidade >= 2 ? 'repetida' : 'faltante'}`}
+      aria-label={`Figurinha ${item.numero}${item.nome ? `, ${item.nome}` : ''}, ${statusLabel}`}
     >
       {/* Topo: número + badge */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0 }}>
-        <span
-          style={{
-            fontFamily: '"Geist Mono", "Courier New", monospace',
-            fontSize: 10,
-            fontWeight: 700,
-            color: item.colada ? 'rgba(10,9,7,0.28)' : '#0A0907',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <span style={{
+          fontFamily: FONT_M,
+          fontSize: isDesktop ? 10 : 8.5,
+          color: isColada ? GREEN : MUTE,
+          letterSpacing: '0.08em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}>
           {item.numero}
         </span>
         <QuantidadeBadge quantidade={item.quantidade} />
       </div>
 
-      {/* Meio: nome */}
-      <div style={{ flex: 1, overflow: 'hidden', marginTop: 3 }}>
-        {item.nome && (
-          <p
-            style={{
-              fontFamily: '"Archivo Black", sans-serif',
-              fontSize: 8,
-              fontWeight: 900,
-              textTransform: 'uppercase',
-              lineHeight: 1.2,
-              overflow: 'hidden',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              textDecoration: item.colada ? 'line-through' : 'none',
-              color: item.colada ? 'rgba(10,9,7,0.28)' : '#0A0907',
-              margin: 0,
-            } as React.CSSProperties}
-          >
-            {item.nome}
-          </p>
-        )}
+      {/* Nome — ocupa espaço disponível */}
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', padding: '4px 0' }}>
+        <span style={{
+          fontFamily: FONT_D,
+          fontSize: isDesktop ? 12 : 10,
+          color: isColada ? MUTE : INK,
+          textTransform: 'uppercase',
+          lineHeight: 1.15,
+          textDecoration: isColada ? 'line-through' : 'none',
+          textDecorationColor: 'rgba(10,9,7,0.28)',
+          overflow: 'hidden',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+        } as React.CSSProperties}>
+          {item.nome}
+        </span>
       </div>
 
-      {/* Rodapé: botão "Colar →" quando repetida */}
-      <div
-        style={{
-          height: 25,
-          display: 'flex',
-          alignItems: 'center',
-          flexShrink: 0,
-          marginTop: 2,
-        }}
-      >
-        {isRepetida && !disabled && (
+      {/* Área do botão — altura sempre reservada */}
+      <div style={{ flexShrink: 0, height: BTN_H }}>
+        {isRepetida && (
           <button
             type="button"
             onClick={() => navigate(`/colar?albumId=${albumId}&figurinhaNumero=${encodeURIComponent(item.numero)}`)}
+            disabled={disabled}
             style={{
-              fontFamily: '"Geist Mono", "Courier New", monospace',
-              fontSize: 8,
-              fontWeight: 700,
-              color: '#E5142A',
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
+              width: '100%',
+              height: '100%',
+              background: disabled ? 'rgba(10,9,7,0.4)' : INK,
+              color: '#fff',
+              border: `1.5px solid ${INK}`,
+              boxShadow: disabled ? 'none' : `1px 1px 0 ${RED}`,
+              fontFamily: FONT_D,
+              fontSize: isDesktop ? 9 : 8,
               textTransform: 'uppercase',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.04em',
+              cursor: disabled ? 'not-allowed' : 'pointer',
             }}
             aria-label={`Colar figurinha ${item.numero}`}
           >
@@ -161,7 +267,7 @@ function StickerCardAL1({
   );
 }
 
-// ─── Seção com grid ───────────────────────────────────────────────────────────
+// ─── Seção com grid (Variante B) ──────────────────────────────────────────────
 function SecaoGrid({
   secao,
   albumId,
@@ -172,82 +278,193 @@ function SecaoGrid({
   pdfLoading: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const total = secao.figurinhas.length;
-  const coladas = secao.figurinhas.filter((f) => f.colada).length;
-  const pct = total > 0 ? Math.round((coladas / total) * 100) : 0;
+  const total     = secao.figurinhas.length;
+  const coladas   = secao.figurinhas.filter((f) => f.colada).length;
+  const repetidas = secao.figurinhas.filter((f) => !f.colada && f.quantidade >= 2).length;
+  const faltantes = total - coladas - repetidas;
+  const pct       = total > 0 ? Math.round((coladas / total) * 100) : 0;
+  const completa  = coladas === total && total > 0;
 
   return (
-    <div style={{ background: '#ffffff', border: '2px solid #0A0907', boxShadow: '2px 2px 0 #0A0907' }}>
+    <div style={{ border: `1.5px solid ${expanded ? INK : LINE}`, background: expanded ? '#FBF8EE' : '#fff' }}>
+      {/* Cabeçalho clicável */}
       <button
         type="button"
-        className="w-full flex items-center justify-between p-3 text-left"
-        aria-expanded={expanded}
+        data-testid="section-toggle"
         onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        style={{
+          width: '100%',
+          padding: '12px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          textAlign: 'left',
+        }}
       >
-        <span className="font-display text-sm font-black text-ink">{secao.nome}</span>
-        <span className="flex items-center gap-2">
-          <span
-            style={{
-              width: 48,
-              height: 3,
-              background: 'rgba(10,9,7,0.1)',
-              position: 'relative',
-              display: 'inline-block',
-              verticalAlign: 'middle',
-            }}
-          >
-            <span
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                height: '100%',
-                width: `${pct}%`,
-                background: '#0A9145',
-              }}
-            />
-          </span>
-          <span className="text-xs font-mono text-ink/50">{coladas}/{total}</span>
-          <span className="text-ink/50 text-xs">{expanded ? '▲' : '▼'}</span>
-        </span>
+        <div style={{ flex: 1 }}>
+          {/* 1ª linha: nome + coladas/total */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+            <span style={{ fontFamily: FONT_D, fontSize: 14, textTransform: 'uppercase', color: INK }}>
+              {secao.nome}
+            </span>
+            <span style={{ fontFamily: FONT_M, fontSize: 11, color: MUTE }}>
+              {coladas}<span style={{ opacity: 0.35 }}>/</span>{total}
+            </span>
+          </div>
+          {/* 2ª linha: barra + pct ou ✓ Completa */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ flex: 1 }}>
+              <SGProgressBar pct={pct} height={6} color={completa ? GREEN : INK} />
+            </div>
+            {completa ? (
+              <span style={{ fontFamily: FONT_M, fontSize: 9, color: GREEN, letterSpacing: '0.1em', textTransform: 'uppercase', flexShrink: 0 }}>
+                ✓ Completa
+              </span>
+            ) : (
+              <span style={{ fontFamily: FONT_D, fontSize: 14, flexShrink: 0, color: INK }}>
+                {pct}%
+              </span>
+            )}
+          </div>
+        </div>
+        {/* Chevron */}
+        <span style={{
+          fontFamily: FONT_M,
+          fontSize: 18,
+          color: expanded ? RED : MUTE,
+          display: 'inline-block',
+          transform: expanded ? 'rotate(90deg)' : 'none',
+          transition: 'transform 0.2s ease',
+          flexShrink: 0,
+        }}>›</span>
       </button>
 
+      {/* Conteúdo expandido */}
       {expanded && (
-        <div className="border-t border-ink/10 p-3">
+        <div style={{ borderTop: `1.5px solid ${INK}` }}>
           {/* Legenda */}
-          <p className="text-[10px] font-mono text-ink/50 mb-3">
-            <span style={{ color: '#0A9145' }}>━</span> Colada
-            {' · '}
-            <span>○</span> Faltante
-            {' · '}
-            <span style={{ color: '#E5142A' }}>×2</span> Repetida
-          </p>
-
-          {/* Grid de figurinhas */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 8,
-            }}
-            className="xl:[grid-template-columns:repeat(5,1fr)] xl:[gap:10px]"
-          >
-            {secao.figurinhas.map((f) => (
-              <div
-                key={f._id}
-                style={{ height: 94 }}
-                className="xl:h-[106px]"
-              >
-                <StickerCardAL1
-                  item={f}
-                  albumId={albumId}
-                  disabled={pdfLoading}
-                />
+          <div style={{ padding: '6px 14px', background: 'rgba(10,9,7,0.03)', borderBottom: `1px solid ${LINE}`, display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+            {([
+              { symbol: '━', label: 'Colada',   color: GREEN },
+              { symbol: '○', label: 'Faltante', color: MUTE  },
+              { symbol: '×2', label: 'Repetida', color: RED  },
+            ] as const).map((item) => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ fontFamily: FONT_M, fontSize: 9, color: item.color, fontWeight: 600 }}>{item.symbol}</span>
+                <span style={{ fontFamily: FONT_M, fontSize: 8, color: MUTE, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{item.label}</span>
               </div>
             ))}
           </div>
+
+          {/* Grid de figurinhas — 3 col mobile / 5 col desktop */}
+          <div style={{ padding: '10px 14px' }}>
+            <div
+              className="lg:[grid-template-columns:repeat(5,1fr)] lg:gap-[10px]"
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}
+            >
+              {secao.figurinhas.map((f) => (
+                <StickerCardAL1
+                  key={f._id}
+                  item={f}
+                  albumId={albumId}
+                  disabled={pdfLoading}
+                  isDesktop={false}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Resumo de rodapé */}
+          <div style={{
+            padding: '7px 14px',
+            display: 'flex',
+            gap: 14,
+            flexWrap: 'wrap',
+            fontFamily: FONT_M,
+            fontSize: 9,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            borderTop: `1px solid ${LINE}`,
+          }}>
+            <span style={{ color: GREEN }}>✓ {coladas} coladas</span>
+            <span style={{ color: RED }}>⇄ {repetidas} repetidas</span>
+            <span style={{ color: MUTE }}>{faltantes} faltantes</span>
+          </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Painel de Confirmação de Arquivamento ────────────────────────────────────
+function PainelArquivar({
+  loading,
+  error,
+  onConfirmar,
+  onCancelar,
+}: {
+  loading: boolean;
+  error: string;
+  onConfirmar: () => void;
+  onCancelar: () => void;
+}) {
+  return (
+    <div style={{
+      border: `1.5px solid ${RED}`,
+      background: '#fff',
+      padding: '14px 16px',
+    }}>
+      <p style={{ fontFamily: FONT_M, fontSize: 10, color: RED, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+        ⚠ Confirmar arquivamento
+      </p>
+      <p style={{ fontFamily: FONT_B, fontSize: 13, color: MUTE, lineHeight: 1.5, marginBottom: 12 }}>
+        Arquivar este álbum? Ele ficará oculto das listas principais e não poderá receber novas colagens enquanto arquivado.
+      </p>
+      {error && (
+        <p role="alert" style={{ fontFamily: FONT_B, fontSize: 12, color: RED, marginBottom: 8 }}>⚠ {error}</p>
+      )}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={onCancelar}
+          disabled={loading}
+          style={{
+            padding: '10px 16px',
+            background: '#fff',
+            color: INK,
+            border: `1.5px solid ${INK}`,
+            fontFamily: FONT_D,
+            fontSize: 11,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: loading ? 'not-allowed' : 'pointer',
+          }}
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          onClick={onConfirmar}
+          disabled={loading}
+          style={{
+            padding: '10px 16px',
+            background: loading ? 'rgba(229,20,42,0.6)' : RED,
+            color: '#fff',
+            border: `1.5px solid ${RED}`,
+            fontFamily: FONT_D,
+            fontSize: 11,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: loading ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {loading ? 'Arquivando…' : 'Confirmar arquivamento'}
+        </button>
+      </div>
     </div>
   );
 }
@@ -305,6 +522,23 @@ export default function AlbumManagePage() {
     return () => { document.title = 'Meu Álbum Copa 2026'; };
   }, [data]);
 
+  // Contagem de coladas derivada das figurinhas carregadas
+  const { coladasCount, totalFigurinhas } = useMemo(() => {
+    if (!figurinhasData?.secoes) {
+      return {
+        coladasCount: 0,
+        totalFigurinhas: data?.album?.tipoAlbum?.totalFigurinhas ?? 0,
+      };
+    }
+    const coladas = figurinhasData.secoes.reduce(
+      (acc, s) => acc + s.figurinhas.filter((f) => f.colada).length, 0
+    );
+    const total = figurinhasData.secoes.reduce(
+      (acc, s) => acc + s.figurinhas.length, 0
+    );
+    return { coladasCount: coladas, totalFigurinhas: total };
+  }, [figurinhasData, data]);
+
   if (isLoading) {
     return (
       <div className="min-h-dvh bg-paper flex flex-col">
@@ -328,81 +562,181 @@ export default function AlbumManagePage() {
   }
 
   const { album } = data;
-  const nomeExibido = album.nomePersonalizado || album.tipoAlbum?.nome ?? 'Álbum';
   const actionsDisabled = pdfLoading || arquivarMut.isPending;
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
-      <AppHeader back />
-      <div className="sticky top-[60px] z-10 bg-paper border-b border-ink/10 px-4 py-3">
-        <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide leading-tight">
-          {nomeExibido}
-        </h1>
-        <p className="text-xs font-mono text-ink/50 mt-0.5">
-          {album.tipoAlbum?.nome} · {VARIANTE_LABEL[album.variante] ?? album.variante}
-        </p>
-        <div className="mt-2">
-          <ProgressBar value={album.percentualConclusao} label="Progresso" />
-        </div>
-      </div>
+      <AppHeader back breadcrumb="Meus Álbuns" title="Gerenciar álbum" />
 
-      {/* Action bar — RN-AL19: PDF loading desabilita todos */}
-      <div className="px-4 py-3 border-b border-ink/10 flex gap-2 flex-wrap">
-        <Button
-          size="sm"
-          variant="primary"
+      {/* Card-Herói */}
+      <AlbumHero
+        tipoNome={album.tipoAlbum?.nome ?? 'Álbum'}
+        variante={album.variante}
+        nomePersonalizado={album.nomePersonalizado}
+        pct={album.percentualConclusao}
+        coladas={coladasCount}
+        total={totalFigurinhas}
+      />
+
+      {/* Barra de Ações — RN-AL19 */}
+      <div
+        className="px-4 lg:px-6"
+        style={{
+          background: '#FBF8EE',
+          border: `1.5px solid ${INK}`,
+          borderLeft: 'none',
+          borderRight: 'none',
+          padding: '10px 16px',
+          display: 'flex',
+          gap: 8,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
+        {/* Colar figurinhas → */}
+        <button
+          type="button"
           disabled={actionsDisabled}
           onClick={() => navigate(`/colar?albumId=${album._id}`)}
+          style={{
+            padding: '10px 20px',
+            background: actionsDisabled ? 'rgba(10,9,7,0.4)' : INK,
+            color: '#fff',
+            border: `2px solid ${INK}`,
+            boxShadow: actionsDisabled ? 'none' : `2px 2px 0 ${RED}`,
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: actionsDisabled ? 'not-allowed' : 'pointer',
+          }}
         >
-          Colar figurinhas
-        </Button>
-        <Button
-          size="sm"
-          variant="secondary"
-          loading={pdfLoading}
-          disabled={arquivarMut.isPending}
+          Colar figurinhas →
+        </button>
+
+        {/* Ver Álbum (mantido por D2) */}
+        <button
+          type="button"
+          disabled={actionsDisabled}
+          onClick={() => navigate(`/albums/${album._id}/visualizar`)}
+          style={{
+            padding: '10px 20px',
+            background: '#fff',
+            color: INK,
+            border: `1.5px solid ${INK}`,
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: actionsDisabled ? 'not-allowed' : 'pointer',
+            opacity: actionsDisabled ? 0.5 : 1,
+          }}
+        >
+          Ver álbum
+        </button>
+
+        {/* Baixar PDF / Figurinhas que faltam */}
+        <button
+          type="button"
+          disabled={actionsDisabled}
           onClick={handleBaixarPdf}
+          style={{
+            padding: '10px 20px',
+            background: '#fff',
+            color: INK,
+            border: `1.5px solid ${INK}`,
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: actionsDisabled ? 'not-allowed' : 'pointer',
+            opacity: actionsDisabled ? 0.5 : 1,
+          }}
         >
-          Baixar PDF
-        </Button>
+          {pdfLoading ? (
+            'Gerando…'
+          ) : (
+            'Figurinhas que faltam'
+          )}
+        </button>
+
+        {/* Arquivar — empurrado à direita no desktop */}
         {!confirmarArquivar && (
-          <Button
-            size="sm"
-            variant="secondary"
+          <button
+            type="button"
             disabled={actionsDisabled}
             onClick={() => { setConfirmarArquivar(true); setArquivarError(''); }}
+            style={{
+              padding: '10px 20px',
+              background: '#fff',
+              color: INK,
+              border: `1.5px solid ${INK}`,
+              fontFamily: FONT_D,
+              fontSize: 12,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              cursor: actionsDisabled ? 'not-allowed' : 'pointer',
+              opacity: actionsDisabled ? 0.5 : 1,
+              marginLeft: 'auto',
+            }}
           >
             Arquivar
-          </Button>
+          </button>
         )}
+
+        {/* Quando arquivamento pendente: manter botão "Arquivar" visual mas sem ação */}
         {confirmarArquivar && (
-          <>
-            <Button
-              size="sm"
-              loading={arquivarMut.isPending}
-              disabled={pdfLoading}
-              style={{ backgroundColor: '#0A0907', color: '#fff', borderColor: '#0A0907' }}
-              onClick={() => arquivarMut.mutate()}
-            >
-              Confirmar arquivamento
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={actionsDisabled}
-              onClick={() => { setConfirmarArquivar(false); setArquivarError(''); }}
-            >
-              Cancelar
-            </Button>
-          </>
+          <button
+            type="button"
+            disabled
+            style={{
+              padding: '10px 20px',
+              background: '#fff',
+              color: RED,
+              border: `1.5px solid ${RED}`,
+              fontFamily: FONT_D,
+              fontSize: 12,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              cursor: 'default',
+              marginLeft: 'auto',
+            }}
+          >
+            Arquivar
+          </button>
         )}
       </div>
 
-      {pdfError && <p role="alert" className="px-4 pt-2 text-xs text-red font-body">⚠ {pdfError}</p>}
-      {arquivarError && <p role="alert" className="px-4 pt-2 text-xs text-red font-body">⚠ {arquivarError}</p>}
+      {/* Painel de confirmação de arquivamento (separado da barra) */}
+      {confirmarArquivar && (
+        <div className="px-4 lg:px-6 pt-3">
+          <PainelArquivar
+            loading={arquivarMut.isPending}
+            error={arquivarError}
+            onConfirmar={() => arquivarMut.mutate()}
+            onCancelar={() => { setConfirmarArquivar(false); setArquivarError(''); }}
+          />
+        </div>
+      )}
 
-      {/* Grid de figurinhas por seção */}
-      <div className="flex-1 p-4 xl:px-8 flex flex-col gap-3">
+      {pdfError && (
+        <p role="alert" className="px-4 lg:px-6 pt-2 text-xs font-body" style={{ color: RED }}>
+          ⚠ {pdfError}
+        </p>
+      )}
+
+      {/* Lista de seções */}
+      <div className="flex-1 px-4 lg:px-6 pt-4 pb-8 flex flex-col gap-2">
+        {/* Rótulo "Seções do álbum" */}
+        <div style={{ marginBottom: 8 }}>
+          <span style={{ fontFamily: FONT_M, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: MUTE }}>
+            Seções do álbum
+            {figurinhasData?.secoes && (
+              <span className="hidden lg:inline"> · {figurinhasData.secoes.length} seções</span>
+            )}
+          </span>
+        </div>
+
         {figurinhasLoading && (
           <div className="flex justify-center py-8" aria-busy="true" aria-label="Carregando figurinhas">
             <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />

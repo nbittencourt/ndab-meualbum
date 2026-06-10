@@ -8,7 +8,7 @@ interface SideMenuProps {
 
 const NAV_LINKS = [
   { to: '/home',   label: 'Início' },
-  { to: '/albums', label: 'Álbuns' },
+  { to: '/albums', label: 'Meus Álbuns' },
   { to: '/abrir',  label: 'Abrir Pacotinhos' },
   { to: '/colar',  label: 'Colar Figurinhas' },
   { to: '/trocas', label: 'Trocas' },

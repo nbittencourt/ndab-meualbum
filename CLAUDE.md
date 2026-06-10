@@ -14,6 +14,16 @@ The `/docs/_hist` folder contais historical specs for comparison purpose. All ve
 
 Folder `/docs/design_handoff` contains the wireframes, prototypes and others assets to drive the screen definition. You must stick to these definitions, unless any design definition is not supported by the specs files.
 
+### Source-of-truth hierarchy
+
+When sources disagree, resolve authority in this order:
+
+1. **Design handoff** (`/docs/design_handoff/`) — visual fidelity of existing screens.
+2. **Canonical specs** (`/docs/spec_*.md`) — business rules, especially when newer than the design.
+3. **Current implementation** — a starting point, but it may be outdated.
+
+When the design handoff is **silent** about a requirement (e.g. LGPD, WCAG, data export, age-gate), the canonical spec is authoritative — implement it even if no wireframe shows it. Cross-cutting concerns (LGPD, WCAG) apply to **every new screen**, regardless of the wireframe. Divergences across the three sources must be escalated as an explicit decision before coding.
+
 ## Tech Stack
 
 - **Frontend**: React 19 + Vite + TypeScript
@@ -121,6 +131,14 @@ RESTful JSON API under `/api/v1/`. Auth via JWT (stored in httpOnly cookie, not 
 
 The client should register a service worker for offline access to the sticker catalog. Use Vite PWA plugin (`vite-plugin-pwa`).
 
+### Code Conventions
+
+Canonical building blocks — **reuse these, do not reimplement locally**:
+
+- **Album variant styling**: `client/src/lib/albumVariant.ts` is the single source for `VARIANT_STYLES` and `VARIANT_LABELS`. Any component rendering an album card/badge must import from `@/lib/albumVariant` — never copy the tables locally.
+- **Cookie consent**: read/write consent only through `client/src/lib/cookieConsent.ts` (`getConsent()`, `hasValidConsent()`, `saveConsent()`). Bump `CURRENT_POLICY_VERSION` manually when the privacy policy changes materially.
+- **Camera capture + OCR**: use the reusable `client/src/components/CameraModal.tsx`. It takes `onConfirm(numero): Promise<void>` and a customizable `nextLabel`. OCR runs **client-side** (Tesseract.js via dynamic `import()` to keep the initial bundle clean); never send camera frames or images to the backend.
+
 ### Tests
 
 Tests were built on Playwright and are stored on the following locations:
@@ -136,6 +154,22 @@ You must follow the rules on (tests/TESTS.md).
 │   │   ├── error-context.md # Fail details
 ```
 
+Run the full E2E suite with `npm run test:e2e` (`playwright test`). Before running, kill any active dev servers: `npx kill-port 5173` and `npx kill-port 3000`.
+
+#### Testing conventions
+
+- **Cookie banner suppression**: importing `{ test, expect }` from `tests/support/fixtures.ts` auto-loads a valid cookie consent into `localStorage`, suppressing the banner. Tests that need to exercise the banner itself must import from `@playwright/test` directly.
+- **Policy version sync**: `CURRENT_POLICY_VERSION` in `tests/support/fixtures.ts` must be kept in sync with `client/src/lib/cookieConsent.ts`. If they diverge, the banner reappears in every fixture-based test and breaks unrelated flows.
+
+#### TDD workflow
+
+When implementing a new or changed business rule, follow test-driven development:
+
+1. Write E2E tests that assert the business rules first.
+2. Implement the feature/fix.
+3. Run the full suite (`npm run test:e2e`).
+4. Fix failures while preserving the business rules; repeat from step 3 until green.
+
 ## Design Principles
 
 - **Mobile-first**: design for 375px viewport; use bottom navigation, large touch targets (≥ 44px).
@@ -145,8 +179,8 @@ You must follow the rules on (tests/TESTS.md).
 
 ## Legal Requirements
 
-Development must attend [docs\legal\lgpd_guia_sistemas.md](LGPD)
+Development must attend [LGPD](docs\legal\lgpd_guia_sistemas.md)
 
 ## Accesibility
 
-Development must attend [docs\legal\wcag-2_0-aa-guia-sistemas.md](WCAG 2.0 AA) , but may seek WCAG 2.1 2.2 when possible.
+Development must attend [WCAG 2.0 AA](docs\legal\wcag-2_0-aa-guia-sistemas.md) , but may seek WCAG 2.1 2.2 when possible.

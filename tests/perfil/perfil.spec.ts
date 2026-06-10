@@ -10,7 +10,7 @@ test.describe('Perfil do Usuário', () => {
     test('deve exibir identificador de 6 chars em modo somente leitura (RN-P02)', async ({ page, request }) => {
       const { identificador } = await usuarioAtivo(page, request);
       await page.goto('/perfil');
-      await expect(page.getByText(identificador)).toBeVisible();
+      await expect(page.getByText(identificador, { exact: true })).toBeVisible();
     });
 
     test('deve copiar identificador e exibir confirmação temporária "Copiado!" (RN-P03)', async ({ page, request }) => {
@@ -55,7 +55,7 @@ test.describe('Perfil do Usuário', () => {
       await page.getByLabel('Nome completo').fill('Nome Alterado');
       await page.getByTestId('salvar-nome').click();
       await expect(page.getByText(/salvo|sucesso/i)).toBeVisible();
-      await expect(page.getByText('Nome Alterado')).toBeVisible();
+      await expect(page.getByText('Nome Alterado').first()).toBeVisible();
     });
 
     test('deve rejeitar nome com mais de 100 caracteres (RN-P04)', async ({ page, request }) => {

@@ -2,12 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBlocker } from 'react-router-dom';
 import { abrirPacotinhosApi, albumsApi, ApiError } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import { AppHeader } from '@/components/AppHeader';
 import type { PilhaDaSessao } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Toast';
+import { CameraModal } from '@/components/CameraModal';
+import { VARIANT_LABELS } from '@/lib/albumVariant';
 
 const MAX_PENDENTE = 100;
 
@@ -36,6 +39,7 @@ function PilhaTag({ children, bg, color }: { children: React.ReactNode; bg: stri
 
 export default function AbrirPacotinhosPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
 
   // tipoId=null → AP0 (ou retomada); tipoId=string → AP1
   const [tipoId, setTipoId] = useState<string | null>(null);
@@ -50,7 +54,6 @@ export default function AbrirPacotinhosPage() {
   const [colarItem, setColarItem] = useState<PilhaDaSessao | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { data: tiposData, isLoading: tiposLoading } = useQuery({
     queryKey: ['tiposAlbum'],
@@ -81,8 +84,10 @@ export default function AbrirPacotinhosPage() {
 
   const [addError, setAddError] = useState('');
   const [descartarItemId, setDescartarItemId] = useState<string | null>(null);
-  const [showCameraPanel, setShowCameraPanel] = useState(false);
-  const [cameraAtiva, setCameraAtiva] = useState(false);
+  /** Modo de entrada: digitação ou câmera (seletor AP1 — RN-AP43) */
+  const [mode, setMode] = useState<'DIGITAR' | 'FOTOGRAFAR'>('DIGITAR');
+  /** Controla abertura do Modal Câmera (passo 2 de RN-AP43) */
+  const [showCameraModal, setShowCameraModal] = useState(false);
 
   const addMut = useMutation({
     mutationFn: (figurinhaNumero: string) =>
@@ -95,6 +100,15 @@ export default function AbrirPacotinhosPage() {
     },
     onError: (err) => {
       setAddError(err instanceof ApiError ? err.message : 'Erro ao adicionar.');
+    },
+  });
+
+  /** Mutation exclusiva para entradas via câmera (origem=CAMERA) */
+  const addCameraMut = useMutation({
+    mutationFn: (figurinhaNumero: string) =>
+      abrirPacotinhosApi.adicionarItem({ tipoAlbumId: tipoId!, figurinhaNumero, origem: 'CAMERA' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pilha'] });
     },
   });
 
@@ -156,9 +170,10 @@ export default function AbrirPacotinhosPage() {
     onError: (err) => showToast(err instanceof ApiError ? err.message : 'Erro.', 'error'),
   });
 
-  // Bloqueia navegação se há itens pendentes em AP1
+  // Bloqueia navegação se há itens pendentes em AP1 (RN-AP32: logout bypassa — user já é null quando navigate é chamado)
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
+      !!user &&
       tipoId !== null &&
       pendentes.length > 0 &&
       currentLocation.pathname !== nextLocation.pathname
@@ -181,24 +196,7 @@ export default function AbrirPacotinhosPage() {
     }
   }, [tipos, tiposLoading, pilhaLoading, tipoId, temRetomada]);
 
-  // Inicializa e libera o stream da câmera
-  useEffect(() => {
-    if (!cameraAtiva) return;
-    let stream: MediaStream | null = null;
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then((s) => {
-        stream = s;
-        if (videoRef.current) videoRef.current.srcObject = s;
-      })
-      .catch(() => {
-        showToast('Não foi possível acessar a câmera. Verifique as permissões.', 'error');
-        setCameraAtiva(false);
-      });
-    return () => {
-      stream?.getTracks().forEach((t) => t.stop());
-      if (videoRef.current) videoRef.current.srcObject = null;
-    };
-  }, [cameraAtiva]);
+  // Camera stream is managed by CameraModal component
 
   const isLoading = tiposLoading || pilhaLoading;
 
@@ -329,58 +327,93 @@ export default function AbrirPacotinhosPage() {
         className="sr-only"
       />
 
-      {showCameraPanel && (
-        <div className="bg-white border-2 border-ink p-4 flex flex-col gap-3">
-          <video ref={videoRef} autoPlay playsInline className="w-full rounded" aria-label="Câmera ativa" />
-          <Button size="sm" variant="secondary" onClick={() => { setCameraAtiva(false); setShowCameraPanel(false); }}>
-            Fechar câmera
+      {/* Seletor de modo de entrada — RN-AP43 */}
+      <div className="flex gap-1" role="radiogroup" aria-label="Modo de entrada">
+        <button
+          type="button"
+          role="radio"
+          aria-checked={mode === 'DIGITAR'}
+          className={[
+            'px-3 py-1.5 text-xs font-body font-semibold uppercase tracking-wide border-2 transition-colors',
+            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
+            mode === 'DIGITAR'
+              ? 'bg-ink text-white border-ink'
+              : 'bg-white text-ink border-ink/40 hover:border-ink',
+          ].join(' ')}
+          onClick={() => setMode('DIGITAR')}
+        >
+          Digitar
+        </button>
+        <button
+          type="button"
+          role="radio"
+          aria-checked={mode === 'FOTOGRAFAR'}
+          className={[
+            'px-3 py-1.5 text-xs font-body font-semibold uppercase tracking-wide border-2 transition-colors',
+            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
+            mode === 'FOTOGRAFAR'
+              ? 'bg-ink text-white border-ink'
+              : 'bg-white text-ink border-ink/40 hover:border-ink',
+          ].join(' ')}
+          onClick={() => setMode('FOTOGRAFAR')}
+        >
+          Fotografar
+        </button>
+      </div>
+
+      {/* Modo Digitar */}
+      {mode === 'DIGITAR' && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!numero.trim()) return;
+            setAddError('');
+            if (pendentes.length >= MAX_PENDENTE) {
+              setAddError(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido. Cole ou descarte antes de continuar.`);
+              return;
+            }
+            addMut.mutate(numero.trim());
+          }}
+          className="flex gap-2"
+          noValidate
+        >
+          <div className="flex-1">
+            <Input
+              ref={inputRef}
+              label="Número da figurinha"
+              type="text"
+              inputMode="text"
+              pattern="[0-9A-Za-z]+"
+              value={numero}
+              onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
+              placeholder="Ex.: 42 ou BR01"
+              autoComplete="off"
+              aria-label="Número da figurinha para adicionar à pilha"
+              error={addError || undefined}
+            />
+          </div>
+          <div className="flex items-end pb-0.5">
+            <Button type="submit" loading={addMut.isPending} disabled={!numero.trim()}>
+              +
+            </Button>
+          </div>
+        </form>
+      )}
+
+      {/* Modo Fotografar — passo 2: botão "Abrir câmera" (RN-AP43) */}
+      {mode === 'FOTOGRAFAR' && (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-body text-ink/60">
+            Aponte a câmera para o verso da figurinha e fotografe o número.
+          </p>
+          <Button
+            onClick={() => setShowCameraModal(true)}
+            aria-label="Abrir câmera para fotografar figurinha"
+          >
+            Abrir câmera
           </Button>
         </div>
       )}
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!numero.trim()) return;
-          setAddError('');
-          if (pendentes.length >= MAX_PENDENTE) {
-            setAddError(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido. Cole ou descarte antes de continuar.`);
-            return;
-          }
-          addMut.mutate(numero.trim());
-        }}
-        className="flex gap-2"
-        noValidate
-      >
-        <div className="flex-1">
-          <Input
-            ref={inputRef}
-            label="Número da figurinha"
-            type="text"
-            inputMode="text"
-            pattern="[0-9A-Za-z]+"
-            value={numero}
-            onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
-            placeholder="Ex.: 42 ou BR01"
-            autoComplete="off"
-            aria-label="Número da figurinha para adicionar à pilha"
-            error={addError || undefined}
-          />
-        </div>
-        <div className="flex items-end pb-0.5 gap-1">
-          <Button type="submit" loading={addMut.isPending} disabled={!numero.trim()}>
-            +
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            aria-label="Fotografar"
-            onClick={() => { setShowCameraPanel(true); setCameraAtiva(true); }}
-          >
-            Fotografar
-          </Button>
-        </div>
-      </form>
 
       {pendentes.length >= MAX_PENDENTE && !addError && (
         <p role="alert" className="text-xs text-red font-body">
@@ -546,6 +579,14 @@ export default function AbrirPacotinhosPage() {
         </div>
       </Modal>
 
+      {/* Modal Câmera (MC) — ativado pelo botão "Abrir câmera" no Modo Fotografar (RN-AP43) */}
+      <CameraModal
+        open={showCameraModal}
+        onClose={() => setShowCameraModal(false)}
+        onConfirm={async (numero) => { await addCameraMut.mutateAsync(numero); }}
+        confirmLoading={addCameraMut.isPending}
+      />
+
       <ColarModal
         item={colarItem}
         onClose={() => setColarItem(null)}
@@ -583,10 +624,7 @@ function ColarModal({
     else setAlbumId('');
   }, [item]);
 
-  const varianteLabel: Record<string, string> = {
-    BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
-    CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
-  };
+  // G6: usa VARIANT_LABELS centralizado em lib/albumVariant.ts
 
   return (
     <Modal open={!!item} onClose={onClose} title="Colar figurinha">
@@ -611,7 +649,7 @@ function ColarModal({
                 >
                   <span>{album.nomePersonalizado || album.tipoAlbum.nome}</span>
                   {!album.nomePersonalizado && album.variante && (
-                    <span className="block text-xs opacity-70">{varianteLabel[album.variante] ?? album.variante}</span>
+                    <span className="block text-xs opacity-70">{VARIANT_LABELS[album.variante as keyof typeof VARIANT_LABELS] ?? album.variante}</span>
                   )}
                 </button>
               ))}

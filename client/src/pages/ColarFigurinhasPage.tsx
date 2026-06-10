@@ -9,15 +9,13 @@ import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Toast';
 import { StickerStatusBadge } from '@/components/StickerStatusBadge';
+import { VARIANT_LABELS } from '@/lib/albumVariant';
+import { CameraModal } from '@/components/CameraModal';
 
 type ToastVariant = 'success' | 'error' | 'info';
 type ToastState = { message: string; variant: ToastVariant } | null;
 
-const VARIANT_LABELS: Record<string, string> = {
-  BROCHURA: 'Brochura', CAPA_DURA: 'Capa Dura',
-  CAPA_DURA_PRATA: 'Capa Dura Prata', CAPA_DURA_OURO: 'Capa Dura Ouro', BOX_PREMIUM: 'Box Premium',
-};
-function variantLabel(v: string) { return VARIANT_LABELS[v] ?? v; }
+function variantLabel(v: string) { return VARIANT_LABELS[v as keyof typeof VARIANT_LABELS] ?? v; }
 
 export default function ColarFigurinhasPage() {
   const [searchParams] = useSearchParams();
@@ -32,8 +30,11 @@ export default function ColarFigurinhasPage() {
   const [showMfnModal, setShowMfnModal] = useState(false);
   const [mfnNumero, setMfnNumero] = useState('');
   const [mfnError, setMfnError] = useState('');
+  const [mfnPasted, setMfnPasted] = useState(false);
   const mfnKeepOpenRef = useRef(false);
   const mfnInputRef = useRef<HTMLInputElement>(null);
+  /** Modal Câmera no MFN — RN-CF27 */
+  const [showMfnCamera, setShowMfnCamera] = useState(false);
 
   const resultsId = useId();
 
@@ -81,16 +82,11 @@ export default function ColarFigurinhasPage() {
       queryClient.invalidateQueries({ queryKey: ['albums'] });
       queryClient.invalidateQueries({ queryKey: ['album', albumId] });
       queryClient.invalidateQueries({ queryKey: ['album-figurinhas', albumId] });
-      if (mfnKeepOpenRef.current) {
-        setMfnNumero('');
-        setMfnError('');
-        mfnKeepOpenRef.current = false;
-        mfnInputRef.current?.focus();
-      } else {
-        setShowMfnModal(false);
-        setMfnNumero('');
-        showToast('Figurinha colada diretamente!', 'success');
-      }
+      mfnKeepOpenRef.current = false;
+      setMfnPasted(true);
+      setMfnNumero('');
+      setMfnError('');
+      showToast('Figurinha colada diretamente!', 'success');
     },
     onError: (err) => {
       mfnKeepOpenRef.current = false;
@@ -217,7 +213,7 @@ export default function ColarFigurinhasPage() {
 
       <Modal
         open={showMfnModal}
-        onClose={() => { setShowMfnModal(false); setMfnError(''); }}
+        onClose={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
         title="Colar figurinha não registrada"
       >
         <p className="text-sm font-body text-ink/70 mb-4">
@@ -234,32 +230,63 @@ export default function ColarFigurinhasPage() {
           autoFocus
         />
         <div className="flex gap-2 mt-4 flex-wrap">
-          <Button
-            loading={mfnMut.isPending}
-            disabled={!mfnNumero.trim()}
-            onClick={() => {
-              mfnKeepOpenRef.current = true;
-              mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId });
-            }}
-          >
-            Colar
-          </Button>
-          <Button
-            variant="secondary"
-            loading={mfnMut.isPending}
-            disabled={!mfnNumero.trim()}
-            onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
-          >
-            Colar e Fechar
-          </Button>
-          <Button variant="secondary" onClick={() => { setShowMfnModal(false); setMfnError(''); }}>Cancelar</Button>
+          {!mfnPasted ? (
+            <>
+              <Button
+                loading={mfnMut.isPending}
+                disabled={!mfnNumero.trim()}
+                onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
+              >
+                Confirmar
+              </Button>
+              <Button
+                variant="secondary"
+                disabled={mfnMut.isPending}
+                onClick={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
+              >
+                Cancelar
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => { setMfnPasted(false); setMfnNumero(''); setMfnError(''); mfnInputRef.current?.focus(); }}
+              >
+                Colar e Outra
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
+              >
+                Fechar
+              </Button>
+            </>
+          )}
         </div>
+        {/* Botão "Abrir câmera" — RN-CF27: ativação explícita, não automática */}
         <div className="mt-3 pt-3 border-t border-ink/10">
-          <Button size="sm" variant="secondary" onClick={() => {}}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setShowMfnCamera(true)}
+            aria-label="Abrir câmera para reconhecer número da figurinha"
+          >
             Abrir câmera
           </Button>
         </div>
       </Modal>
+
+      {/* Modal Câmera no MFN — RN-CF27 */}
+      <CameraModal
+        open={showMfnCamera}
+        onClose={() => setShowMfnCamera(false)}
+        onConfirm={async (numero) => {
+          await mfnMut.mutateAsync({ numero, albumIdTarget: albumId });
+          setMfnPasted(true);
+        }}
+        confirmLoading={mfnMut.isPending}
+        nextLabel="Colar e Outra"
+      />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
       </div>
