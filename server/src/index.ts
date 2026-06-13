@@ -16,7 +16,6 @@ import abrirPacotinhosRouter from './routes/abrir-pacotinhos.js';
 import colarFigurinhasRouter from './routes/colar-figurinhas.js';
 import profileRouter from './routes/profile.js';
 import privacidadeRouter from './routes/privacidade.js';
-import collectionRouter from './routes/collection.js';
 import seedRouter from './routes/seed.js';
 import testRouter from './routes/test.routes.js';
 
@@ -46,7 +45,6 @@ app.use('/api/v1', abrirPacotinhosRouter);
 app.use('/api/v1', colarFigurinhasRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1', privacidadeRouter);
-app.use('/api/v1/collection', collectionRouter);
 if (process.env.NODE_ENV !== 'production') {
   app.use('/api/v1/seed', seedRouter);
 }

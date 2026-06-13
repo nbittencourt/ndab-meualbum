@@ -1,6 +1,7 @@
 # Roadmap de Produto — MeuAlbum Copa 2026
 
-> Documento vivo. Atualizado em 2026-06-11 com base em deep dive completo da aplicação.
+> Documento vivo. Atualizado em 2026-06-13 com base em deep dive completo da aplicação.
+> Inclui também o tratamento da Issue #23 (pilha do Abrir Pacotinhos nunca limpa — RN-AP17), resolvida no M1.
 > Hierarquia de fontes: design handoff > specs canônicas > implementação atual.
 
 ---
@@ -25,7 +26,7 @@ Foco: eliminar dívidas técnicas bloqueantes e garantir conformidade legal.
 | B2 | Remover duplicação de `VARIANT_STYLES` em `AlbumVarianteCard` | `client/src/components/AlbumVarianteCard.tsx:15-71` → importar de `client/src/lib/albumVariant.ts` | Consistência visual |
 | B3 | Adicionar `asyncHandler` wrapper nas rotas Express | `server/src/index.ts` + todas as rotas | Estabilidade |
 | B4 | Paginação em `GET /albums` e `GET /estoque` | `server/src/routes/albums.ts`, `estoque.ts` | Escalabilidade |
-| B5 | Validação de ObjectId faltante em `secoes.ts` e `home.ts` | `server/src/routes/secoes.ts:11`, `home.ts:14` | Segurança |
+| B5 | ~~Validação de ObjectId faltante~~ — ✅ verificado em 2026-06-13: todas as rotas já validam `Types.ObjectId.isValid` antes do uso; sem ação | — | Segurança |
 | B6 | Remover código morto: `PasswordResetToken`, model `Collection`, `AlbumPage.tsx` | `server/src/models/`, `client/src/pages/AlbumPage.tsx` | Manutenabilidade |
 
 #### 1.2 — Conformidade LGPD
