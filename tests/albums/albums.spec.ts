@@ -229,6 +229,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await page.getByRole('button', { name: /colar figurinhas/i }).click();
       await expect(page).toHaveURL(/\/colar/);
       await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
+      await expect(page.getByText('Figurinha colada!')).toBeVisible(); // aguarda persistência/invalidação
       await page.getByRole('button', { name: /voltar/i }).click();
       await expect(page).toHaveURL(new RegExp(`/albums/${album._id ?? album.id}`));
       const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();

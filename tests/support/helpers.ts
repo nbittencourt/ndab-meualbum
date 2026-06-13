@@ -76,6 +76,19 @@ export async function arquivarAlbum(request: APIRequestContext, albumId: string)
   await request.post('/api/v1/test/arquivar-album', { data: { albumId } });
 }
 
+/**
+ * Navega por um link do menu principal de forma agnóstica ao viewport.
+ * No mobile (≤lg) abre o menu hambúrguer ("Abrir menu de navegação") antes;
+ * no desktop (≥xl) a SideNav já expõe os links diretamente.
+ */
+export async function navegarPorMenu(page: Page, linkName: RegExp) {
+  const hamburguer = page.getByRole('button', { name: /abrir menu de navegação/i });
+  if (await hamburguer.isVisible().catch(() => false)) {
+    await hamburguer.click();
+  }
+  await page.getByRole('link', { name: linkName }).first().click();
+}
+
 export async function criarTipoAlbumExtra(request: APIRequestContext, nome = 'Álbum Extra Teste', totalFigurinhas = 100): Promise<string> {
   const res = await request.post('/api/v1/test/criar-tipo-album', {
     data: { nome, totalFigurinhas },

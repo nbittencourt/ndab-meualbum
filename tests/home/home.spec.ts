@@ -124,9 +124,10 @@ test.describe('Home', () => {
         await adicionarEstoque(request, identificador, num, 2);
       }
       await page.reload();
-      const itens = page.locator('[data-testid="ranking-item"], .ranking-item').or(
-        page.getByRole('listitem').filter({ hasText: /FWC/ })
-      );
+      // Agnóstico ao viewport: mobile renderiza lista (listitem), desktop renderiza tabela (row)
+      const itens = page.locator('[data-testid="ranking-item"], .ranking-item')
+        .or(page.getByRole('listitem').filter({ hasText: /FWC/ }))
+        .or(page.getByRole('row').filter({ hasText: /FWC/ }));
       await expect(itens.first()).toBeVisible();
       const count = await itens.count();
       expect(count).toBeLessThanOrEqual(5);
@@ -139,9 +140,11 @@ test.describe('Home', () => {
       await adicionarEstoque(request, identificador, 'FWC1', 3);
       await adicionarEstoque(request, identificador, 'FWC3', 3);
       await page.reload();
-      await expect(page.getByRole('listitem').filter({ hasText: /FWC/ }).first()).toBeVisible();
-      const primeiroItem = page.getByRole('listitem').filter({ hasText: /FWC/ }).first();
-      await expect(primeiroItem.getByText('FWC1', { exact: true })).toBeVisible();
+      // Agnóstico ao viewport: lista (mobile) ou tabela (desktop). Célula desktop usa "#FWC1".
+      const itens = page.getByRole('listitem').filter({ hasText: /FWC/ })
+        .or(page.getByRole('row').filter({ hasText: /FWC/ }));
+      await expect(itens.first()).toBeVisible();
+      await expect(itens.first()).toContainText('FWC1');
     });
   });
 
