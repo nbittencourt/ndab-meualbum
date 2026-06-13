@@ -82,7 +82,7 @@ export function DesktopSidebar() {
               fontFamily: '"Geist", "Geist Mono", sans-serif',
               fontSize: 13,
               fontWeight: 600,
-              color: isActive ? '#E5142A' : '#0A0907',
+              color: isActive ? '#D01122' : '#0A0907',
               background: isActive ? '#F0EDE4' : 'transparent',
               borderLeft: isActive ? '3px solid #E5142A' : '3px solid transparent',
               textDecoration: 'none',

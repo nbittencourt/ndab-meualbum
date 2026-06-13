@@ -137,7 +137,7 @@ function Paginacao({ pagina, total, onChange }: PaginacaoProps) {
       >
         ← Anterior
       </button>
-      <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 12, color: 'rgba(10,9,7,0.5)' }}>
+      <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 12, color: 'rgba(10,9,7,0.7)' }}>
         {pagina} / {total}
       </span>
       <button
@@ -167,7 +167,7 @@ function RepetidasTabela({ items }: { items: StickerRankItemType[] }) {
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.12em',
-                color: 'rgba(10,9,7,0.45)',
+                color: 'rgba(10,9,7,0.62)',
                 padding: '8px 12px 8px 0',
                 textAlign: col === 'QTD' ? 'right' : 'left',
               }}
@@ -189,7 +189,7 @@ function RepetidasTabela({ items }: { items: StickerRankItemType[] }) {
               <td style={{
                 fontFamily: '"Geist Mono", monospace',
                 fontSize: 12,
-                color: isFirst ? '#E5142A' : 'rgba(10,9,7,0.4)',
+                color: isFirst ? '#E5142A' : 'rgba(10,9,7,0.62)',
                 fontWeight: isFirst ? 700 : 400,
                 padding: '12px 12px 12px 0',
                 width: 32,
@@ -199,7 +199,7 @@ function RepetidasTabela({ items }: { items: StickerRankItemType[] }) {
               <td style={{
                 fontFamily: '"Geist Mono", monospace',
                 fontSize: 12,
-                color: 'rgba(10,9,7,0.55)',
+                color: 'rgba(10,9,7,0.7)',
                 padding: '12px 12px 12px 0',
                 width: 72,
               }}>
@@ -279,7 +279,7 @@ export default function HomePage() {
                 <h2 style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 20, color: '#0A0907', margin: 0 }}>
                   Meus Álbuns
                 </h2>
-                <Link to="/albums" style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.5)', textDecoration: 'underline' }}>
+                <Link to="/albums" style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.7)', textDecoration: 'underline' }}>
                   Ver todos os álbuns
                 </Link>
               </div>
@@ -341,7 +341,7 @@ export default function HomePage() {
                 <p style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 16, color: '#0A0907', marginBottom: 8 }}>
                   Nenhum álbum ainda
                 </p>
-                <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(10,9,7,0.55)', marginBottom: 18 }}>
+                <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(10,9,7,0.7)', marginBottom: 18 }}>
                   Crie seu primeiro álbum para começar a colar figurinhas.
                 </p>
                 <Link
@@ -432,7 +432,7 @@ export default function HomePage() {
                   background: '#F0E9D6',
                 }}
               >
-                <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(10,9,7,0.55)' }}>
+                <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(10,9,7,0.7)' }}>
                   Nenhuma figurinha repetida no seu estoque.
                 </p>
               </div>
@@ -467,7 +467,7 @@ export default function HomePage() {
               textAlign: 'center',
             }}
           >
-            <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.4)', margin: 0 }}>
+            <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 12, color: 'rgba(10,9,7,0.62)', margin: 0 }}>
               Não-oficial · Feito por colecionadores · 2026
             </p>
           </footer>

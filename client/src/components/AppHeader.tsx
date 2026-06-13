@@ -146,7 +146,7 @@ export function AppHeader({ back = false, breadcrumb, title }: AppHeaderProps) {
             </div>
             <div style={{
               fontFamily: '"Geist Mono", monospace', fontSize: 10,
-              color: 'rgba(10,9,7,0.55)', letterSpacing: '0.12em',
+              color: 'rgba(10,9,7,0.7)', letterSpacing: '0.12em',
             }}>
               #{user?.publicId}
             </div>

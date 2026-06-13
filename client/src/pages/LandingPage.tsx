@@ -248,7 +248,7 @@ function LoginCard() {
           Sem conta?{' '}
           <Link
             to="/register"
-            style={{ color: '#0A9145', fontWeight: 700, textDecoration: 'none' }}
+            style={{ color: '#087A39', fontWeight: 700, textDecoration: 'none' }}
           >
             Cadastrar grátis
           </Link>
@@ -381,7 +381,7 @@ function StatsScoreboard() {
           fontSize: 11,
           textTransform: 'uppercase',
           letterSpacing: '0.2em',
-          color: 'rgba(10,9,7,0.45)',
+          color: 'rgba(10,9,7,0.62)',
           textAlign: 'center',
           marginBottom: 24,
         }}
@@ -416,7 +416,7 @@ function StatsScoreboard() {
                 fontSize: 10,
                 textTransform: 'uppercase',
                 letterSpacing: '0.12em',
-                color: 'rgba(10,9,7,0.55)',
+                color: 'rgba(10,9,7,0.7)',
                 marginTop: 6,
               }}
             >
@@ -468,7 +468,7 @@ function StepsSection() {
           fontSize: 11,
           textTransform: 'uppercase',
           letterSpacing: '0.2em',
-          color: 'rgba(10,9,7,0.45)',
+          color: 'rgba(10,9,7,0.62)',
           marginBottom: 8,
         }}
       >
@@ -565,7 +565,7 @@ function Footer() {
         style={{
           fontFamily: '"Geist Mono", monospace',
           fontSize: 10,
-          color: 'rgba(255,255,255,0.25)',
+          color: 'rgba(255,255,255,0.55)',
           width: '100%',
           textAlign: 'center',
           marginTop: 8,
@@ -646,7 +646,7 @@ function HeroSection() {
           style={{
             fontFamily: '"Geist Mono", monospace',
             fontSize: 11,
-            color: 'rgba(10,9,7,0.4)',
+            color: 'rgba(10,9,7,0.62)',
             textTransform: 'uppercase',
             letterSpacing: '0.12em',
           }}

@@ -109,7 +109,7 @@ export default function ColarFigurinhasPage() {
             <p className="text-sm font-body text-ink/70">Escolha um álbum</p>
             {ativos.length === 0 ? (
               <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-                <p className="text-sm font-body text-ink/50 mb-3">Nenhum álbum ativo.</p>
+                <p className="text-sm font-body text-ink/70 mb-3">Nenhum álbum ativo.</p>
                 <Button size="sm" onClick={() => navigate('/albums/novo')}>Criar álbum</Button>
               </div>
             ) : (
@@ -124,7 +124,7 @@ export default function ColarFigurinhasPage() {
                       {album.variante && (
                         <span className="block text-xs text-ink/60 mt-0.5">{variantLabel(album.variante)}</span>
                       )}
-                      <span className="block text-xs text-ink/50 mt-0.5">{album.percentualConclusao}% completo</span>
+                      <span className="block text-xs text-ink/70 mt-0.5">{album.percentualConclusao}% completo</span>
                     </button>
                   </li>
                 ))}
@@ -145,7 +145,7 @@ export default function ColarFigurinhasPage() {
       <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
-          <p className="text-xs font-body text-ink/50 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
+          <p className="text-xs font-body text-ink/70 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
           <p className="text-xs font-mono text-ink/60 mt-0.5">{albumSelecionado?.percentualConclusao ?? 0}% completo</p>
         </div>
         {ativos.length > 1 && (
@@ -190,7 +190,7 @@ export default function ColarFigurinhasPage() {
 
       {!estoqueLoading && filtrado.length === 0 && (
         <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-          <p className="text-sm font-body text-ink/50">
+          <p className="text-sm font-body text-ink/70">
             {busca ? 'Nenhuma figurinha encontrada para essa busca.' : 'Estoque vazio.'}
           </p>
         </div>
@@ -325,7 +325,7 @@ function StickerRow({
           <span className="text-xs font-body text-ink/60 flex-1 truncate">{item.figurinha.subject}</span>
         )}
         <StickerStatusBadge status={item.elegibilidade} />
-        <span className="text-xs font-mono text-ink/50 shrink-0">{item.quantidade}</span>
+        <span className="text-xs font-mono text-ink/70 shrink-0">{item.quantidade}</span>
         {canPaste && !confirmar && (
           <Button size="sm" variant="primary" loading={loading} onClick={handleColarClick}>
             Colar

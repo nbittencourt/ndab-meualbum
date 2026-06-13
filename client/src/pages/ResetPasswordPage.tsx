@@ -10,7 +10,7 @@ function InvalidToken() {
   const navigate = useNavigate();
   return (
     <div className="bg-white border-2 border-ink [box-shadow:6px_6px_0_#0A0907] p-8 max-w-md w-full">
-      <div className="text-red mb-4" aria-hidden="true">
+      <div className="text-red-dark mb-4" aria-hidden="true">
         <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
         </svg>
@@ -85,7 +85,7 @@ function ResetForm({ token }: { token: string }) {
           required
         />
         {error && (
-          <p role="alert" aria-live="assertive" className="text-xs text-red font-body">⚠ {error}</p>
+          <p role="alert" aria-live="assertive" className="text-xs text-red-dark font-body">⚠ {error}</p>
         )}
         <Button type="submit" loading={loading} disabled={!canSubmit} className="w-full mt-2">
           Redefinir senha

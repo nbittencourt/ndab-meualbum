@@ -431,7 +431,7 @@ export default function AbrirPacotinhosPage() {
       )}
 
       {pendentes.length >= MAX_PENDENTE && !addError && (
-        <p role="alert" className="text-xs text-red font-body">
+        <p role="alert" className="text-xs text-red-dark font-body">
           ⚠ Limite de {MAX_PENDENTE} itens pendentes atingido. Cole ou descarte antes de continuar.
         </p>
       )}
@@ -537,7 +537,7 @@ export default function AbrirPacotinhosPage() {
 
       {!pilhaLoading && pilha.length === 0 && (
         <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-          <p className="text-sm font-body text-ink/50">Digite os números das figurinhas para começar.</p>
+          <p className="text-sm font-body text-ink/70">Digite os números das figurinhas para começar.</p>
         </div>
       )}
 
@@ -649,7 +649,7 @@ function ColarModal({
             Colando figurinha <strong>{item.figurinhaNumero}</strong>. Selecione o álbum:
           </p>
           {ativos.length === 0 ? (
-            <p className="text-sm font-body text-red">Nenhum álbum ativo. Crie um álbum primeiro.</p>
+            <p className="text-sm font-body text-red-dark">Nenhum álbum ativo. Crie um álbum primeiro.</p>
           ) : (
             <div className="flex flex-col gap-2 mb-4" role="radiogroup" aria-label="Selecionar álbum">
               {ativos.map((album) => (

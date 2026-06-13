@@ -49,7 +49,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
           style={{
             fontFamily: '"Geist Mono", monospace',
             fontSize: 10,
-            color: isPremium ? 'rgba(255,255,255,0.45)' : 'rgba(10,9,7,0.4)',
+            color: isPremium ? 'rgba(255,255,255,0.7)' : 'rgba(10,9,7,0.62)',
             letterSpacing: '0.08em',
           }}
         >
@@ -76,7 +76,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
           style={{
             fontFamily: '"Geist", sans-serif',
             fontSize: 12,
-            color: isPremium ? 'rgba(255,255,255,0.6)' : 'rgba(10,9,7,0.6)',
+            color: isPremium ? 'rgba(255,255,255,0.75)' : 'rgba(10,9,7,0.62)',
             margin: '0 0 16px',
           }}
         >
@@ -93,7 +93,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
               fontSize: 10,
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
-              color: isPremium ? 'rgba(255,255,255,0.45)' : 'rgba(10,9,7,0.45)',
+              color: isPremium ? 'rgba(255,255,255,0.7)' : 'rgba(10,9,7,0.62)',
             }}
           >
             Progresso

@@ -39,7 +39,7 @@ export function PasswordChecklist({ password, confirm, showConfirm }: PasswordCh
               <circle cx="7" cy="7" r="6.5" stroke="#0A0907" strokeOpacity="0.3" />
             </svg>
           )}
-          <span className={rule.met ? 'text-green' : 'text-ink/50'}>
+          <span className={rule.met ? 'text-green' : 'text-ink/70'}>
             <span className="sr-only">{rule.met ? 'Concluído: ' : 'Pendente: '}</span>
             {rule.label}
           </span>

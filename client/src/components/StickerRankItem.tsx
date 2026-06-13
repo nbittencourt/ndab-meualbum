@@ -26,7 +26,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
         style={{
           fontFamily: '"Geist Mono", monospace',
           fontSize: 12,
-          color: isFirst ? '#E5142A' : 'rgba(10,9,7,0.4)',
+          color: isFirst ? '#E5142A' : 'rgba(10,9,7,0.62)',
           fontWeight: isFirst ? 700 : 400,
           textAlign: 'center',
         }}
@@ -46,7 +46,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
           justifyContent: 'center',
         }}
       >
-        <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(10,9,7,0.3)', textAlign: 'center', lineHeight: 1.3 }}>
+        <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(10,9,7,0.72)', textAlign: 'center', lineHeight: 1.3 }}>
           {item.numero}
         </span>
       </div>
@@ -69,7 +69,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
           style={{
             fontFamily: '"Geist Mono", monospace',
             fontSize: 11,
-            color: 'rgba(10,9,7,0.4)',
+            color: 'rgba(10,9,7,0.62)',
             margin: '2px 0 0',
           }}
         >
