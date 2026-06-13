@@ -22,6 +22,7 @@ import AbrirPacotinhosPage from '@/pages/AbrirPacotinhosPage';
 import ColarFigurinhasPage from '@/pages/ColarFigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
 import ProfilePage from '@/pages/ProfilePage';
+import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage';
 
 function GlobalLoader() {
   return (
@@ -55,7 +56,7 @@ export default function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(() => !hasValidConsent());
 
   useEffect(() => {
-    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password"];
+    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password", "/politica-de-privacidade"];
     if (noAuthRoutes.some((r) => location.pathname.startsWith(r))) {
       setReady();
     } else {
@@ -80,6 +81,7 @@ export default function App() {
       "/colar": "Colar Figurinhas — Meu Álbum Copa 2026",
       "/trocas": "Trocas — Meu Álbum Copa 2026",
       "/perfil": "Perfil — Meu Álbum Copa 2026",
+      "/politica-de-privacidade": "Política de Privacidade — Meu Álbum Copa 2026",
     };
     const title = titleMap[location.pathname] ?? "Meu Álbum Copa 2026";
     document.title = title;
@@ -102,6 +104,7 @@ export default function App() {
             <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
             <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
             <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
+            <Route path="/politica-de-privacidade" element={<PoliticaPrivacidadePage />} />
 
             {/* Protected routes */}
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
@@ -118,6 +121,7 @@ export default function App() {
             <Route path="/profile"         element={<Navigate to="/perfil"      replace />} />
             <Route path="/swaps"           element={<Navigate to="/trocas"      replace />} />
             <Route path="/albums/cadastro" element={<Navigate to="/albums/novo" replace />} />
+            <Route path="/privacidade"     element={<Navigate to="/politica-de-privacidade" replace />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

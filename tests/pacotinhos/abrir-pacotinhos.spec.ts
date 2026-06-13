@@ -5,6 +5,7 @@ import {
   getTipoAlbumId,
   arquivarAlbum,
   criarTipoAlbumExtra,
+  navegarPorMenu,
 } from '../support/helpers';
 
 test.describe('Abrir Pacotinhos', () => {
@@ -166,9 +167,8 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
-      // Abre menu de navegação mobile e navega para Álbuns
-      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
-      await page.getByRole('link', { name: /álbuns/i }).click();
+      // Navega para Álbuns pelo menu (hambúrguer no mobile, sidebar no desktop)
+      await navegarPorMenu(page, /álbuns/i);
 
       await expect(page.getByRole('heading', { name: /figurinhas sem destino/i })).toBeVisible();
     });
@@ -181,8 +181,7 @@ test.describe('Abrir Pacotinhos', () => {
       });
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
-      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
-      await page.getByRole('link', { name: /álbuns/i }).click();
+      await navegarPorMenu(page, /álbuns/i);
       await page.getByRole('button', { name: /ficar/i }).click();
 
       await expect(page).toHaveURL(/\/abrir/);
@@ -332,6 +331,84 @@ test.describe('Abrir Pacotinhos', () => {
     });
   });
 
+  // ── Limpeza da pilha (RN-AP17 — Issue #23) ────────────────────────────────────
+  // RN-AP17: a pilha é removida do backend após (a) todas as entradas receberem
+  // destino, ou (b) descarte explícito. O histórico (RN-AP15) vale apenas durante
+  // a sessão — itens finalizados não devem reaparecer numa nova entrada.
+
+  test.describe('Limpeza da pilha (RN-AP17, Issue #23)', () => {
+
+    test('itens com destino definido não reaparecem ao reentrar (RN-AP17a)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1'], identificador },
+      });
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      await page.getByRole('button', { name: /enviar para repetidas/i }).click();
+      // RN-AP15: durante a sessão o item finalizado permanece visível como histórico
+      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+
+      // Nova entrada: a sessão anterior foi totalmente finalizada → pilha limpa
+      await page.goto('/home');
+      await page.goto('/abrir');
+      await expect(page.getByRole('button', { name: /continuar sessão anterior/i })).not.toBeVisible();
+      await expect(page.getByRole('textbox')).toBeVisible();
+      await expect(page.getByText('FWC1')).not.toBeVisible();
+      await expect(page.getByText(/pilha \(/i)).not.toBeVisible();
+    });
+
+    test('descarte explícito remove também itens finalizados (RN-AP17b)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1', 'FWC2'], identificador },
+      });
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      // Finaliza apenas FWC1; FWC2 permanece pendente
+      await page.getByRole('button', { name: /enviar para repetidas/i }).first().click();
+      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+      // Sai com pendente (alerta de saída) e reentra
+      await navegarPorMenu(page, /álbuns/i);
+      await page.getByRole('button', { name: /sair assim mesmo/i }).click();
+      await page.goto('/abrir');
+      // Descarte explícito encerra a sessão por completo
+      await page.getByRole('button', { name: /descartar e começar do zero/i }).click();
+
+      // Nova entrada: nada da sessão descartada deve reaparecer
+      await page.goto('/home');
+      await page.goto('/abrir');
+      await expect(page.getByRole('button', { name: /continuar sessão anterior/i })).not.toBeVisible();
+      await expect(page.getByRole('textbox')).toBeVisible();
+      await expect(page.getByText('FWC1')).not.toBeVisible();
+      await expect(page.getByText('FWC2')).not.toBeVisible();
+    });
+
+    test('retomada com pendentes preserva histórico da sessão (RN-AP15 + RN-AP19)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      await request.post('/api/v1/test/criar-pilha-pendente', {
+        data: { tipo_album_id: tipoId, numeros: ['FWC1', 'FWC2'], identificador },
+      });
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+      await page.getByRole('button', { name: /enviar para repetidas/i }).first().click();
+      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+      // Sai com FWC2 ainda pendente e reentra retomando a sessão
+      await navegarPorMenu(page, /álbuns/i);
+      await page.getByRole('button', { name: /sair assim mesmo/i }).click();
+      await page.goto('/abrir');
+      await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
+
+      // A sessão retomada mantém o histórico finalizado e a pendente
+      await expect(page.getByText('FWC1')).toBeVisible();
+      await expect(page.getByText('FWC2')).toBeVisible();
+      await expect(page.getByText(/pilha \(2\)/i)).toBeVisible();
+    });
+  });
+
   // ── Invalidação de cache ──────────────────────────────────────────────────────
 
   test.describe('Invalidação de cache', () => {
@@ -388,8 +465,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /confirmar colagem/i }).click();
       await expect(page.getByText('Figurinha colada!')).toBeVisible();
       // Navega via menu (aciona alerta — FWC2 ainda pendente); logout não aciona por RN-AP32
-      await page.getByRole('button', { name: /abrir menu de navegação/i }).click();
-      await page.getByRole('link', { name: /álbuns/i }).click();
+      await navegarPorMenu(page, /álbuns/i);
       await page.getByRole('button', { name: /sair assim mesmo/i }).click();
       await page.goto(`/albums/${album._id ?? album.id}`);
       const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();

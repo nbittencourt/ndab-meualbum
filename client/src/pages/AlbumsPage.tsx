@@ -64,7 +64,7 @@ function AlbumCard({ album, onDesarquivar }: { album: Album; onDesarquivar?: (id
           </h2>
         </div>
         {arquivado && (
-          <span className="text-[10px] font-mono font-semibold uppercase bg-ink/10 text-ink/50 px-2 py-0.5 border border-ink/20 shrink-0">
+          <span className="text-[10px] font-mono font-semibold uppercase bg-ink/10 text-ink/70 px-2 py-0.5 border border-ink/20 shrink-0">
             Arquivado
           </span>
         )}
@@ -72,7 +72,7 @@ function AlbumCard({ album, onDesarquivar }: { album: Album; onDesarquivar?: (id
 
       <ProgressBar value={album.percentualConclusao} label="Progresso" className="mb-4" />
 
-      {pdfError && <p role="alert" className="text-xs text-red font-body mb-2">⚠ {pdfError}</p>}
+      {pdfError && <p role="alert" className="text-xs text-red-dark font-body mb-2">⚠ {pdfError}</p>}
 
       <div className="flex gap-2 flex-wrap">
         {!arquivado && (
@@ -136,11 +136,11 @@ export default function AlbumsPage() {
         )}
 
         {error && (
-          <p role="alert" className="text-sm text-red font-body">Erro ao carregar álbuns.</p>
+          <p role="alert" className="text-sm text-red-dark font-body">Erro ao carregar álbuns.</p>
         )}
 
         {actionError && (
-          <p role="alert" className="text-sm text-red font-body">⚠ {actionError}</p>
+          <p role="alert" className="text-sm text-red-dark font-body">⚠ {actionError}</p>
         )}
 
         {data && (
@@ -151,8 +151,8 @@ export default function AlbumsPage() {
               </h2>
               {data.ativos.length === 0 ? (
                 <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-                  <p className="text-sm font-body text-ink/50 mb-2">Nenhum álbum ativo.</p>
-                  <Link to="/albums/novo" className="text-sm text-red underline hover:brightness-90">
+                  <p className="text-sm font-body text-ink/70 mb-2">Nenhum álbum ativo.</p>
+                  <Link to="/albums/novo" className="text-sm text-red-dark underline hover:brightness-90">
                     + Novo álbum
                   </Link>
                 </div>

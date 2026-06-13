@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { Types } from 'mongoose';
 import { type AuthRequest } from '../middleware/auth.js';
 import { ConsentimentoCookie, VERSAO_POLITICA_ATUAL } from '../models/ConsentimentoCookie.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 
@@ -14,7 +15,7 @@ function calcExpiry(): Date {
   return d;
 }
 
-router.get('/cookies/preferencias', async (req, res) => {
+router.get('/cookies/preferencias', asyncHandler(async (req, res) => {
   const cookieId = req.cookies?.consentimento_id as string | undefined;
   const authUserId = (req as AuthRequest).userId;
 
@@ -44,14 +45,14 @@ router.get('/cookies/preferencias', async (req, res) => {
     versaoPolitica: (doc as any).versaoPolitica,
     expiraEm: (doc as any).expiraEm,
   });
-});
+}));
 
 const preferenciaSchema = z.object({
   analytics: z.boolean(),
   publicidade: z.boolean().default(false),
 });
 
-router.post('/cookies/preferencias', async (req: AuthRequest, res) => {
+router.post('/cookies/preferencias', asyncHandler(async (req: AuthRequest, res) => {
   const parsed = preferenciaSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -83,6 +84,6 @@ router.post('/cookies/preferencias', async (req: AuthRequest, res) => {
   });
 
   res.status(201).json({ ok: true, id: String(doc._id) });
-});
+}));
 
 export default router;

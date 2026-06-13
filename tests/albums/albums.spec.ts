@@ -181,7 +181,8 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      await expect(page.getByText(/brochura/i).first()).toBeVisible();
+      // O hero da AL1 tem layouts mobile e desktop no DOM; só um fica visível
+      await expect(page.getByText(/brochura/i).filter({ visible: true }).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /colar figurinhas/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /figurinhas que faltam/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /arquivar/i })).toBeVisible();

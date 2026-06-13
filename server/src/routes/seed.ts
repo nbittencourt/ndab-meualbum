@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { TipoAlbum } from '../models/TipoAlbum.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ const TIPOS_COPA_2026 = [
   { nome: 'Copa do Mundo 2026 (Box Premium)',      variante: 'BOX_PREMIUM',     totalFigurinhas: 980 },
 ];
 
-router.post('/tipos-album', async (_req, res) => {
+router.post('/tipos-album', asyncHandler(async (_req, res) => {
   if (process.env.NODE_ENV === 'production') {
     res.status(403).json({ error: 'Seed desabilitado em produção' });
     return;
@@ -22,6 +23,6 @@ router.post('/tipos-album', async (_req, res) => {
     )
   );
   res.json({ ok: true, count: results.length, tipos: results });
-});
+}));
 
 export default router;

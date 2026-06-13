@@ -9,6 +9,7 @@ import { TokenConfirmacaoCadastro } from '../models/TokenConfirmacaoCadastro.js'
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 import { sendEmailConfirmacaoCadastro, sendEmailRecuperacaoSenha } from '../lib/email.js';
 import { logger, maskEmail } from '../lib/logger.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 
@@ -84,7 +85,7 @@ export const registerSchema = z.object({
   declaracaoMaioridade: z.literal(true, { errorMap: () => ({ message: 'Declaração de maioridade obrigatória' }) }),
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', asyncHandler(async (req, res) => {
   const parsed = registerSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -132,9 +133,9 @@ router.post('/register', async (req, res) => {
       res.status(500).json({ error: 'Erro interno ao criar conta.' });
     }
   }
-});
+}));
 
-router.get('/confirmar-cadastro', async (req, res) => {
+router.get('/confirmar-cadastro', asyncHandler(async (req, res) => {
   const token = req.query.token as string;
   if (!token) {
     res.status(400).json({ error: 'TOKEN_INVALID' });
@@ -163,11 +164,11 @@ router.get('/confirmar-cadastro', async (req, res) => {
   issueToken(user.id as string, (user as any).tokenVersao as number, res);
   logger.info('register:confirmed', { publicId: (user as any).publicId });
   res.json({ ok: true, user: serializeUser(user) });
-});
+}));
 
 const CADASTRO_COOLDOWN_SECS = Number(process.env.CADASTRO_COOLDOWN_SECS ?? 300);
 
-router.post('/reenviar-confirmacao', async (req, res) => {
+router.post('/reenviar-confirmacao', asyncHandler(async (req, res) => {
   const parsed = z.object({ publicId: z.string() }).safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: 'publicId obrigatório' });
@@ -198,14 +199,14 @@ router.post('/reenviar-confirmacao', async (req, res) => {
   await sendEmailConfirmacaoCadastro((user as any).email, confirmUrl);
   logger.info('register:resend', { publicId });
   res.json({ ok: true, cooldownSecs: CADASTRO_COOLDOWN_SECS });
-});
+}));
 
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', asyncHandler(async (req, res) => {
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -235,30 +236,30 @@ router.post('/login', async (req, res) => {
   logger.info('login:success', { email: maskEmail(email) });
   issueToken(user.id as string, newVersao, res);
   res.json({ user: serializeUser(updated ?? user) });
-});
+}));
 
-router.post('/logout', requireAuth, async (req: AuthRequest, res) => {
+router.post('/logout', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   await User.findByIdAndUpdate(req.userId, { $inc: { tokenVersao: 1 } });
   const isProd = process.env.NODE_ENV === 'production';
   res.clearCookie('__session', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
   logger.info('logout:success', { userId: req.userId });
   res.json({ ok: true });
-});
+}));
 
-router.get('/me', requireAuth, async (req: AuthRequest, res) => {
+router.get('/me', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const user = await User.findById(req.userId).select('-passwordHash');
   if (!user) {
     res.status(401).json({ error: 'Usuário não encontrado' });
     return;
   }
   res.json({ user: serializeUser(user) });
-});
+}));
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email(),
 });
 
-router.post('/forgot-password', ...(process.env.NODE_ENV !== 'test' ? [forgotPasswordLimiter] : []), async (req, res) => {
+router.post('/forgot-password', ...(process.env.NODE_ENV !== 'test' ? [forgotPasswordLimiter] : []), asyncHandler(async (req, res) => {
   const parsed = forgotPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -291,9 +292,9 @@ router.post('/forgot-password', ...(process.env.NODE_ENV !== 'test' ? [forgotPas
 
   logger.info('forgot-password:sent', { email: maskEmail(email) });
   res.json(successMsg);
-});
+}));
 
-router.get('/check-reset-token', ...(process.env.NODE_ENV !== 'test' ? [checkResetTokenLimiter] : []), async (req, res) => {
+router.get('/check-reset-token', ...(process.env.NODE_ENV !== 'test' ? [checkResetTokenLimiter] : []), asyncHandler(async (req, res) => {
   const token = req.query.token as string;
   if (!token) {
     res.json({ valid: false });
@@ -307,14 +308,14 @@ router.get('/check-reset-token', ...(process.env.NODE_ENV !== 'test' ? [checkRes
     expiraEm: { $gt: now },
   });
   res.json({ valid: !!exists });
-});
+}));
 
 export const resetPasswordSchema = z.object({
   token: z.string().uuid(),
   password: z.string().min(8),
 });
 
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', asyncHandler(async (req, res) => {
   const parsed = resetPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -356,6 +357,6 @@ router.post('/reset-password', async (req, res) => {
   issueToken(user.id as string, (user as any).tokenVersao as number, res);
   logger.info('reset-password:success', { publicId: (user as any).publicId });
   res.json({ ok: true, user: serializeUser(user) });
-});
+}));
 
 export default router;

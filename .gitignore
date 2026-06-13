@@ -11,3 +11,6 @@ Thumbs.db
 .claude/worktrees/
 .playwright-mcp/
 .playwright-mcp-*
+# Playwright test output (not source)
+test-results/
+playwright-report/

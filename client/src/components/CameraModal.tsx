@@ -251,7 +251,7 @@ export function CameraModal({
       {/* Estado: OCR não reconheceu o número (RN-AP22) */}
       {cameraState === 'not_recognized' && (
         <div className="flex flex-col gap-3">
-          <p role="alert" className="text-sm font-body text-red font-semibold">
+          <p role="alert" className="text-sm font-body text-red-dark font-semibold">
             Não foi possível reconhecer o número.
           </p>
           <p className="text-xs font-body text-ink/60">
@@ -269,7 +269,7 @@ export function CameraModal({
       {/* Estado: câmera sem permissão ou indisponível */}
       {cameraState === 'camera_error' && (
         <div className="flex flex-col gap-3">
-          <p role="alert" className="text-sm font-body text-red font-semibold">
+          <p role="alert" className="text-sm font-body text-red-dark font-semibold">
             Câmera indisponível
           </p>
           <p className="text-xs font-body text-ink/60">

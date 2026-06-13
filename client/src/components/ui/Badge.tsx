@@ -7,9 +7,9 @@ interface BadgeProps {
 const variantClasses = {
   success: 'bg-green/10 text-green border-green/30',
   warning: 'bg-yellow-50 text-yellow-800 border-yellow-300',
-  muted: 'bg-ink/8 text-ink/50 border-ink/20',
+  muted: 'bg-ink/8 text-ink/70 border-ink/20',
   info: 'bg-blue/10 text-blue border-blue/30',
-  danger: 'bg-red/10 text-red border-red/30',
+  danger: 'bg-red/10 text-red-dark border-red/30',
 };
 
 export function Badge({ label, variant = 'info', className = '' }: BadgeProps) {

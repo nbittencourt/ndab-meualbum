@@ -68,7 +68,7 @@ export default function RegisterPage() {
             Enviamos um link de confirmação para <strong>{email}</strong>.
             Clique no link para ativar sua conta.
           </p>
-          <Link to="/" className="inline-block mt-6 text-sm font-body text-red underline hover:brightness-90">
+          <Link to="/" className="inline-block mt-6 text-sm font-body text-red-dark underline hover:brightness-90">
             Ir para o início
           </Link>
         </div>
@@ -154,13 +154,13 @@ export default function RegisterPage() {
                     Política de Privacidade <span className="sr-only">(abre em nova aba)</span>
                   </a>
                   .
-                  {' '}<span className="text-red text-xs">(obrigatório)</span>
+                  {' '}<span className="text-red-dark text-xs">(obrigatório)</span>
                 </span>
               }
             />
 
             {error && (
-              <p role="alert" aria-live="assertive" className="text-xs text-red font-body">
+              <p role="alert" aria-live="assertive" className="text-xs text-red-dark font-body">
                 ⚠ {error}
               </p>
             )}
@@ -181,7 +181,7 @@ export default function RegisterPage() {
 
           <p className="mt-4 text-sm font-body text-ink text-center">
             Já tem conta?{' '}
-            <Link to="/" aria-label="Já tem conta? Entrar" className="text-red font-semibold hover:brightness-90">
+            <Link to="/" aria-label="Já tem conta? Entrar" className="text-red-dark font-semibold hover:brightness-90">
               Entrar
             </Link>
           </p>

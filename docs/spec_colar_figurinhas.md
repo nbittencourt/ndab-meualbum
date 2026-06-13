@@ -12,6 +12,7 @@
 | 1.0 | inicial | Versão original |
 | 1.1 | correções + WCAG/LGPD | **Conflito A corrigido:** RN-CF01 atualizado para incluir `EMAIL_PENDENTE` (alinhamento com demais specs). **Conflito B corrigido:** Seção 2.1 corrigida — `origem = DIRETA` para colagens via MCol de Abrir Pacotinhos (que não passam por EstoqueFigurinha). Requisitos de acessibilidade adicionados (RN-CF19 a RN-CF24). |
 | 1.2 | ajustes UX | Header e footer globais tornados obrigatórios em todas as telas. Mensagem de erro para figurinha não encontrada no MFN substituída por texto amigável (RN-CF25). Botão "Colar e Outra" adicionado ao MFN (RN-CF26). Ativação do modo câmera no MFN explicitada (RN-CF27). |
+| 1.3 | 2026-06-10 | **DEC-1** — Botões do MFN substituídos por 3 botões fixos: "Colar", "Colar e Fechar", "Fechar". Tecla Enter aciona "Colar". §6.1 e RN-CF26 e RN-CF28 atualizados. (Issues #14) |
 
 ---
 
@@ -214,26 +215,21 @@ Reutiliza o comportamento e os elementos visuais do **Modal Câmera (MC)** e do 
 | `tipo_album_id` de referência | Selecionado na Tela AP0 | Derivado do álbum ativo na Tela CF1 |
 | Opção "Fotografar próxima" / câmera | Presente — ativada pelo botão "Abrir câmera" | Presente — ativada pelo botão "Abrir câmera" (ver RN-CF27) |
 | Pilha persistida | Sim (backend) | Não se aplica — não há pilha |
-| Botão após colagem bem-sucedida | "Fotografar próxima" / fechar | "Colar e Outra" (mantém modal, limpa campo) · "Fechar" |
+| Botão após colagem bem-sucedida | "Fotografar próxima" / fechar | "Colar" (mantém modal, limpa campo, foca input) · "Colar e Fechar" · "Fechar" |
 
 O número reconhecido (por OCR) ou digitado é validado contra o catálogo do `tipo_album_id` do álbum ativo antes de acionar a colagem.
 
 ### 6.1 Estrutura do modal
 
 **Modo Digitar:**
-1. Campo de texto para número da figurinha (autofoco ao abrir o modal)
-2. Botão "Confirmar" (valida e aciona colagem)
+1. Campo de texto para número da figurinha (autofoco ao abrir o modal); tecla **Enter** aciona "Colar" quando o campo não estiver vazio e não houver operação em andamento. Ver RN-CF26.
+2. Botão **"Colar"** — cola a figurinha, mantém o modal aberto, limpa o campo e restaura o foco ao input para entrada da próxima figurinha. Ver RN-CF26.
+3. Botão **"Colar e Fechar"** — cola a figurinha e fecha o modal.
+4. Botão **"Fechar"** — fecha o modal sem colar nada.
 
 **Modo Fotografar:**
-3. Botão **"Abrir câmera"** — ativa o viewfinder para captura por OCR. A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Ver RN-CF27.
-4. Após reconhecimento: campo editável com número + botão "Confirmar"
-
-**Ações pós-colagem bem-sucedida:**
-5. **"Colar e Outra"** — cola a figurinha confirmada, mantém o modal aberto e limpa o campo para entrada do próximo número. Ver RN-CF26.
-6. **"Fechar"** — cola a figurinha confirmada e fecha o modal.
-
-**Ação de cancelamento:**
-7. Botão "Cancelar" / (×) — fecha o modal sem colar nada.
+5. Botão **"Abrir câmera"** — ativa o viewfinder para captura por OCR. A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Ver RN-CF27.
+6. Após reconhecimento: campo editável com número + botões "Colar", "Colar e Fechar" e "Fechar" (idênticos ao modo Digitar).
 
 ---
 
@@ -261,7 +257,7 @@ O número reconhecido (por OCR) ou digitado é validado contra o catálogo do `t
 | RN-CF17 | Cada colagem é persistida individualmente no momento da confirmação; não há operação em lote neste fluxo |
 | RN-CF18 | O fluxo não possui estado de sessão persistido no backend; não há retomada nem alerta de saída |
 | RN-CF25 | Quando o número informado no MFN não for encontrado no catálogo do álbum ativo, a mensagem de erro exibida é: "Figurinha [número] não encontrada neste álbum. Verifique o número e tente novamente." O número digitado é mantido no campo para correção; o campo permanece editável; o modal permanece aberto |
-| RN-CF26 | O MFN exibe o botão **"Colar e Outra"** como alternativa ao botão "Fechar" após uma colagem bem-sucedida. Ao acionar "Colar e Outra": a colagem confirmada é persistida, o modal permanece aberto, o campo de número é limpo e o autofoco é restaurado, permitindo ao usuário informar a próxima figurinha sem reabrir o modal |
+| RN-CF26 | O MFN oferece sempre os botões fixos **"Colar"**, **"Colar e Fechar"** e **"Fechar"**, sem alternância de estado. "Colar": a colagem é persistida, o modal permanece aberto, o campo de número é limpo e o foco retorna ao input para a próxima entrada. "Colar e Fechar": a colagem é persistida e o modal é fechado. "Fechar": fecha o modal sem persistir colagem. A tecla **Enter**, quando o campo não estiver vazio e não houver operação em andamento, aciona "Colar". (Issue #14 · DEC-1) |
 | RN-CF27 | No MFN, o modo câmera é ativado exclusivamente pelo toque/clique no botão "Abrir câmera". A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Esse comportamento é consistente com RN-AP43 de spec_abrir_pacotinhos |
 
 ---
@@ -278,7 +274,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-CF22 | O percentual de conclusão atualizado após cada colagem DEVE ser anunciado via live region (ex.: "Álbum atualizado: 42,3% concluído") |
 | RN-CF23 | O seletor de álbum ativo (zona superior) DEVE expor o álbum atual como texto acessível; ao abrir para troca, DEVE ser implementado como `role="listbox"` com `role="option"` e suporte a navegação por teclado |
 | RN-CF24 | Itens desabilitados ("Fora do catálogo") DEVEM ser `aria-disabled="true"` (e não `disabled`) para permanecerem anunciáveis por leitores de tela com a indicação de que estão indisponíveis |
-| RN-CF28 | O MFN DEVE ser implementado como `role="dialog"` com focus trap, `aria-modal="true"` e `aria-labelledby`; ao fechar (por "Fechar" ou cancelamento), o foco DEVE retornar ao botão "Figurinha não registrada" da Tela CF1; ao acionar "Colar e Outra", o foco DEVE ir para o campo de número |
+| RN-CF28 | O MFN DEVE ser implementado como `role="dialog"` com focus trap, `aria-modal="true"` e `aria-labelledby`; ao fechar (por "Fechar" ou cancelamento), o foco DEVE retornar ao botão "Figurinha não registrada" da Tela CF1; ao acionar "Colar", o foco DEVE ir para o campo de número |
 | RN-CF29 | A mensagem de erro de figurinha não encontrada (RN-CF25) DEVE ser anunciada via `role="alert"` ao ser exibida, sem que o foco seja movido do campo de número |
 
 ---
