@@ -401,3 +401,41 @@ No Console Firebase → **Hosting** → métricas de uso, largura de banda e req
 - [ ] `_FIREBASE_PROJECT_ID=ndab-meualbum-prd` configurado no trigger do Cloud Build para `main`
 - [ ] Health check respondendo após o deploy
 - [ ] Smoke test: registro → confirmação de e-mail → login → cookie `SameSite=None; Secure` presente
+
+---
+
+## 14. Rotina de purga LGPD (RN-PR01)
+
+A purga de dados expirados (tokens > 90 dias, consentimentos > 5 anos) com **registro de
+eliminação** é exposta em `POST /api/v1/admin/purga`, protegida pelo header `X-Purge-Token`.
+Os TTL indexes do MongoDB permanecem como contingência — eliminações via TTL não geram
+registro, mas só ocorrem se o scheduler falhar (limitação aceita de R-RET-002).
+
+### Secret
+
+```powershell
+# 32 bytes aleatórios como PURGE_TOKEN
+$bytes = New-Object byte[] 32; (New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes)
+$token = [Convert]::ToBase64String($bytes)
+[System.IO.File]::WriteAllText($TMP, $token, (New-Object System.Text.UTF8Encoding($false)))
+gcloud secrets create PURGE_TOKEN --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
+```
+
+Adicione `PURGE_TOKEN=PURGE_TOKEN:latest` aos `--set-secrets` do serviço Cloud Run.
+
+### Cloud Scheduler (diário, 03:00 América/São Paulo)
+
+```bash
+gcloud scheduler jobs create http purga-lgpd \
+  --project=$PROJECT_ID \
+  --location=southamerica-east1 \
+  --schedule="0 3 * * *" \
+  --time-zone="America/Sao_Paulo" \
+  --uri="https://<URL_DO_CLOUD_RUN>/api/v1/admin/purga" \
+  --http-method=POST \
+  --headers="X-Purge-Token=<VALOR_DO_SECRET>"
+```
+
+> Cloud Run escala a zero — um cron in-process não executaria de forma confiável; por isso o
+> disparo é externo. Cada execução grava documentos `RegistroEliminacao` (apenas contagens e
+> critérios, sem dados pessoais) e loga `purga:executada`.
