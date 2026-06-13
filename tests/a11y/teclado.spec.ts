@@ -8,8 +8,11 @@ test.describe('Navegação por teclado', () => {
 
   test('primeiro Tab foca o skip link e Enter move o foco para o conteúdo', async ({ page, request }) => {
     await usuarioAtivo(page, request);
-    await page.keyboard.press('Tab');
     const skip = page.getByRole('link', { name: /pular para o conteúdo/i });
+    await expect(skip).toBeAttached();
+    // Garante ponto de partida determinístico (sem foco residual da navegação)
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur?.());
+    await page.keyboard.press('Tab');
     await expect(skip).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#main/);

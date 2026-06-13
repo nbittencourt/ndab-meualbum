@@ -14,43 +14,51 @@ A aplicação cobre os fluxos principais: autenticação completa (cadastro com 
 
 ## Milestones
 
-### M1 — Qualidade e Conformidade (próximo sprint)
+### M1 — Qualidade e Conformidade ✅ CONCLUÍDO (2026-06-13)
 
 Foco: eliminar dívidas técnicas bloqueantes e garantir conformidade legal.
+Inclui o bug-fix da Issue #23 (limpeza da pilha — RN-AP17). Status final:
+87 testes de integração no servidor + suíte E2E completa verdes.
 
 #### 1.1 — Dívidas de alta prioridade
 
-| # | Item | Arquivo(s) | Impacto |
-|---|------|-----------|---------|
-| B1 | Corrigir N+1 query na Home (usar aggregation) | `server/src/routes/home.ts:27-35` | Performance crítica |
-| B2 | Remover duplicação de `VARIANT_STYLES` em `AlbumVarianteCard` | `client/src/components/AlbumVarianteCard.tsx:15-71` → importar de `client/src/lib/albumVariant.ts` | Consistência visual |
-| B3 | Adicionar `asyncHandler` wrapper nas rotas Express | `server/src/index.ts` + todas as rotas | Estabilidade |
-| B4 | Paginação em `GET /albums` e `GET /estoque` | `server/src/routes/albums.ts`, `estoque.ts` | Escalabilidade |
-| B5 | ~~Validação de ObjectId faltante~~ — ✅ verificado em 2026-06-13: todas as rotas já validam `Types.ObjectId.isValid` antes do uso; sem ação | — | Segurança |
-| B6 | Remover código morto: `PasswordResetToken`, model `Collection`, `AlbumPage.tsx` | `server/src/models/`, `client/src/pages/AlbumPage.tsx` | Manutenabilidade |
+| # | Item | Status |
+|---|------|--------|
+| B1 | N+1 query na Home/Álbuns → aggregation única (`server/src/lib/albumProgress.ts`) | ✅ |
+| B2 | `VARIANT_STYLES` consolidado em `client/src/lib/albumVariant.ts` (+ gradiente prata alinhado ao handoff) | ✅ |
+| B3 | `asyncHandler` (`server/src/lib/asyncHandler.ts`) em todas as ~38 rotas | ✅ |
+| B4 | Paginação opt-in retrocompatível em `GET /albums` e `GET /estoque` | ✅ |
+| B5 | Validação de ObjectId — verificado: já presente em todas as rotas; sem ação | ✅ |
+| B6 | Código morto removido: `PasswordResetToken`, `Collection` (model+rota+tipos), `AlbumPage.tsx` | ✅ |
 
 #### 1.2 — Conformidade LGPD
 
-| # | Item | Referência | Impacto |
-|---|------|-----------|---------|
-| L1 | Rotina de purga automatizada de tokens/logs expirados com registro de eliminação | `docs/legal/lgpd_guia_sistemas.md` R-PR-01 | Obrigação legal |
-| L2 | Página/rota de Política de Privacidade navegável + link no footer | RN-PR14, RN-P29 | Obrigação legal |
-| L3 | Produzir documento LIA (Avaliação de Legítimo Interesse) para analytics/logs | BL-09 `spec_privacidade_lgpd.md` | Obrigação legal |
+| # | Item | Status |
+|---|------|--------|
+| L1 | Purga com registro de eliminação: `POST /api/v1/admin/purga` + Cloud Scheduler (`server/src/lib/purga.ts`, `RegistroEliminacao`) | ✅ |
+| L2 | Página `/politica-de-privacidade` (`PoliticaPrivacidadePage.tsx`) com conteúdo mínimo da spec §7.2 | ✅ |
+| L3 | Documento LIA em `docs/legal/lia_analytics_logs.md` | ✅ |
 
 #### 1.3 — Conformidade WCAG
 
-| # | Item | Referência | Impacto |
-|---|------|-----------|---------|
-| W1 | Adicionar `@axe-core/playwright` às páginas principais (no mínimo: Home, Abrir Pacotinhos, Colar, Álbuns, Perfil) | `docs/legal/wcag-2_0-aa-guia-sistemas.md` | Obrigação legal |
-| W2 | Testes de navegação por teclado (Tab, Enter, Esc) nas páginas principais | WCAG 2.1.1 | Obrigação legal |
-| W3 | Corrigir `<a><button>` aninhado no FAB da HomePage | WCAG 4.1.1 | Semântica |
+| # | Item | Status |
+|---|------|--------|
+| W1 | `tests/a11y/axe.spec.ts` (`@axe-core/playwright`) sem violações AA nas páginas principais + correções de contraste | ✅ |
+| W2 | `tests/a11y/teclado.spec.ts` — skip link, login, navegação, Esc/foco em modal, banner | ✅ |
+| W3 | CTAs da Home convertidos de `<Link><button>` para links estilizados | ✅ |
 
 #### 1.4 — Testes de integração do backend
 
-| # | Item | Notas |
-|---|------|-------|
-| T1 | Adicionar testes de rotas com supertest + mongodb-memory-server | Rotas críticas: pilha, colar, álbuns, profile |
-| T2 | Cobrir edge cases de exclusão de conta e exportação LGPD | `perfil.spec.ts` cobre parcialmente |
+| # | Item | Status |
+|---|------|--------|
+| T1 | supertest + mongodb-memory-server; `createApp()` extraído; rotas pilha/colar/álbuns/profile | ✅ |
+| T2 | Edge cases de exclusão de conta e exportação LGPD em `profile.int.test.ts` | ✅ |
+
+#### 1.0 — Bug Issue #23 (pilha nunca limpa)
+
+| # | Item | Status |
+|---|------|--------|
+| #23 | RN-AP17: pilha finalizada removida na reentrada; descarte explícito limpa COLADA/REPETIDA | ✅ |
 
 ---
 
