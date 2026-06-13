@@ -8,11 +8,12 @@ import { TipoAlbum } from '../models/TipoAlbum.js';
 import { Album } from '../models/Album.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 const LIMITE_PILHA = 100;
 
-router.get('/pilha', requireAuth, async (req: AuthRequest, res) => {
+router.get('/pilha', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const { tipoAlbumId } = req.query;
   const filtro: any = { usuarioId };
@@ -21,7 +22,7 @@ router.get('/pilha', requireAuth, async (req: AuthRequest, res) => {
   }
   const itens = await PilhaDaSessao.find(filtro).sort({ criadoEm: 1 }).lean();
   res.json({ itens, total: itens.length });
-});
+}));
 
 const addSchema = z.object({
   tipoAlbumId: z.string(),
@@ -29,7 +30,7 @@ const addSchema = z.object({
   origem: z.enum(['DIGITACAO', 'CAMERA']),
 });
 
-router.post('/pilha', requireAuth, async (req: AuthRequest, res) => {
+router.post('/pilha', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = addSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -63,14 +64,14 @@ router.post('/pilha', requireAuth, async (req: AuthRequest, res) => {
   });
 
   res.status(201).json({ item, conhecida: true });
-});
+}));
 
 const colarSchema = z.object({
   itemId: z.string(),
   albumId: z.string(),
 });
 
-router.post('/pilha/colar', requireAuth, async (req: AuthRequest, res) => {
+router.post('/pilha/colar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = colarSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -105,9 +106,9 @@ router.post('/pilha/colar', requireAuth, async (req: AuthRequest, res) => {
   await entrada.save();
 
   res.json({ ok: true });
-});
+}));
 
-router.post('/pilha/repetida', requireAuth, async (req: AuthRequest, res) => {
+router.post('/pilha/repetida', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const { itemId: entradaId } = req.body;
   const usuarioId = new Types.ObjectId(req.userId);
 
@@ -129,11 +130,11 @@ router.post('/pilha/repetida', requireAuth, async (req: AuthRequest, res) => {
   await entrada.save();
 
   res.json({ ok: true });
-});
+}));
 
 // RN-AP17(b): o descarte explícito encerra a sessão por completo — remove
 // também os itens já finalizados (COLADA/REPETIDA), não apenas os pendentes.
-router.delete('/pilha', requireAuth, async (req: AuthRequest, res) => {
+router.delete('/pilha', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const { tipoAlbumId } = req.query;
   const filtro: any = { usuarioId };
@@ -142,9 +143,9 @@ router.delete('/pilha', requireAuth, async (req: AuthRequest, res) => {
   }
   await PilhaDaSessao.deleteMany(filtro);
   res.json({ ok: true });
-});
+}));
 
-router.delete('/pilha/:itemId', requireAuth, async (req: AuthRequest, res) => {
+router.delete('/pilha/:itemId', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const itemId = req.params.itemId as string;
   if (!Types.ObjectId.isValid(itemId)) {
@@ -157,7 +158,7 @@ router.delete('/pilha/:itemId', requireAuth, async (req: AuthRequest, res) => {
     return;
   }
   res.json({ ok: true });
-});
+}));
 
 const sincronizarSchema = z.array(z.object({
   tipoAlbumId: z.string(),
@@ -165,7 +166,7 @@ const sincronizarSchema = z.array(z.object({
   origem: z.enum(['DIGITACAO', 'CAMERA']),
 }));
 
-router.patch('/pilha/sincronizar', requireAuth, async (req: AuthRequest, res) => {
+router.patch('/pilha/sincronizar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = sincronizarSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -194,6 +195,6 @@ router.patch('/pilha/sincronizar', requireAuth, async (req: AuthRequest, res) =>
   }
 
   res.json({ sincronizados: novos.length, ignorados: parsed.data.length - novos.length });
-});
+}));
 
 export default router;
