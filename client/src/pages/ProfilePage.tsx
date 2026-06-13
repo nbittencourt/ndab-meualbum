@@ -279,10 +279,10 @@ export default function ProfilePage() {
             </Button>
           </div>
           <div className="border-t border-ink/10 pt-3 flex flex-col gap-2 text-xs font-body">
-            <a href="/privacidade" className="text-ink underline hover:brightness-75">
+            <a href="/politica-de-privacidade" className="text-ink underline hover:brightness-75">
               Política de Privacidade
             </a>
-            <a href="/privacidade#direitos" className="text-ink underline hover:brightness-75">
+            <a href="/politica-de-privacidade#direitos" className="text-ink underline hover:brightness-75">
               Exercer direitos de privacidade
             </a>
           </div>
