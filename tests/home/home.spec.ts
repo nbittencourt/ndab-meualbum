@@ -10,8 +10,10 @@ test.describe('Home', () => {
 
   test('deve exibir CTA "Abrir Pacotinhos" sempre (RN-H14)', async ({ page, request }) => {
     await usuarioAtivo(page, request);
-    // FAB e CTA Banner são ambos spec-compliant; verifica que ao menos um está visível
-    await expect(page.getByRole('button', { name: /abrir pacotinhos/i }).first()).toBeVisible();
+    // FAB e CTA Banner são ambos spec-compliant; verifica que ao menos um está visível.
+    // São links estilizados como botão (navegam para /abrir) — role correto é link (W3/WCAG).
+    // Escopado ao main para não casar com o link homônimo da sidebar desktop.
+    await expect(page.locator('main').getByRole('link', { name: /abrir pacotinhos/i }).first()).toBeVisible();
   });
 
   test('deve exibir nome e identificador do usuário no header', async ({ page, request }) => {

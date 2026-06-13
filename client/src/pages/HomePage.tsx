@@ -10,33 +10,33 @@ import type { StickerRankItem as StickerRankItemType } from '@meualbum/shared';
 // ─── FAB ──────────────────────────────────────────────────────────────────────
 function FAB() {
   return (
-    <Link to="/abrir">
-      <button
-        style={{
-          position: 'fixed',
-          bottom: 80,
-          right: 'max(16px, calc((100vw - 430px) / 2 + 16px))',
-          background: '#E5142A',
-          border: '2px solid #0A0907',
-          color: '#fff',
-          fontFamily: '"Archivo Black", sans-serif',
-          fontSize: 13,
-          padding: '12px 18px',
-          cursor: 'pointer',
-          zIndex: 200,
-          boxShadow: '3px 3px 0 #0A0907',
-          transition: 'box-shadow 0.15s ease',
-          letterSpacing: '0.02em',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-        aria-label="Abrir pacotinhos"
-        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '5px 5px 0 #0A0907'; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '3px 3px 0 #0A0907'; }}
-      >
-        + Abrir
-      </button>
+    <Link
+      to="/abrir"
+      style={{
+        position: 'fixed',
+        bottom: 80,
+        right: 'max(16px, calc((100vw - 430px) / 2 + 16px))',
+        background: '#E5142A',
+        border: '2px solid #0A0907',
+        color: '#fff',
+        fontFamily: '"Archivo Black", sans-serif',
+        fontSize: 13,
+        padding: '12px 18px',
+        cursor: 'pointer',
+        zIndex: 200,
+        boxShadow: '3px 3px 0 #0A0907',
+        transition: 'box-shadow 0.15s ease',
+        letterSpacing: '0.02em',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        textDecoration: 'none',
+      }}
+      aria-label="Abrir pacotinhos"
+      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = '5px 5px 0 #0A0907'; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = '3px 3px 0 #0A0907'; }}
+    >
+      + Abrir
     </Link>
   );
 }
@@ -93,25 +93,26 @@ function CTABanner() {
       <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '0 0 18px', lineHeight: 1.5 }}>
         Adicione novas figurinhas à sua coleção e veja o álbum evoluir.
       </p>
-      <Link to="/abrir">
-        <button
-          style={{
-            background: '#E5142A',
-            border: '1.5px solid rgba(255,255,255,0.2)',
-            color: '#fff',
-            fontFamily: '"Geist", sans-serif',
-            fontSize: 13,
-            fontWeight: 600,
-            padding: '10px 18px',
-            cursor: 'pointer',
-            transition: 'filter 0.15s ease',
-            letterSpacing: '0.02em',
-          }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(0.9)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = ''; }}
-        >
-          Abrir pacotinhos →
-        </button>
+      <Link
+        to="/abrir"
+        style={{
+          display: 'inline-block',
+          background: '#E5142A',
+          border: '1.5px solid rgba(255,255,255,0.2)',
+          color: '#fff',
+          fontFamily: '"Geist", sans-serif',
+          fontSize: 13,
+          fontWeight: 600,
+          padding: '10px 18px',
+          cursor: 'pointer',
+          transition: 'filter 0.15s ease',
+          letterSpacing: '0.02em',
+          textDecoration: 'none',
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.9)'; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = ''; }}
+      >
+        Abrir pacotinhos →
       </Link>
     </div>
   );
@@ -282,25 +283,26 @@ export default function HomePage() {
                   Ver todos os álbuns
                 </Link>
               </div>
-              <Link to="/albums/novo">
-                <button
-                  style={{
-                    background: '#E5142A',
-                    border: '1.5px solid #0A0907',
-                    boxShadow: '2px 2px 0 #0A0907',
-                    color: '#fff',
-                    fontFamily: '"Geist", sans-serif',
-                    fontSize: 12,
-                    fontWeight: 600,
-                    padding: '7px 12px',
-                    cursor: 'pointer',
-                    transition: 'filter 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(0.9)'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = ''; }}
-                >
-                  + Novo álbum
-                </button>
+              <Link
+                to="/albums/novo"
+                style={{
+                  display: 'inline-block',
+                  background: '#E5142A',
+                  border: '1.5px solid #0A0907',
+                  boxShadow: '2px 2px 0 #0A0907',
+                  color: '#fff',
+                  fontFamily: '"Geist", sans-serif',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: '7px 12px',
+                  cursor: 'pointer',
+                  transition: 'filter 0.15s ease',
+                  textDecoration: 'none',
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.9)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = ''; }}
+              >
+                + Novo álbum
               </Link>
             </div>
 
@@ -342,22 +344,23 @@ export default function HomePage() {
                 <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(10,9,7,0.55)', marginBottom: 18 }}>
                   Crie seu primeiro álbum para começar a colar figurinhas.
                 </p>
-                <Link to="/albums/novo">
-                  <button
-                    style={{
-                      background: '#E5142A',
-                      border: '2px solid #0A0907',
-                      boxShadow: '3px 3px 0 #0A0907',
-                      color: '#fff',
-                      fontFamily: '"Geist", sans-serif',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      padding: '10px 20px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    + Criar álbum
-                  </button>
+                <Link
+                  to="/albums/novo"
+                  style={{
+                    display: 'inline-block',
+                    background: '#E5142A',
+                    border: '2px solid #0A0907',
+                    boxShadow: '3px 3px 0 #0A0907',
+                    color: '#fff',
+                    fontFamily: '"Geist", sans-serif',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    padding: '10px 20px',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                  }}
+                >
+                  + Criar álbum
                 </Link>
               </div>
             )}
