@@ -182,6 +182,7 @@ function RepetidasTabela({ items }: { items: StickerRankItemType[] }) {
           return (
             <tr
               key={item.figurinhaId}
+              data-testid="ranking-item"
               style={{ borderBottom: '1px solid rgba(10,9,7,0.08)' }}
             >
               <td style={{

@@ -10,6 +10,7 @@ export function StickerRankItem({ item, rank }: StickerRankItemProps) {
 
   return (
     <li
+      data-testid="ranking-item"
       style={{
         display: 'grid',
         gridTemplateColumns: '24px 56px 1fr auto',
