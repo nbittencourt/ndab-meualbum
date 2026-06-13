@@ -82,6 +82,21 @@ export default function AbrirPacotinhosPage() {
   // Há retomada quando há itens pendentes e o usuário ainda não está em AP1
   const temRetomada = pendentes.length > 0 && !retomadaDescartada && tipoId === null;
 
+  // RN-AP17(a) — Issue #23: sessão anterior totalmente finalizada (sem pendentes)
+  // é removida do backend na entrada seguinte. O histórico de itens COLADA/REPETIDA
+  // vale apenas durante a sessão (RN-AP15); avaliado uma única vez, no primeiro load.
+  const limpezaAvaliada = useRef(false);
+  useEffect(() => {
+    if (pilhaLoading || limpezaAvaliada.current) return;
+    limpezaAvaliada.current = true;
+    if (pilha.length > 0 && pendentes.length === 0) {
+      abrirPacotinhosApi.descartarPilha().then(() => {
+        queryClient.invalidateQueries({ queryKey: ['pilha'] });
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pilhaLoading]);
+
   const [addError, setAddError] = useState('');
   const [descartarItemId, setDescartarItemId] = useState<string | null>(null);
   /** Modo de entrada: digitação ou câmera (seletor AP1 — RN-AP43) */

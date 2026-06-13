@@ -131,10 +131,12 @@ router.post('/pilha/repetida', requireAuth, async (req: AuthRequest, res) => {
   res.json({ ok: true });
 });
 
+// RN-AP17(b): o descarte explícito encerra a sessão por completo — remove
+// também os itens já finalizados (COLADA/REPETIDA), não apenas os pendentes.
 router.delete('/pilha', requireAuth, async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const { tipoAlbumId } = req.query;
-  const filtro: any = { usuarioId, statusDestino: 'PENDENTE' };
+  const filtro: any = { usuarioId };
   if (tipoAlbumId && Types.ObjectId.isValid(tipoAlbumId as string)) {
     filtro.tipoAlbumId = new Types.ObjectId(tipoAlbumId as string);
   }

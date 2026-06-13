@@ -45,6 +45,18 @@ export async function usuarioAtivo(page: Page, request: APIRequestContext) {
   return { ...dados, identificador };
 }
 
+/**
+ * Navega por um link do menu principal de forma viewport-agnóstica:
+ * no mobile abre o menu hambúrguer antes; no desktop usa a sidebar diretamente.
+ */
+export async function navegarPorMenu(page: Page, nomeLink: RegExp) {
+  const hamburger = page.getByRole('button', { name: /abrir menu de navegação/i });
+  if (await hamburger.isVisible()) {
+    await hamburger.click();
+  }
+  await page.getByRole('link', { name: nomeLink }).first().click();
+}
+
 export async function getTipoAlbumId(request: APIRequestContext): Promise<string> {
   const res = await request.get('/api/v1/test/tipo-album-id');
   const json = await res.json();
