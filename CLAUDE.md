@@ -161,6 +161,18 @@ Run the full E2E suite with `npm run test:e2e` (`playwright test`). Before runni
 - **Cookie banner suppression**: importing `{ test, expect }` from `tests/support/fixtures.ts` auto-loads a valid cookie consent into `localStorage`, suppressing the banner. Tests that need to exercise the banner itself must import from `@playwright/test` directly.
 - **Policy version sync**: `CURRENT_POLICY_VERSION` in `tests/support/fixtures.ts` must be kept in sync with `client/src/lib/cookieConsent.ts`. If they diverge, the banner reappears in every fixture-based test and breaks unrelated flows.
 
+#### Diagnosing failures: rule out flakiness first
+
+This suite runs on a single Windows machine and is sensitive to load (the `vite dev` server has crashed under sustained runs — `0xC0000409` — and CPU-heavy specs like axe-core a11y can intermittently exceed the 10s global timeout). **Before investigating or "fixing" a failing test, re-run it in isolation to confirm the failure is real and not flakiness:**
+
+```bash
+npx playwright test --project=mobile <file> -g "<test name>"
+```
+
+- If it **passes in isolation** but fails in the full run, treat it as environment flakiness — do **not** change the test's logic. The harness already absorbs this via `retries` in `playwright.config.ts`; if a spec is legitimately slow (e.g. axe-core), bump its timeout (`test.describe.configure({ timeout })`) rather than rewriting assertions.
+- If it **fails deterministically in isolation**, it is a real failure — fix it following the source-of-truth hierarchy (Design › Spec › Implementation).
+- Only edit a test's selectors/assertions once you have confirmed the failure is deterministic. Chasing a flaky failure as if it were a logic bug wastes effort and can mask real regressions.
+
 #### TDD workflow
 
 When implementing a new or changed business rule, follow test-driven development:
