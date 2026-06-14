@@ -36,10 +36,10 @@ export default defineConfig({
       },
     },
     {
-      command: 'npm run dev:client',
+      command: 'npm run build -w client && npm run preview -w client',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
+      timeout: 180_000,
     },
   ],
 });
