@@ -20,6 +20,10 @@ async function analisar(page: Page) {
 }
 
 test.describe('Acessibilidade (axe-core) — páginas principais', () => {
+  // A varredura axe-core (WCAG 2.0/2.1 AA) é CPU-intensiva e, somada à
+  // navegação + setup, ultrapassa o timeout global de 10s sob carga da suíte.
+  test.describe.configure({ timeout: 30_000 });
+
 
   test('Landing (login) sem violações AA', async ({ page }) => {
     await page.goto('/');

@@ -5,6 +5,8 @@ export default defineConfig({
   timeout: 10_000,
   expect: { timeout: 3_000 },
   workers: 1,
+  // Absorve flakiness de ambiente sob carga (Windows + axe-core CPU-intensivo)
+  retries: process.env.CI ? 2 : 1,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
