@@ -346,3 +346,17 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 - O token UUID deve ser gerado com fonte de entropia criptograficamente segura (`crypto.randomUUID()`, `secrets.token_urlsafe()` ou equivalente da stack adotada).
 - O link de redefinição deve ser transmitido exclusivamente por HTTPS.
 - O mecanismo de `token_versao` requer que **toda** requisição autenticada valide esse campo contra o banco de dados; o overhead de uma leitura adicional por requisição é inerente ao design.
+
+---
+
+## 9. Fora do Escopo
+
+As funcionalidades abaixo **não fazem parte desta especificação** e não devem ser implementadas sem aprovação explícita:
+
+- **Login social / OAuth / SSO** (Google, Facebook, Apple, SAML, OIDC)
+- **Autenticação de dois fatores (2FA/MFA)** — OTP por SMS, aplicativo autenticador ou chave de hardware
+- **Autenticação por biometria** (WebAuthn/FIDO2, Face ID, Touch ID)
+- **"Lembrar dispositivo"** — expiração de sessão por confiança de dispositivo
+- **Login sem senha (passwordless)** — magic link de login (distinto do magic link de *confirmação de cadastro*)
+- **Bloqueio de conta após N tentativas** além do rate limiting já especificado (RN-L16) — decisão de produto pendente
+- **Histórico de sessões ativas** — listagem e revogação individual de dispositivos pelo usuário

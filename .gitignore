@@ -9,6 +9,7 @@ build/
 Thumbs.db
 .env.tst
 .claude/worktrees/
+.claude/settings.local.json
 .playwright-mcp/
 .playwright-mcp-*
 # Playwright test output (not source)

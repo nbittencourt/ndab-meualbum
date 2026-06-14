@@ -358,3 +358,17 @@ Estas regras se aplicam a **todos** os componentes e telas da plataforma. Cada s
 | RN-PR15 | Link "Exercer direitos de privacidade" visível na Tela P1 de perfil |
 | RN-PR16 | Link "Gerenciar cookies" no rodapé de telas autenticadas reabre painel de preferências |
 | RN-WG01–WG25 | Requisitos globais de acessibilidade conforme Seção 9; aplicáveis a todos os componentes da plataforma |
+
+---
+
+## 12. Fora do Escopo
+
+As funcionalidades abaixo **não fazem parte desta especificação** e não devem ser implementadas sem aprovação explícita:
+
+- **Retenção de dados além do previsto na LIA** — dados de coleção e álbum são retidos enquanto a conta estiver ativa; não há prazo mínimo de retenção adicional por outros fundamentos
+- **Compartilhamento de dados com terceiros para fins publicitários** — os dados pessoais não são cedidos a anunciantes; cookies de publicidade são opt-in (RN-PR06) e restritos a pixels do próprio produto
+- **Relatório de impacto à proteção de dados (RIPD/DPIA)** automático — emissão do RIPD é processo manual fora do sistema
+- **Portal de privacidade para outros titulares além do usuário logado** — os direitos do Art. 18 LGPD só podem ser exercidos pelo próprio titular autenticado
+- **Consentimento granular por categoria de cookie além de analytics e publicidade** — o modelo é binário (essenciais sempre ativos; não-essenciais = analytics + publicidade juntos)
+- **Conformidade com regulações fora do Brasil** (GDPR, CCPA, LGPD-equivalentes de outros países) — o produto atende exclusivamente à LGPD brasileira
+- **Notificações automáticas de violação de dados aos titulares** — comunicação à ANPD e titulares em caso de incidente é processo manual; o sistema não envia alertas automáticos
