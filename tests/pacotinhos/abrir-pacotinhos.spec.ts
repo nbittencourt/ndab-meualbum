@@ -241,16 +241,20 @@ test.describe('Abrir Pacotinhos', () => {
     });
 
     test('deve abrir Modal Câmera ao clicar em "Abrir câmera" (passo 2 de RN-AP43)', async ({ page, request }) => {
-      // Mock getUserMedia para evitar prompt de permissão no headless
+      // Mock getUserMedia para evitar prompt de permissão no headless.
+      // Usa canvas.captureStream() para retornar um MediaStream real com track de vídeo,
+      // necessário desde que CameraModal atribui srcObject ao <video> após montar.
       await page.addInitScript(() => {
         Object.defineProperty(navigator, 'mediaDevices', {
           writable: true,
           configurable: true,
           value: {
-            getUserMedia: () => Promise.resolve({
-              getTracks: () => [{ stop: () => {} }],
-              getVideoTracks: () => [{ stop: () => {} }],
-            }),
+            getUserMedia: () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = 320;
+              canvas.height = 240;
+              return Promise.resolve(canvas.captureStream());
+            },
           },
         });
       });

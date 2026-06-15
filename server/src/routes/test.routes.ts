@@ -13,11 +13,13 @@ import { Secao } from '../models/Secao.js';
 import { Album } from '../models/Album.js';
 import { randomUUID } from 'crypto';
 import { asyncHandler } from '../lib/asyncHandler.js';
+import { isLocalDbHost } from '../lib/isLocalDbHost.js';
 
 const router = Router();
 
 const guard = (_req: any, res: any, next: any) => {
   if (process.env.NODE_ENV !== 'test') return res.status(403).json({ error: 'Forbidden' });
+  if (!isLocalDbHost(mongoose.connection.host)) return res.status(403).json({ error: 'Remote DB' });
   next();
 };
 router.use(guard);

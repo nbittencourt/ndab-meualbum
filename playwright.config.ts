@@ -1,4 +1,8 @@
 import { defineConfig } from '@playwright/test';
+import { config as loadEnv } from 'dotenv';
+// override:true neutraliza um MONGODB_URI vazado no shell (ex.: .env.tst/Firestore).
+// O .env da raiz é a fonte única de verdade para a suíte E2E.
+loadEnv({ override: true });
 
 export default defineConfig({
   testDir: './tests',
