@@ -7,7 +7,13 @@
       "npm run typecheck",
       "mcp__playwright__browser_console_messages",
       "mcp__playwright__browser_resize",
-      "mcp__playwright__browser_wait_for"
+      "mcp__playwright__browser_wait_for",
+      "curl -s http://localhost *",
+      "npm run test:e2e",
+      "npm test -w server",
+      "npm test -w client",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Get-Content *)"
     ]
   }
 }

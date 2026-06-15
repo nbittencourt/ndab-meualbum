@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Album } from '@meualbum/shared';
 import { VARIANT_STYLES, VARIANT_LABELS } from '@/lib/albumVariant';
 
@@ -7,6 +7,7 @@ interface AlbumCardProps {
 }
 
 export function AlbumCard({ album }: AlbumCardProps) {
+  const navigate = useNavigate();
   const variante = album.variante ?? 'BROCHURA';
   const style = VARIANT_STYLES[variante];
   const pct = album.percentualConclusao;
@@ -20,12 +21,23 @@ export function AlbumCard({ album }: AlbumCardProps) {
 
   return (
     <article
+      role="link"
+      tabIndex={0}
+      aria-label={`Gerenciar álbum ${album.tipoAlbum?.nome ?? 'Álbum'} — ${VARIANT_LABELS[variante]}`}
+      onClick={() => navigate(`/albums/${album._id}`)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          navigate(`/albums/${album._id}`);
+        }
+      }}
       style={{
         background: style.background,
         border: style.border,
         boxShadow: style.shadow,
         padding: '20px',
         transition: 'transform 0.15s ease',
+        cursor: 'pointer',
       }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ''; }}
@@ -135,7 +147,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
       </div>
 
       {/* CTA — RN-H12 */}
-      <Link to={`/colar?albumId=${album._id}`}>
+      <Link to={`/colar?albumId=${album._id}`} onClick={(e) => e.stopPropagation()}>
         <button
           style={{
             width: '100%',

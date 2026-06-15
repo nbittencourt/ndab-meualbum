@@ -52,7 +52,7 @@ test.describe('Home', () => {
       await criarAlbum(request, tipoId, 'CAPA_DURA');
       await page.reload();
       const cards = page.locator('[data-testid="album-card"], .album-card').or(
-        page.getByRole('article')
+        page.getByRole('link', { name: /Gerenciar álbum/i })
       );
       const primeiro = cards.first();
       await expect(primeiro.getByText(/Capa Dura/i)).toBeVisible();
@@ -66,7 +66,7 @@ test.describe('Home', () => {
       }
       await page.reload();
       const cards = page.locator('[data-testid="album-card"], .album-card').or(
-        page.getByRole('article').filter({ hasText: /brochura|capa/i })
+        page.getByRole('link', { name: /Gerenciar álbum/i })
       );
       await expect(cards).toHaveCount(5);
       await expect(page.getByRole('navigation', { name: /paginação/i })).toBeVisible();
