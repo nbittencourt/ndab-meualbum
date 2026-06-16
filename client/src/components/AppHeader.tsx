@@ -13,8 +13,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/home': 'Início',
   '/albums': 'Meus Álbuns',
   '/albums/novo': 'Novo Álbum',
-  '/abrir': 'Abrir Pacotinhos',
-  '/colar': 'Colar Figurinhas',
+  '/figurinhas': 'Figurinhas',
   '/trocas': 'Trocas',
   '/perfil': 'Perfil',
 };

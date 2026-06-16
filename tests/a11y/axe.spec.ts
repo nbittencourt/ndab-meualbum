@@ -57,19 +57,13 @@ test.describe('Acessibilidade (axe-core) — páginas principais', () => {
     expect(await analisar(page)).toEqual([]);
   });
 
-  test('Abrir Pacotinhos (AP1) sem violações AA', async ({ page, request }) => {
-    await usuarioAtivo(page, request);
-    await navegarPorMenu(page, /abrir/i);
-    await expect(page.getByRole('textbox')).toBeVisible();
-    expect(await analisar(page)).toEqual([]);
-  });
-
-  test('Colar Figurinhas sem violações AA', async ({ page, request }) => {
+  test('Figurinhas sem violações AA', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
     const tipoId = await getTipoAlbumId(request);
     await criarAlbum(request, tipoId, 'BROCHURA');
     await adicionarEstoque(request, identificador, 'FWC1', 1);
-    await navegarPorMenu(page, /colar/i);
+    await navegarPorMenu(page, /figurinhas/i);
+    await expect(page.getByRole('textbox').first()).toBeVisible();
     expect(await analisar(page)).toEqual([]);
   });
 

@@ -7,12 +7,11 @@ interface SideMenuProps {
 }
 
 const NAV_LINKS = [
-  { to: '/home',   label: 'Início' },
-  { to: '/albums', label: 'Meus Álbuns' },
-  { to: '/abrir',  label: 'Abrir Pacotinhos' },
-  { to: '/colar',  label: 'Colar Figurinhas' },
-  { to: '/trocas', label: 'Trocas' },
-  { to: '/perfil', label: 'Perfil' },
+  { to: '/home',        label: 'Início' },
+  { to: '/albums',      label: 'Meus Álbuns' },
+  { to: '/figurinhas',  label: 'Figurinhas' },
+  { to: '/trocas',      label: 'Trocas' },
+  { to: '/perfil',      label: 'Perfil' },
 ];
 
 export function SideMenu({ open, onClose }: SideMenuProps) {

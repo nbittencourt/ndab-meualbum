@@ -50,10 +50,10 @@ test.describe('Navegação por teclado', () => {
 
   test('CTAs da Home (links estilizados como botão) respondem a Enter', async ({ page, request }) => {
     await usuarioAtivo(page, request);
-    const cta = page.getByRole('link', { name: /abrir pacotinhos/i }).first();
+    const cta = page.locator('main').getByRole('link', { name: /figurinhas/i }).first();
     await cta.focus();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(/\/abrir/);
+    await expect(page).toHaveURL(/\/figurinhas/);
   });
 
   test('modal de exclusão de conta: Esc fecha e devolve o foco ao acionador', async ({ page, request }) => {

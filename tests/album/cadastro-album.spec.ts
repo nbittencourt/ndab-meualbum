@@ -67,14 +67,14 @@ test.describe('Cadastro de Álbum', () => {
     await expect(page).toHaveURL(/\/home/);
   });
 
-  test('"Colar figurinhas" no CA2 redireciona para Colar Figurinhas (RN-CA11)', async ({ page, request }) => {
+  test('"Colar figurinhas" no CA2 redireciona para Figurinhas (RN-CA11)', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
     await adicionarEstoque(request, identificador, 'FWC1', 1);
     await page.goto('/albums/novo');
     await page.getByRole('radio', { name: /brochura/i }).click();
     await page.getByRole('button', { name: /criar álbum/i }).click();
     await page.getByRole('button', { name: /colar figurinhas/i }).click();
-    await expect(page).toHaveURL(/\/colar/);
+    await expect(page).toHaveURL(/\/figurinhas/);
   });
 
   test('deve truncar nome personalizado em 60 chars (RN-CA06)', async ({ page, request }) => {
