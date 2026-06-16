@@ -8,8 +8,6 @@ import { Secao } from '../models/Secao.js';
 import { Sticker } from '../models/Sticker.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
-import { User } from '../models/User.js';
-import { buildPdfHtml, type StickerPdf, type SecaoPdf } from '../lib/pdfTemplate.js';
 import type { AlbumVariante } from '@meualbum/shared';
 import { asyncHandler } from '../lib/asyncHandler.js';
 import { contarColadasPorAlbum, percentualConclusao } from '../lib/albumProgress.js';
@@ -298,89 +296,30 @@ router.patch('/:id/desarquivar', requireAuth, asyncHandler(async (req: AuthReque
   res.json({ album: serializeAlbum(album, tipo, percent) });
 }));
 
-router.get('/:id/pdf', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+router.delete('/:id/colada/:numero', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const id = req.params.id as string;
+  const numero = req.params.numero as string;
   if (!Types.ObjectId.isValid(id)) {
     res.status(400).json({ error: 'ID inválido' });
     return;
   }
-
-  const [album, usuario] = await Promise.all([
-    Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) })
-      .populate('tipoAlbumId').lean(),
-    User.findById(req.userId, { name: 1, publicId: 1 }).lean(),
-  ]);
-
+  const album = await Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId), arquivadoEm: null }).lean();
   if (!album) {
     res.status(404).json({ error: 'Álbum não encontrado' });
     return;
   }
-
-  const tipoId = (album.tipoAlbumId as any)?._id ?? album.tipoAlbumId;
-  const nomeAlbum = (album.tipoAlbumId as any)?.nome ?? 'Álbum';
-  const nomePersonalizado = (album as any).nomePersonalizado as string | undefined;
-
-  const secaoDocs = await Secao.find({ tipoAlbumId: tipoId })
-    .sort({ ordem: 1 }).lean();
-
-  const secaoIds = secaoDocs.map((s) => s._id);
-  const [todasFigurinhas, coladas, estoque] = await Promise.all([
-    Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean(),
-    FigurinhaColada.find({ albumId: album._id }).lean(),
-    EstoqueFigurinha.find({ usuarioId: new Types.ObjectId(req.userId), quantidade: { $gt: 1 } }).lean(),
-  ]);
-
-  const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
-  const repetidosSet = new Set(estoque.map((e) => String(e.figurinhaId)));
-
-  const secoes: SecaoPdf[] = secaoDocs.map((s) => ({
-    _id: String(s._id),
-    nome: s.nome,
-    grupo: (s as any).grupo ?? null,
-    sigla_time: (s as any).sigla_time ?? null,
-    ordem: s.ordem,
-  }));
-
-  const stickers: StickerPdf[] = todasFigurinhas.map((f) => {
-    const fid = String(f._id);
-    const status: StickerPdf['status'] = coladasSet.has(fid)
-      ? 'colada'
-      : repetidosSet.has(fid)
-        ? 'repetida'
-        : 'faltante';
-    return {
-      id: fid,
-      number: f.number,
-      section: f.section,
-      subject: f.subject,
-      secaoId: String(f.secaoId),
-      grupo: null,
-      sigla_time: null,
-      status,
-    };
-  });
-
-  const html = buildPdfHtml({
-    nomeAlbum: nomePersonalizado ?? nomeAlbum,
-    nomeUsuario: usuario?.name ?? 'Colecionador',
-    identificador: (usuario as any)?.publicId ?? '—',
-    stickers,
-    secoes,
-  });
-
-  const puppeteer = await import('puppeteer').then((m) => m.default);
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-  try {
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'load' });
-    await page.evaluate('document.fonts.ready');
-    const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: '7mm', right: '7mm', bottom: '7mm', left: '7mm' }, printBackground: true });
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="figurinhas-faltantes.pdf"');
-    res.send(Buffer.from(pdfBuffer));
-  } finally {
-    await browser.close();
+  const sticker = await Sticker.findOne({ number: numero.toUpperCase() }).lean();
+  if (!sticker) {
+    res.status(404).json({ error: 'Figurinha não encontrada' });
+    return;
   }
+  const removed = await FigurinhaColada.findOneAndDelete({ albumId: album._id, figurinhaId: sticker._id });
+  if (!removed) {
+    res.status(404).json({ error: 'Colagem não encontrada' });
+    return;
+  }
+  res.json({ ok: true });
 }));
+
 
 export default router;

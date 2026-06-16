@@ -8,6 +8,7 @@ import { seedCatalogoMinimo } from '../setup/seed.js';
 import { createApp } from '../../app.js';
 import { Album } from '../../models/Album.js';
 import { FigurinhaColada } from '../../models/FigurinhaColada.js';
+import { EstoqueFigurinha } from '../../models/EstoqueFigurinha.js';
 
 let app: Express;
 let seed: Awaited<ReturnType<typeof seedCatalogoMinimo>>;
@@ -173,5 +174,47 @@ describe('Rotas de Álbuns', () => {
     expect(numeros).not.toContain('FWC1"');
     expect(numeros).toContain('FWC5');
     expect(numeros).toContain('FWC10');
+  });
+
+  describe('DELETE /:id/colada/:numero — colagem rápida (remoção) #24', () => {
+    it('remove a FigurinhaColada e responde 200', async () => {
+      const { user, cookie } = await criarUsuarioAutenticado();
+      const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA' });
+      const sticker = seed.stickers[0];
+      await FigurinhaColada.create({ albumId: album._id, figurinhaId: sticker._id, origem: 'DIRETA' });
+
+      const res = await request(app)
+        .delete(`/api/v1/albums/${album._id}/colada/${sticker.number}`)
+        .set('Cookie', cookie);
+      expect(res.status).toBe(200);
+      expect(res.body.ok).toBe(true);
+      expect(await FigurinhaColada.findOne({ albumId: album._id, figurinhaId: sticker._id })).toBeNull();
+    });
+
+    it('responde 404 quando a colagem não existe', async () => {
+      const { user, cookie } = await criarUsuarioAutenticado();
+      const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA' });
+
+      const res = await request(app)
+        .delete(`/api/v1/albums/${album._id}/colada/${seed.stickers[0].number}`)
+        .set('Cookie', cookie);
+      expect(res.status).toBe(404);
+    });
+
+    it('não restaura o estoque ao remover a colada (decisão #3)', async () => {
+      const { user, cookie } = await criarUsuarioAutenticado();
+      const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA' });
+      const sticker = seed.stickers[0];
+      const est = await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: sticker._id, quantidade: 1 });
+      await FigurinhaColada.create({ albumId: album._id, figurinhaId: sticker._id, origem: 'DIRETA' });
+
+      await request(app)
+        .delete(`/api/v1/albums/${album._id}/colada/${sticker.number}`)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      const estoqueDepois = await EstoqueFigurinha.findById(est._id).lean();
+      expect(estoqueDepois?.quantidade).toBe(1);
+    });
   });
 });

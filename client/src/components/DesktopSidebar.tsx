@@ -3,8 +3,7 @@ import { NavLink } from 'react-router-dom';
 const NAV_LINKS = [
   { to: '/home', label: 'Início' },
   { to: '/albums', label: 'Meus Álbuns' },
-  { to: '/abrir', label: 'Abrir Pacotinhos' },
-  { to: '/colar', label: 'Colar Figurinhas' },
+  { to: '/figurinhas', label: 'Figurinhas' },
   { to: '/trocas', label: 'Trocas' },
   { to: '/perfil', label: 'Perfil' },
 ];

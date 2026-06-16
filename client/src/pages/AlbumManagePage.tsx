@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/components/AppHeader';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { albumsApi, ApiError } from '@/lib/api';
+import { albumsApi, colarFigurinhasApi, ApiError } from '@/lib/api';
 import type { FigurinhaGridItem } from '@meualbum/shared';
 import { VARIANT_STYLES, VARIANT_LABELS } from '@/lib/albumVariant';
+import { ListaFigurinhasModal } from '@/components/ListaFigurinhasModal';
 
 const INK   = '#0A0907';
 const GREEN  = '#0A9145';
@@ -161,13 +162,28 @@ function StickerCardAL1({
   albumId,
   disabled,
   isDesktop,
+  modoColagem,
+  estoqueId,
+  menuAberto,
+  onColar,
+  onAbrirMenu,
+  onFecharMenu,
+  onRemover,
 }: {
   item: FigurinhaGridItem;
   albumId: string;
   disabled: boolean;
   isDesktop: boolean;
+  modoColagem: boolean;
+  estoqueId?: string;
+  menuAberto?: boolean;
+  onColar?: () => void;
+  onAbrirMenu?: () => void;
+  onFecharMenu?: () => void;
+  onRemover?: () => void;
 }) {
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
   const isColada   = item.colada;
   const isRepetida = !item.colada && item.quantidade >= 2;
   const CARD_H = isDesktop ? 106 : 94;
@@ -187,6 +203,17 @@ function StickerCardAL1({
   }
 
   const statusLabel = isColada ? 'colada' : isRepetida ? 'repetida' : 'faltante';
+
+  useEffect(() => {
+    if (!menuAberto) return;
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        onFecharMenu?.();
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [menuAberto, onFecharMenu]);
 
   return (
     <article
@@ -238,11 +265,12 @@ function StickerCardAL1({
       </div>
 
       {/* Área do botão — altura sempre reservada */}
-      <div style={{ flexShrink: 0, height: BTN_H }}>
-        {isRepetida && (
+      <div style={{ flexShrink: 0, height: BTN_H, position: 'relative' }}>
+        {/* Modo OFF: navegar para /figurinhas (só repetidas) */}
+        {isRepetida && !modoColagem && (
           <button
             type="button"
-            onClick={() => navigate(`/colar?albumId=${albumId}&figurinhaNumero=${encodeURIComponent(item.numero)}`)}
+            onClick={() => navigate(`/figurinhas?albumId=${albumId}&figurinhaNumero=${encodeURIComponent(item.numero)}`)}
             disabled={disabled}
             style={{
               width: '100%',
@@ -262,6 +290,94 @@ function StickerCardAL1({
             Colar →
           </button>
         )}
+
+        {/* Modo ON: colar inline (faltante e repetida) */}
+        {modoColagem && !isColada && (
+          <button
+            type="button"
+            onClick={onColar}
+            disabled={disabled}
+            aria-label={`Colar figurinha ${item.numero}`}
+            style={{
+              width: '100%',
+              height: '100%',
+              background: disabled ? 'rgba(10,9,7,0.4)' : (estoqueId ? INK : 'rgba(10,9,7,0.85)'),
+              color: '#fff',
+              border: `1.5px solid ${INK}`,
+              boxShadow: disabled ? 'none' : `1px 1px 0 ${GREEN}`,
+              fontFamily: FONT_D,
+              fontSize: isDesktop ? 9 : 8,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              cursor: disabled ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {estoqueId ? 'Colar ✓' : 'Colar'}
+          </button>
+        )}
+
+        {/* Modo ON: menu de contexto para figurinha colada */}
+        {modoColagem && isColada && (
+          <div ref={menuRef} style={{ position: 'relative', height: '100%' }}>
+            <button
+              type="button"
+              onClick={menuAberto ? onFecharMenu : onAbrirMenu}
+              aria-label={`Opções para figurinha ${item.numero}`}
+              aria-haspopup="menu"
+              aria-expanded={menuAberto}
+              style={{
+                width: '100%',
+                height: '100%',
+                background: menuAberto ? 'rgba(10,9,7,0.08)' : 'transparent',
+                border: `1px solid ${LINE}`,
+                fontFamily: FONT_M,
+                fontSize: 14,
+                color: MUTE,
+                cursor: 'pointer',
+                letterSpacing: '0.05em',
+              }}
+            >
+              ⋮
+            </button>
+            {menuAberto && (
+              <div
+                role="menu"
+                style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  right: 0,
+                  zIndex: 30,
+                  background: '#fff',
+                  border: `1.5px solid ${INK}`,
+                  boxShadow: `2px 2px 0 ${INK}`,
+                  minWidth: 110,
+                }}
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => { onFecharMenu?.(); onRemover?.(); }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '8px 12px',
+                    background: 'transparent',
+                    border: 'none',
+                    textAlign: 'left',
+                    fontFamily: FONT_D,
+                    fontSize: 11,
+                    color: RED,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Remover
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );
@@ -271,11 +387,25 @@ function StickerCardAL1({
 function SecaoGrid({
   secao,
   albumId,
-  pdfLoading,
+  actionsDisabled,
+  modoColagem,
+  estoqueMap,
+  menuAbertoNumero,
+  onColar,
+  onAbrirMenu,
+  onFecharMenu,
+  onRemover,
 }: {
   secao: { _id: string; nome: string; figurinhas: FigurinhaGridItem[] };
   albumId: string;
-  pdfLoading: boolean;
+  actionsDisabled: boolean;
+  modoColagem: boolean;
+  estoqueMap: Map<string, string>;
+  menuAbertoNumero: string | null;
+  onColar: (numero: string, estoqueId?: string) => void;
+  onAbrirMenu: (numero: string) => void;
+  onFecharMenu: () => void;
+  onRemover: (numero: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const total     = secao.figurinhas.length;
@@ -371,8 +501,15 @@ function SecaoGrid({
                   key={f._id}
                   item={f}
                   albumId={albumId}
-                  disabled={pdfLoading}
+                  disabled={actionsDisabled}
                   isDesktop={false}
+                  modoColagem={modoColagem}
+                  estoqueId={estoqueMap.get(f.numero)}
+                  menuAberto={menuAbertoNumero === f.numero}
+                  onColar={() => onColar(f.numero, estoqueMap.get(f.numero))}
+                  onAbrirMenu={() => onAbrirMenu(f.numero)}
+                  onFecharMenu={onFecharMenu}
+                  onRemover={() => onRemover(f.numero)}
                 />
               ))}
             </div>
@@ -476,8 +613,19 @@ export default function AlbumManagePage() {
   const queryClient = useQueryClient();
   const [confirmarArquivar, setConfirmarArquivar] = useState(false);
   const [arquivarError, setArquivarError] = useState('');
-  const [pdfLoading, setPdfLoading] = useState(false);
-  const [pdfError, setPdfError] = useState('');
+  const [showListaModal, setShowListaModal] = useState(false);
+  const [modoColagem, setModoColagem] = useState(false);
+  const [menuAbertoNumero, setMenuAbertoNumero] = useState<string | null>(null);
+  const [removerNumero, setRemoverNumero] = useState<string | null>(null);
+  const [codigoDigitado, setCodigoDigitado] = useState('');
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function showToast(msg: string) {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(msg);
+    toastTimer.current = setTimeout(() => setToast(''), 3500);
+  }
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['album', id],
@@ -491,6 +639,20 @@ export default function AlbumManagePage() {
     enabled: !!id,
   });
 
+  const { data: estoqueData } = useQuery({
+    queryKey: ['estoque', id],
+    queryFn: () => colarFigurinhasApi.getEstoque(id),
+    enabled: !!id && modoColagem,
+  });
+
+  const estoqueMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const item of estoqueData?.itens ?? []) {
+      map.set(item.figurinha.number, item._id);
+    }
+    return map;
+  }, [estoqueData]);
+
   const arquivarMut = useMutation({
     mutationFn: () => albumsApi.arquivar(id!),
     onSuccess: () => {
@@ -502,17 +664,29 @@ export default function AlbumManagePage() {
     },
   });
 
-  async function handleBaixarPdf() {
-    setPdfLoading(true);
-    setPdfError('');
-    try {
-      await albumsApi.baixarPdf(id!);
-    } catch {
-      setPdfError('Erro ao gerar PDF.');
-    } finally {
-      setPdfLoading(false);
-    }
-  }
+  const colarMut = useMutation({
+    mutationFn: ({ numero, estoqueId }: { numero: string; estoqueId?: string }) =>
+      estoqueId
+        ? colarFigurinhasApi.colar(estoqueId, id!)
+        : colarFigurinhasApi.colarDireta(numero, id!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', id] });
+      queryClient.invalidateQueries({ queryKey: ['album', id] });
+      queryClient.invalidateQueries({ queryKey: ['estoque', id] });
+      showToast('Figurinha colada!');
+    },
+  });
+
+  const removerMut = useMutation({
+    mutationFn: ({ numero }: { numero: string }) => albumsApi.removerColada(id!, numero),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', id] });
+      queryClient.invalidateQueries({ queryKey: ['album', id] });
+      setRemoverNumero(null);
+      setCodigoDigitado('');
+      showToast('Colagem removida.');
+    },
+  });
 
   useEffect(() => {
     if (!data?.album) return;
@@ -562,7 +736,7 @@ export default function AlbumManagePage() {
   }
 
   const { album } = data;
-  const actionsDisabled = pdfLoading || arquivarMut.isPending;
+  const actionsDisabled = arquivarMut.isPending;
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col">
@@ -597,7 +771,7 @@ export default function AlbumManagePage() {
         <button
           type="button"
           disabled={actionsDisabled}
-          onClick={() => navigate(`/colar?albumId=${album._id}`)}
+          onClick={() => navigate(`/figurinhas?albumId=${album._id}`)}
           style={{
             padding: '10px 20px',
             background: actionsDisabled ? 'rgba(10,9,7,0.4)' : INK,
@@ -635,11 +809,32 @@ export default function AlbumManagePage() {
           Ver álbum
         </button>
 
-        {/* Baixar PDF / Figurinhas que faltam */}
+        {/* Ativar colagem rápida — toggle */}
+        <button
+          type="button"
+          aria-pressed={modoColagem}
+          onClick={() => { setModoColagem((v) => !v); setMenuAbertoNumero(null); }}
+          style={{
+            padding: '10px 20px',
+            background: modoColagem ? INK : '#fff',
+            color: modoColagem ? '#fff' : INK,
+            border: `1.5px solid ${INK}`,
+            boxShadow: modoColagem ? `2px 2px 0 ${GREEN}` : 'none',
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: 'pointer',
+          }}
+        >
+          Ativar colagem rápida
+        </button>
+
+        {/* Lista de Figurinhas — popup */}
         <button
           type="button"
           disabled={actionsDisabled}
-          onClick={handleBaixarPdf}
+          onClick={() => setShowListaModal(true)}
           style={{
             padding: '10px 20px',
             background: '#fff',
@@ -653,11 +848,7 @@ export default function AlbumManagePage() {
             opacity: actionsDisabled ? 0.5 : 1,
           }}
         >
-          {pdfLoading ? (
-            'Gerando…'
-          ) : (
-            'Figurinhas que faltam'
-          )}
+          Figurinhas que faltam
         </button>
 
         {/* Arquivar — empurrado à direita no desktop */}
@@ -719,12 +910,6 @@ export default function AlbumManagePage() {
         </div>
       )}
 
-      {pdfError && (
-        <p role="alert" className="px-4 lg:px-6 pt-2 text-xs font-body" style={{ color: RED }}>
-          ⚠ {pdfError}
-        </p>
-      )}
-
       {/* Lista de seções */}
       <div className="flex-1 px-4 lg:px-6 pt-4 pb-8 flex flex-col gap-2">
         {/* Rótulo "Seções do álbum" */}
@@ -748,10 +933,138 @@ export default function AlbumManagePage() {
             key={secao._id}
             secao={secao}
             albumId={album._id}
-            pdfLoading={pdfLoading}
+            actionsDisabled={actionsDisabled}
+            modoColagem={modoColagem}
+            estoqueMap={estoqueMap}
+            menuAbertoNumero={menuAbertoNumero}
+            onColar={(numero, estoqueId) => colarMut.mutate({ numero, estoqueId })}
+            onAbrirMenu={(numero) => setMenuAbertoNumero(numero)}
+            onFecharMenu={() => setMenuAbertoNumero(null)}
+            onRemover={(numero) => { setRemoverNumero(numero); setCodigoDigitado(''); }}
           />
         ))}
       </div>
+
+      <ListaFigurinhasModal
+        open={showListaModal}
+        onClose={() => setShowListaModal(false)}
+        albumId={album._id}
+        albumNome={album.nomePersonalizado ?? album.tipoAlbum?.nome}
+      />
+
+      {/* Alertdialog de confirmação de remoção — #24 */}
+      {removerNumero && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation">
+          <div className="fixed inset-0 bg-ink/50" aria-hidden="true" onClick={() => { setRemoverNumero(null); setCodigoDigitado(''); }} />
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-label={`Remover colagem da figurinha ${removerNumero}`}
+            style={{
+              position: 'relative',
+              zIndex: 10,
+              background: '#fff',
+              border: `2px solid ${RED}`,
+              boxShadow: `4px 4px 0 ${RED}`,
+              padding: '20px 24px',
+              maxWidth: 360,
+              width: '100%',
+            }}
+          >
+            <p style={{ fontFamily: FONT_M, fontSize: 10, color: RED, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+              ⚠ Confirmar remoção
+            </p>
+            <p style={{ fontFamily: FONT_B, fontSize: 13, color: MUTE, lineHeight: 1.5, marginBottom: 14 }}>
+              Digite o código <strong style={{ color: INK, fontFamily: FONT_M }}>{removerNumero}</strong> para confirmar a remoção desta colagem.
+            </p>
+            <input
+              type="text"
+              value={codigoDigitado}
+              onChange={(e) => setCodigoDigitado(e.target.value.toUpperCase())}
+              placeholder={removerNumero}
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '9px 12px',
+                border: `1.5px solid ${LINE}`,
+                fontFamily: FONT_M,
+                fontSize: 14,
+                letterSpacing: '0.08em',
+                marginBottom: 12,
+                outline: 'none',
+                boxSizing: 'border-box',
+                borderColor: codigoDigitado === removerNumero ? GREEN : LINE,
+              }}
+            />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => { setRemoverNumero(null); setCodigoDigitado(''); }}
+                style={{
+                  flex: 1,
+                  padding: '10px 16px',
+                  background: '#fff',
+                  color: INK,
+                  border: `1.5px solid ${INK}`,
+                  fontFamily: FONT_D,
+                  fontSize: 11,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  cursor: 'pointer',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={codigoDigitado !== removerNumero || removerMut.isPending}
+                onClick={() => removerMut.mutate({ numero: removerNumero })}
+                aria-label="Confirmar remoção"
+                style={{
+                  flex: 1,
+                  padding: '10px 16px',
+                  background: codigoDigitado === removerNumero ? RED : 'rgba(229,20,42,0.3)',
+                  color: '#fff',
+                  border: `1.5px solid ${RED}`,
+                  fontFamily: FONT_D,
+                  fontSize: 11,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  cursor: codigoDigitado === removerNumero ? 'pointer' : 'not-allowed',
+                }}
+              >
+                {removerMut.isPending ? 'Removendo…' : 'Confirmar remoção'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast — feedback inline */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: 'fixed',
+            bottom: 80,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 60,
+            background: INK,
+            color: '#fff',
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            padding: '10px 20px',
+            boxShadow: `3px 3px 0 ${RED}`,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

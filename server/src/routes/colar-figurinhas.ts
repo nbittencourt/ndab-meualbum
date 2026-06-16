@@ -136,4 +136,31 @@ router.post('/colar/direta', requireAuth, asyncHandler(async (req: AuthRequest, 
   res.json({ ok: true });
 }));
 
+const descartarSchema = z.object({ estoqueId: z.string() });
+
+router.post('/estoque/descartar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+  const parsed = descartarSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() });
+    return;
+  }
+  const { estoqueId } = parsed.data;
+  const usuarioId = new Types.ObjectId(req.userId);
+
+  const item = await EstoqueFigurinha.findOne({ _id: estoqueId, usuarioId, quantidade: { $gte: 1 } });
+  if (!item) {
+    res.status(404).json({ error: 'Item de estoque não encontrado' });
+    return;
+  }
+
+  if (item.quantidade <= 1) {
+    await item.deleteOne();
+  } else {
+    item.quantidade -= 1;
+    await item.save();
+  }
+
+  res.json({ ok: true });
+}));
+
 export default router;

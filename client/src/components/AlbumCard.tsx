@@ -147,7 +147,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
       </div>
 
       {/* CTA — RN-H12 */}
-      <Link to={`/colar?albumId=${album._id}`} onClick={(e) => e.stopPropagation()}>
+      <Link to={`/figurinhas?albumId=${album._id}`} onClick={(e) => e.stopPropagation()}>
         <button
           style={{
             width: '100%',

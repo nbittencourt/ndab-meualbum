@@ -184,7 +184,7 @@ test.describe('Abrir Pacotinhos', () => {
       await navegarPorMenu(page, /álbuns/i);
       await page.getByRole('button', { name: /ficar/i }).click();
 
-      await expect(page).toHaveURL(/\/abrir/);
+      await expect(page).toHaveURL(/\/figurinhas/);
     });
 
     test('logout com itens PENDENTES deve encerrar sem alerta (RN-AP32)', async ({ page, request }) => {
@@ -351,15 +351,17 @@ test.describe('Abrir Pacotinhos', () => {
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /enviar para repetidas/i }).click();
-      // RN-AP15: durante a sessão o item finalizado permanece visível como histórico
-      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+      // RN-AP15: durante a sessão o item finalizado permanece visível como histórico (na pilha)
+      const pilha = page.getByRole('region', { name: /pilha da sessão/i });
+      await expect(pilha.getByText(/repetida/i).first()).toBeVisible();
 
       // Nova entrada: a sessão anterior foi totalmente finalizada → pilha limpa
       await page.goto('/home');
       await page.goto('/abrir');
       await expect(page.getByRole('button', { name: /continuar sessão anterior/i })).not.toBeVisible();
       await expect(page.getByRole('textbox')).toBeVisible();
-      await expect(page.getByText('FWC1')).not.toBeVisible();
+      // FWC1 não deve reaparecer NA PILHA (segue no estoque/Repetidas da coleção — store separado)
+      await expect(pilha.getByText('FWC1')).not.toBeVisible();
       await expect(page.getByText(/pilha \(/i)).not.toBeVisible();
     });
 
@@ -373,7 +375,8 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       // Finaliza apenas FWC1; FWC2 permanece pendente
       await page.getByRole('button', { name: /enviar para repetidas/i }).first().click();
-      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+      const pilha = page.getByRole('region', { name: /pilha da sessão/i });
+      await expect(pilha.getByText(/repetida/i).first()).toBeVisible();
       // Sai com pendente (alerta de saída) e reentra
       await navegarPorMenu(page, /álbuns/i);
       await page.getByRole('button', { name: /sair assim mesmo/i }).click();
@@ -381,13 +384,13 @@ test.describe('Abrir Pacotinhos', () => {
       // Descarte explícito encerra a sessão por completo
       await page.getByRole('button', { name: /descartar e começar do zero/i }).click();
 
-      // Nova entrada: nada da sessão descartada deve reaparecer
+      // Nova entrada: nada da sessão descartada deve reaparecer NA PILHA
       await page.goto('/home');
       await page.goto('/abrir');
       await expect(page.getByRole('button', { name: /continuar sessão anterior/i })).not.toBeVisible();
       await expect(page.getByRole('textbox')).toBeVisible();
-      await expect(page.getByText('FWC1')).not.toBeVisible();
-      await expect(page.getByText('FWC2')).not.toBeVisible();
+      await expect(pilha.getByText('FWC1')).not.toBeVisible();
+      await expect(pilha.getByText('FWC2')).not.toBeVisible();
     });
 
     test('retomada com pendentes preserva histórico da sessão (RN-AP15 + RN-AP19)', async ({ page, request }) => {
@@ -399,16 +402,17 @@ test.describe('Abrir Pacotinhos', () => {
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
       await page.getByRole('button', { name: /enviar para repetidas/i }).first().click();
-      await expect(page.getByText(/repetida/i).first()).toBeVisible();
+      const pilha = page.getByRole('region', { name: /pilha da sessão/i });
+      await expect(pilha.getByText(/repetida/i).first()).toBeVisible();
       // Sai com FWC2 ainda pendente e reentra retomando a sessão
       await navegarPorMenu(page, /álbuns/i);
       await page.getByRole('button', { name: /sair assim mesmo/i }).click();
       await page.goto('/abrir');
       await page.getByRole('button', { name: /continuar sessão anterior/i }).click();
 
-      // A sessão retomada mantém o histórico finalizado e a pendente
-      await expect(page.getByText('FWC1')).toBeVisible();
-      await expect(page.getByText('FWC2')).toBeVisible();
+      // A sessão retomada mantém o histórico finalizado e a pendente (na pilha)
+      await expect(pilha.getByText('FWC1')).toBeVisible();
+      await expect(pilha.getByText('FWC2')).toBeVisible();
       await expect(page.getByText(/pilha \(2\)/i)).toBeVisible();
     });
   });
@@ -435,7 +439,7 @@ test.describe('Abrir Pacotinhos', () => {
       await page.getByRole('textbox').press('Enter');
       await page.getByRole('button', { name: /enviar para repetidas/i }).click();
       await expect(page.getByText(/repetida/i).first()).toBeVisible();
-      await page.goto(`/colar?albumId=${album._id ?? album.id}`);
+      await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
       await expect(page.getByText('FWC1')).toBeVisible();
     });
 

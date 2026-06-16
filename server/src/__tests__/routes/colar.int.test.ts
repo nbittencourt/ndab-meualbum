@@ -163,4 +163,43 @@ describe('Rotas de Colar Figurinhas (estoque)', () => {
       .send({ albumId: String(album._id), figurinhaNumero: 'ZZZ999' });
     expect(res.status).toBe(404);
   });
+
+  describe('POST /estoque/descartar — #25', () => {
+    it('decrementa a quantidade do item de estoque', async () => {
+      const { user, cookie } = await criarUsuarioAutenticado();
+      const est = await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: seed.stickers[0]._id, quantidade: 3 });
+
+      const res = await request(app)
+        .post('/api/v1/estoque/descartar')
+        .set('Cookie', cookie)
+        .send({ estoqueId: String(est._id) });
+      expect(res.status).toBe(200);
+      expect(res.body.ok).toBe(true);
+      expect((await EstoqueFigurinha.findById(est._id).lean())?.quantidade).toBe(2);
+    });
+
+    it('remove o documento quando quantidade chega a zero', async () => {
+      const { user, cookie } = await criarUsuarioAutenticado();
+      const est = await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: seed.stickers[0]._id, quantidade: 1 });
+
+      await request(app)
+        .post('/api/v1/estoque/descartar')
+        .set('Cookie', cookie)
+        .send({ estoqueId: String(est._id) })
+        .expect(200);
+      expect(await EstoqueFigurinha.findById(est._id)).toBeNull();
+    });
+
+    it('rejeita estoqueId de outro usuário com 404', async () => {
+      const { cookie } = await criarUsuarioAutenticado();
+      const outro = await criarUsuarioAutenticado();
+      const est = await EstoqueFigurinha.create({ usuarioId: outro.user._id, figurinhaId: seed.stickers[0]._id, quantidade: 2 });
+
+      const res = await request(app)
+        .post('/api/v1/estoque/descartar')
+        .set('Cookie', cookie)
+        .send({ estoqueId: String(est._id) });
+      expect(res.status).toBe(404);
+    });
+  });
 });

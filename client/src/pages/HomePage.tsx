@@ -11,7 +11,7 @@ import type { StickerRankItem as StickerRankItemType } from '@meualbum/shared';
 function FAB() {
   return (
     <Link
-      to="/abrir"
+      to="/figurinhas"
       style={{
         position: 'fixed',
         bottom: 80,
@@ -32,11 +32,11 @@ function FAB() {
         gap: 6,
         textDecoration: 'none',
       }}
-      aria-label="Abrir pacotinhos"
+      aria-label="Figurinhas"
       onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = '5px 5px 0 #0A0907'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = '3px 3px 0 #0A0907'; }}
     >
-      + Abrir
+      + Figurinhas
     </Link>
   );
 }
@@ -88,13 +88,13 @@ function CTABanner() {
           lineHeight: 1.1,
         }}
       >
-        Abrir Pacotinhos
+        Figurinhas
       </h2>
       <p style={{ fontFamily: '"Geist", sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '0 0 18px', lineHeight: 1.5 }}>
         Adicione novas figurinhas à sua coleção e veja o álbum evoluir.
       </p>
       <Link
-        to="/abrir"
+        to="/figurinhas"
         style={{
           display: 'inline-block',
           background: '#E5142A',
@@ -112,7 +112,7 @@ function CTABanner() {
         onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.9)'; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.filter = ''; }}
       >
-        Abrir pacotinhos →
+        Figurinhas →
       </Link>
     </div>
   );

@@ -1,0 +1,203 @@
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { albumsApi } from '@/lib/api';
+import type { SecaoGrid, FigurinhaGridItem } from '@meualbum/shared';
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  albumId: string;
+  albumNome?: string;
+}
+
+type Status = 'c' | 'f' | 'r';
+
+function statusCell(f: FigurinhaGridItem): Status {
+  if (f.colada) return 'c';
+  if (f.quantidade >= 2) return 'r';
+  return 'f';
+}
+
+function Cell({ numero, status }: { numero: string; status: Status }) {
+  const styles: Record<Status, React.CSSProperties> = {
+    c: { background: 'rgba(10,145,69,0.15)', border: '1px solid rgba(10,145,69,0.48)', color: '#0A9145' },
+    f: { background: 'transparent', border: '1.5px dashed rgba(10,9,7,0.22)', color: 'rgba(10,9,7,0.28)' },
+    r: { background: 'rgba(229,20,42,0.1)', border: '1.5px solid #E5142A', color: '#E5142A', borderRadius: 4 },
+  };
+  return (
+    <div
+      title={`${numero} — ${status === 'c' ? 'colada' : status === 'r' ? 'repetida' : 'faltante'}`}
+      aria-label={`${numero} ${status === 'c' ? 'colada' : status === 'r' ? 'repetida' : 'faltante'}`}
+      style={{
+        height: 20,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: '"Geist Mono", monospace',
+        fontSize: 8,
+        ...styles[status],
+      }}
+    >
+      {numero}
+    </div>
+  );
+}
+
+function SecaoBlock({ secao }: { secao: SecaoGrid }) {
+  const coladas = secao.figurinhas.filter((f) => f.colada).length;
+  const total = secao.figurinhas.length;
+  return (
+    <section data-popup-section aria-label={secao.nome}>
+      <div style={{
+        padding: '4px 8px',
+        background: '#fafafa',
+        borderLeft: '3px solid #E5142A',
+        borderBottom: '1px solid rgba(10,9,7,0.1)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        <h3 style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#0A0907' }}>
+          {secao.nome}
+        </h3>
+        <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 9, color: 'rgba(10,9,7,0.45)' }}>
+          {coladas}/{total}
+        </span>
+      </div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))',
+        gap: 2,
+        padding: '6px 8px',
+        background: '#fff',
+      }}>
+        {secao.figurinhas.map((f) => (
+          <Cell key={f._id} numero={f.numero} status={statusCell(f)} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function ListaFigurinhasModal({ open, onClose, albumId, albumNome }: Props) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['album-figurinhas', albumId],
+    queryFn: () => albumsApi.getFigurinhas(albumId),
+    enabled: open && !!albumId,
+  });
+
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const secoes: SecaoGrid[] = data?.secoes ?? [];
+  const totalColadas = secoes.reduce((acc, s) => acc + s.figurinhas.filter((f) => f.colada).length, 0);
+  const totalRepetidas = secoes.reduce((acc, s) => acc + s.figurinhas.filter((f) => !f.colada && f.quantidade >= 2).length, 0);
+  const totalFigs = secoes.reduce((acc, s) => acc + s.figurinhas.length, 0);
+  const totalFaltantes = totalFigs - totalColadas - totalRepetidas;
+  const pct = totalFigs > 0 ? Math.round((totalColadas / totalFigs) * 1000) / 10 : 0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4" role="presentation">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-ink/60" aria-hidden="true" onClick={onClose} />
+
+      {/* Dialog */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Figurinhas — ${albumNome ?? 'Álbum'}`}
+        lang="pt-BR"
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          maxWidth: 720,
+          maxHeight: '90dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          background: '#fff',
+          border: '2px solid #0A0907',
+          boxShadow: '6px 6px 0 #0A0907',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div style={{ background: '#0A0907', borderBottom: '3px solid #E5142A', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 22, height: 22, background: '#E5142A', border: '1.5px solid rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: '"Archivo Black", sans-serif', fontSize: 9, color: '#fff', transform: 'rotate(-4deg)', flexShrink: 0 }}>MA</div>
+            <div>
+              <div style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 12, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#fff' }}>Meu Album</div>
+              {albumNome && (
+                <div style={{ fontFamily: '"Geist Mono", monospace', fontSize: 9, color: 'rgba(255,255,255,0.5)', marginTop: 1 }}>{albumNome}</div>
+              )}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div style={{ background: '#111', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ color: '#0A9145', fontSize: 11 }}>■</span>
+            <strong style={{ color: '#fff' }}>{totalColadas}</strong> coladas
+          </span>
+          <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontSize: 11 }}>□</span>
+            <strong style={{ color: '#fff' }}>{totalFaltantes}</strong> faltantes
+          </span>
+          <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ color: '#E5142A', fontSize: 11 }}>⬤</span>
+            <strong style={{ color: '#fff' }}>{totalRepetidas}</strong> repetidas
+          </span>
+          <div style={{ flex: 1, minWidth: 60, height: 3, background: 'rgba(255,255,255,0.15)', position: 'relative' }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${Math.min(100, pct)}%`, background: '#0A9145' }} />
+          </div>
+          <span style={{ fontFamily: '"Archivo Black", sans-serif', fontSize: 16, color: '#fff', flexShrink: 0 }}>{pct.toFixed(1)}%</span>
+        </div>
+
+        {/* Legend */}
+        <div style={{ padding: '4px 12px', display: 'flex', alignItems: 'center', gap: 14, borderBottom: '1px solid rgba(10,9,7,0.1)', background: '#fafafa', flexShrink: 0, flexWrap: 'wrap' }}>
+          {[
+            { status: 'c' as Status, label: 'Colada', bg: 'rgba(10,145,69,0.15)', border: '1px solid rgba(10,145,69,0.48)' },
+            { status: 'f' as Status, label: 'Faltante', bg: 'transparent', border: '1.5px dashed rgba(10,9,7,0.22)' },
+            { status: 'r' as Status, label: 'Repetida', bg: 'rgba(229,20,42,0.1)', border: '1.5px solid #E5142A' },
+          ].map(({ status, label, bg, border }) => (
+            <div key={status} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 12, height: 12, background: bg, border, flexShrink: 0 }} aria-hidden="true" />
+              <span style={{ fontFamily: '"Geist Mono", monospace', fontSize: 9, color: 'rgba(10,9,7,0.5)', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Sections — scrollable */}
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '8px 4px' }}>
+          {isLoading && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 32 }} aria-busy="true" aria-label="Carregando figurinhas">
+              <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
+            </div>
+          )}
+          {!isLoading && secoes.map((secao) => (
+            <SecaoBlock key={secao._id} secao={secao} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
