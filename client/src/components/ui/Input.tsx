@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           >
             {label}
           </label>
-          {required && <span aria-hidden="true" className="font-mono text-[11px] text-red font-medium">*</span>}
+          {required && <span aria-hidden="true" className="font-mono text-[11px] text-red-dark font-medium">*</span>}
         </div>
         {hint && (
           <p id={hintId} className="text-xs text-ink/60 font-body">
@@ -54,7 +54,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && (
-          <p id={errorId} role="alert" className="text-xs text-red font-body flex items-center gap-1">
+          <p id={errorId} role="alert" className="text-xs text-red-dark font-body flex items-center gap-1">
             <span aria-hidden="true">⚠</span><span>{error}</span>
           </p>
         )}

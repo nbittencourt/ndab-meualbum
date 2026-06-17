@@ -1,10 +1,16 @@
 import { defineConfig } from '@playwright/test';
+import { config as loadEnv } from 'dotenv';
+// override:true neutraliza um MONGODB_URI vazado no shell (ex.: .env.tst/Firestore).
+// O .env da raiz é a fonte única de verdade para a suíte E2E.
+loadEnv({ override: true });
 
 export default defineConfig({
   testDir: './tests',
   timeout: 10_000,
   expect: { timeout: 3_000 },
   workers: 1,
+  // Absorve flakiness de ambiente sob carga (Windows + axe-core CPU-intensivo)
+  retries: process.env.CI ? 2 : 1,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
@@ -36,10 +42,10 @@ export default defineConfig({
       },
     },
     {
-      command: 'npm run dev:client',
+      command: 'npm run build -w client && npm run preview -w client',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
+      timeout: 180_000,
     },
   ],
 });

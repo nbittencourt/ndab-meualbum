@@ -1,5 +1,4 @@
 export type StickerType = 'player' | 'badge' | 'stadium' | 'special';
-export type StickerStatus = 'owned' | 'needed' | 'duplicate';
 export type FigurinhaOrigem = 'ESTOQUE' | 'DIRETA';
 
 export interface Sticker {
@@ -11,20 +10,6 @@ export interface Sticker {
   country?: string;
   type: StickerType;
   isShiny: boolean;
-}
-
-export interface CollectionEntry {
-  stickerId: string;
-  status: StickerStatus;
-  quantity: number;
-}
-
-export interface CollectionStats {
-  total: number;
-  owned: number;
-  needed: number;
-  duplicates: number;
-  completionPercent: number;
 }
 
 export interface FigurinhaColada {

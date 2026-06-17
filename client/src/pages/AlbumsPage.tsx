@@ -7,94 +7,89 @@ import type { Album } from '@meualbum/shared';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { VARIANT_STYLES, VARIANT_LABELS } from '@/lib/albumVariant';
+import { ListaFigurinhasModal } from '@/components/ListaFigurinhasModal';
 
 function AlbumCard({ album, onDesarquivar }: { album: Album; onDesarquivar?: (id: string) => void }) {
   const navigate = useNavigate();
-  const [pdfLoading, setPdfLoading] = useState(false);
-  const [pdfError, setPdfError] = useState('');
+  const [showListaModal, setShowListaModal] = useState(false);
   const arquivado = !!album.arquivadoEm;
   const variante = album.variante ?? 'BROCHURA';
   const s = VARIANT_STYLES[variante];
   const nomeExibido = album.nomePersonalizado || album.tipoAlbum.nome;
 
-  async function handleBaixarPdf() {
-    setPdfLoading(true);
-    setPdfError('');
-    try {
-      await albumsApi.baixarPdf(album._id);
-    } catch {
-      setPdfError('Erro ao gerar PDF.');
-    } finally {
-      setPdfLoading(false);
-    }
-  }
-
   return (
-    <article
-      style={{ background: s.background, border: s.border, boxShadow: s.shadow, padding: 16 }}
-      aria-label={`Álbum ${nomeExibido}, ${album.percentualConclusao}% completo${arquivado ? ', arquivado' : ''}`}
-    >
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 12 }}>
-        <div>
-          <span
-            style={{
-              display: 'inline-block',
-              background: s.tagBg,
-              color: s.tagText,
-              fontFamily: '"Geist Mono", monospace',
-              fontSize: 10,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              padding: '2px 6px',
-              marginBottom: 6,
-            }}
-          >
-            {VARIANT_LABELS[variante]}
-          </span>
-          <h2
-            style={{
-              fontFamily: '"Archivo Black", sans-serif',
-              fontSize: 15,
-              color: s.text,
-              margin: 0,
-              lineHeight: 1.2,
-            }}
-          >
-            {nomeExibido}
-          </h2>
+    <>
+      <article
+        style={{ background: s.background, border: s.border, boxShadow: s.shadow, padding: 16 }}
+        aria-label={`Álbum ${nomeExibido}, ${album.percentualConclusao}% completo${arquivado ? ', arquivado' : ''}`}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 12 }}>
+          <div>
+            <span
+              style={{
+                display: 'inline-block',
+                background: s.tagBg,
+                color: s.tagText,
+                fontFamily: '"Geist Mono", monospace',
+                fontSize: 10,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                padding: '2px 6px',
+                marginBottom: 6,
+              }}
+            >
+              {VARIANT_LABELS[variante]}
+            </span>
+            <h2
+              style={{
+                fontFamily: '"Archivo Black", sans-serif',
+                fontSize: 15,
+                color: s.text,
+                margin: 0,
+                lineHeight: 1.2,
+              }}
+            >
+              {nomeExibido}
+            </h2>
+          </div>
+          {arquivado && (
+            <span className="text-[10px] font-mono font-semibold uppercase bg-ink/10 text-ink/70 px-2 py-0.5 border border-ink/20 shrink-0">
+              Arquivado
+            </span>
+          )}
         </div>
-        {arquivado && (
-          <span className="text-[10px] font-mono font-semibold uppercase bg-ink/10 text-ink/50 px-2 py-0.5 border border-ink/20 shrink-0">
-            Arquivado
-          </span>
-        )}
-      </div>
 
-      <ProgressBar value={album.percentualConclusao} label="Progresso" className="mb-4" />
+        <ProgressBar value={album.percentualConclusao} label="Progresso" className="mb-4" />
 
-      {pdfError && <p role="alert" className="text-xs text-red font-body mb-2">⚠ {pdfError}</p>}
+        <div className="flex gap-2 flex-wrap">
+          {!arquivado && (
+            <>
+              <Button size="sm" variant="primary" onClick={() => navigate(`/albums/${album._id}`)}>
+                Gerenciar
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => navigate(`/figurinhas?albumId=${album._id}`)}>
+                Colar figurinhas
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setShowListaModal(true)}>
+                Figurinhas que faltam
+              </Button>
+            </>
+          )}
+          {arquivado && (
+            <Button size="sm" variant="secondary" onClick={() => onDesarquivar?.(album._id)}>
+              Desarquivar
+            </Button>
+          )}
+        </div>
+      </article>
 
-      <div className="flex gap-2 flex-wrap">
-        {!arquivado && (
-          <>
-            <Button size="sm" variant="primary" disabled={pdfLoading} onClick={() => navigate(`/albums/${album._id}`)}>
-              Gerenciar
-            </Button>
-            <Button size="sm" variant="secondary" disabled={pdfLoading} onClick={() => navigate(`/colar?albumId=${album._id}`)}>
-              Colar figurinhas
-            </Button>
-            <Button size="sm" variant="secondary" loading={pdfLoading} onClick={handleBaixarPdf}>
-              Figurinhas que faltam
-            </Button>
-          </>
-        )}
-        {arquivado && (
-          <Button size="sm" variant="secondary" onClick={() => onDesarquivar?.(album._id)}>
-            Desarquivar
-          </Button>
-        )}
-      </div>
-    </article>
+      <ListaFigurinhasModal
+        open={showListaModal}
+        onClose={() => setShowListaModal(false)}
+        albumId={album._id}
+        albumNome={nomeExibido}
+      />
+    </>
   );
 }
 
@@ -136,11 +131,11 @@ export default function AlbumsPage() {
         )}
 
         {error && (
-          <p role="alert" className="text-sm text-red font-body">Erro ao carregar álbuns.</p>
+          <p role="alert" className="text-sm text-red-dark font-body">Erro ao carregar álbuns.</p>
         )}
 
         {actionError && (
-          <p role="alert" className="text-sm text-red font-body">⚠ {actionError}</p>
+          <p role="alert" className="text-sm text-red-dark font-body">⚠ {actionError}</p>
         )}
 
         {data && (
@@ -151,8 +146,8 @@ export default function AlbumsPage() {
               </h2>
               {data.ativos.length === 0 ? (
                 <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-                  <p className="text-sm font-body text-ink/50 mb-2">Nenhum álbum ativo.</p>
-                  <Link to="/albums/novo" className="text-sm text-red underline hover:brightness-90">
+                  <p className="text-sm font-body text-ink/70 mb-2">Nenhum álbum ativo.</p>
+                  <Link to="/albums/novo" className="text-sm text-red-dark underline hover:brightness-90">
                     + Novo álbum
                   </Link>
                 </div>

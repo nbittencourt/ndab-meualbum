@@ -254,7 +254,7 @@ export default function ProfilePage() {
             autoComplete="new-password"
             required
           />
-          {senhaError && <p role="alert" className="text-xs text-red font-body">⚠ {senhaError}</p>}
+          {senhaError && <p role="alert" className="text-xs text-red-dark font-body">⚠ {senhaError}</p>}
           <Button type="submit" size="sm" loading={senhaMut.isPending} disabled={!canChangeSenha}>
             Alterar senha
           </Button>
@@ -279,10 +279,10 @@ export default function ProfilePage() {
             </Button>
           </div>
           <div className="border-t border-ink/10 pt-3 flex flex-col gap-2 text-xs font-body">
-            <a href="/privacidade" className="text-ink underline hover:brightness-75">
+            <a href="/politica-de-privacidade" className="text-ink underline hover:brightness-75">
               Política de Privacidade
             </a>
-            <a href="/privacidade#direitos" className="text-ink underline hover:brightness-75">
+            <a href="/politica-de-privacidade#direitos" className="text-ink underline hover:brightness-75">
               Exercer direitos de privacidade
             </a>
           </div>
@@ -319,7 +319,7 @@ export default function ProfilePage() {
           placeholder="Identificador"
           autoComplete="off"
         />
-        {excluirError && <p role="alert" className="text-xs text-red font-body mt-2">⚠ {excluirError}</p>}
+        {excluirError && <p role="alert" className="text-xs text-red-dark font-body mt-2">⚠ {excluirError}</p>}
         <div className="flex gap-2 mt-4">
           <Button
             variant="danger"

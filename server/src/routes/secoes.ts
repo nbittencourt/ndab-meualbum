@@ -4,10 +4,11 @@ import { requireAuth } from '../middleware/auth.js';
 import { Secao } from '../models/Secao.js';
 import { TipoAlbum } from '../models/TipoAlbum.js';
 import { Sticker } from '../models/Sticker.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', requireAuth, asyncHandler(async (req, res) => {
   const tipoAlbumId = req.query.tipoAlbumId as string;
   if (!tipoAlbumId || !Types.ObjectId.isValid(tipoAlbumId)) {
     res.status(400).json({ error: 'tipoAlbumId obrigatório e válido' });
@@ -15,10 +16,10 @@ router.get('/', requireAuth, async (req, res) => {
   }
   const secoes = await Secao.find({ tipoAlbumId: new Types.ObjectId(tipoAlbumId) }).sort({ ordem: 1 }).lean();
   res.json({ secoes });
-});
+}));
 
 // Recalcular total_figurinhas de uma seção (operação administrativa)
-router.post('/:id/recalcular', requireAuth, async (req, res) => {
+router.post('/:id/recalcular', requireAuth, asyncHandler(async (req, res) => {
   const id = req.params.id as string;
   if (!Types.ObjectId.isValid(id)) {
     res.status(400).json({ error: 'ID inválido' });
@@ -38,6 +39,6 @@ router.post('/:id/recalcular', requireAuth, async (req, res) => {
   await TipoAlbum.findByIdAndUpdate(secao.tipoAlbumId, { totalFigurinhas: totalTipo });
 
   res.json({ secao });
-});
+}));
 
 export default router;

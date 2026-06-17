@@ -8,10 +8,12 @@ test.describe('Home', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('deve exibir CTA "Abrir Pacotinhos" sempre (RN-H14)', async ({ page, request }) => {
+  test('deve exibir CTA "Figurinhas" sempre (RN-H14)', async ({ page, request }) => {
     await usuarioAtivo(page, request);
-    // FAB e CTA Banner são ambos spec-compliant; verifica que ao menos um está visível
-    await expect(page.getByRole('button', { name: /abrir pacotinhos/i }).first()).toBeVisible();
+    // FAB e CTA Banner são ambos spec-compliant; verifica que ao menos um está visível.
+    // São links estilizados como botão (navegam para /figurinhas) — role correto é link (W3/WCAG).
+    // Escopado ao main para não casar com o link homônimo da sidebar desktop.
+    await expect(page.locator('main').getByRole('link', { name: /figurinhas/i }).first()).toBeVisible();
   });
 
   test('deve exibir nome e identificador do usuário no header', async ({ page, request }) => {
@@ -50,7 +52,7 @@ test.describe('Home', () => {
       await criarAlbum(request, tipoId, 'CAPA_DURA');
       await page.reload();
       const cards = page.locator('[data-testid="album-card"], .album-card').or(
-        page.getByRole('article')
+        page.getByRole('link', { name: /Gerenciar álbum/i })
       );
       const primeiro = cards.first();
       await expect(primeiro.getByText(/Capa Dura/i)).toBeVisible();
@@ -64,7 +66,7 @@ test.describe('Home', () => {
       }
       await page.reload();
       const cards = page.locator('[data-testid="album-card"], .album-card').or(
-        page.getByRole('article').filter({ hasText: /brochura|capa/i })
+        page.getByRole('link', { name: /Gerenciar álbum/i })
       );
       await expect(cards).toHaveCount(5);
       await expect(page.getByRole('navigation', { name: /paginação/i })).toBeVisible();
@@ -124,9 +126,9 @@ test.describe('Home', () => {
         await adicionarEstoque(request, identificador, num, 2);
       }
       await page.reload();
-      const itens = page.locator('[data-testid="ranking-item"], .ranking-item').or(
-        page.getByRole('listitem').filter({ hasText: /FWC/ })
-      );
+      // O ranking tem dois layouts (cards no mobile, tabela no desktop);
+      // ambos marcam os itens com data-testid e só um fica visível por viewport.
+      const itens = page.getByTestId('ranking-item').filter({ visible: true });
       await expect(itens.first()).toBeVisible();
       const count = await itens.count();
       expect(count).toBeLessThanOrEqual(5);
@@ -139,9 +141,10 @@ test.describe('Home', () => {
       await adicionarEstoque(request, identificador, 'FWC1', 3);
       await adicionarEstoque(request, identificador, 'FWC3', 3);
       await page.reload();
-      await expect(page.getByRole('listitem').filter({ hasText: /FWC/ }).first()).toBeVisible();
-      const primeiroItem = page.getByRole('listitem').filter({ hasText: /FWC/ }).first();
-      await expect(primeiroItem.getByText('FWC1', { exact: true })).toBeVisible();
+      const itens = page.getByTestId('ranking-item').filter({ visible: true });
+      await expect(itens.first()).toBeVisible();
+      // Empate em quantidade (3): o primeiro do ranking deve ser FWC1 (menor número)
+      await expect(itens.first().getByText(/FWC1/).first()).toBeVisible();
     });
   });
 

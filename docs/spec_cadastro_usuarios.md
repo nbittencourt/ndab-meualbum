@@ -265,3 +265,17 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-30 | O código de identificador de 6 caracteres exibido na Tela 2 e Tela 3 DEVE ter `aria-label` com os caracteres separados por espaço (ex.: `aria-label="A 3 F 9 K X"`) para pronúncia correta por leitores de tela |
 | RN-31 | O botão "Copiar" da Tela 3 DEVE anunciar o resultado da operação via live region ("Identificador copiado") imediatamente após a ação |
 | RN-32 | O contador regressivo do cooldown de reenvio (MM:SS) DEVE atualizar a região via `aria-live="polite"`; a frequência de anúncio DEVE ser limitada (ex.: a cada 30 segundos ou apenas nos marcos de 60s, 30s, 10s), não a cada segundo |
+
+---
+
+## 8. Fora do Escopo
+
+As funcionalidades abaixo **não fazem parte desta especificação** e não devem ser implementadas sem aprovação explícita:
+
+- **Autenticação social** (login com Google, Facebook, Apple ou qualquer provedor OAuth/SSO)
+- **Autenticação de dois fatores (2FA/MFA)** — OTP por SMS, aplicativo autenticador ou chave de hardware
+- **Login por biometria** (WebAuthn/FIDO2, Face ID, Touch ID)
+- **Cadastro por convite** — fluxos em que o registro exige um código ou link pré-aprovado
+- **Provisionamento automático de conta** — criação de conta iniciada por sistemas externos
+- **Verificação de email por digitação de código** (OTP numérico) — a confirmação é exclusivamente via magic link UUID (RN-06)
+- **Campos de perfil opcionais no cadastro** (foto, data de nascimento, localização) — o fluxo coleta apenas nome, email e senha

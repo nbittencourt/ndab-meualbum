@@ -12,29 +12,32 @@ import { TipoAlbum } from '../models/TipoAlbum.js';
 import { Secao } from '../models/Secao.js';
 import { Album } from '../models/Album.js';
 import { randomUUID } from 'crypto';
+import { asyncHandler } from '../lib/asyncHandler.js';
+import { isLocalDbHost } from '../lib/isLocalDbHost.js';
 
 const router = Router();
 
 const guard = (_req: any, res: any, next: any) => {
   if (process.env.NODE_ENV !== 'test') return res.status(403).json({ error: 'Forbidden' });
+  if (!isLocalDbHost(mongoose.connection.host)) return res.status(403).json({ error: 'Remote DB' });
   next();
 };
 router.use(guard);
 
-router.post('/reset-db', async (_req, res) => {
+router.post('/reset-db', asyncHandler(async (_req, res) => {
   const db = mongoose.connection.db!;
   const cols = await db.listCollections().toArray();
   await Promise.all(cols.map((c) => db.collection(c.name).deleteMany({})));
   res.json({ ok: true });
-});
+}));
 
-router.get('/usuario-info', async (req, res) => {
+router.get('/usuario-info', asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.query.email as string }).lean();
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
   res.json({ identificador: (user as any).publicId, status: (user as any).status });
-});
+}));
 
-router.post('/confirmar-email', async (req, res) => {
+router.post('/confirmar-email', asyncHandler(async (req, res) => {
   const { identificador } = req.body;
   const user = await User.findOne({ publicId: identificador });
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
@@ -43,9 +46,9 @@ router.post('/confirmar-email', async (req, res) => {
   (user as any).status = 'ATIVO';
   await user.save();
   res.json({ ok: true });
-});
+}));
 
-router.get('/token-confirmacao/:identificador', async (req, res) => {
+router.get('/token-confirmacao/:identificador', asyncHandler(async (req, res) => {
   const user = await User.findOne({ publicId: req.params.identificador }).lean();
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
   const token = await TokenConfirmacaoCadastro.findOne({
@@ -54,9 +57,9 @@ router.get('/token-confirmacao/:identificador', async (req, res) => {
   }).lean();
   if (!token) { res.status(404).json({ error: 'Token não encontrado' }); return; }
   res.json({ token: (token as any).token });
-});
+}));
 
-router.get('/token-recuperacao', async (req, res) => {
+router.get('/token-recuperacao', asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.query.email as string }).lean();
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
   const token = await TokenOperacao.findOne({
@@ -66,26 +69,26 @@ router.get('/token-recuperacao', async (req, res) => {
   }).lean();
   if (!token) { res.status(404).json({ error: 'Token não encontrado' }); return; }
   res.json({ token: (token as any).token });
-});
+}));
 
-router.post('/expirar-token', async (req, res) => {
+router.post('/expirar-token', asyncHandler(async (req, res) => {
   const { token } = req.body;
   const past = new Date(0);
   await TokenConfirmacaoCadastro.updateOne({ token }, { $set: { expiraEm: past } });
   await TokenOperacao.updateOne({ token }, { $set: { expiraEm: past } });
   res.json({ ok: true });
-});
+}));
 
-router.post('/invalidar-sessao', async (req, res) => {
+router.post('/invalidar-sessao', asyncHandler(async (req, res) => {
   const { identificador } = req.body;
   if (!identificador) { res.status(400).json({ error: 'identificador obrigatório' }); return; }
   const user = await User.findOne({ publicId: identificador }).lean();
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
   await User.findByIdAndUpdate((user as any)._id, { $inc: { tokenVersao: 1 } });
   res.json({ ok: true });
-});
+}));
 
-router.post('/criar-pilha-pendente', async (req, res) => {
+router.post('/criar-pilha-pendente', asyncHandler(async (req, res) => {
   const { tipo_album_id, numeros, identificador } = req.body;
   let usuarioId = req.body.usuarioId;
   if (!usuarioId && identificador) {
@@ -104,9 +107,9 @@ router.post('/criar-pilha-pendente', async (req, res) => {
   }));
   await PilhaDaSessao.insertMany(docs);
   res.json({ ok: true, criados: docs.length });
-});
+}));
 
-router.post('/popular-pilha', async (req, res) => {
+router.post('/popular-pilha', asyncHandler(async (req, res) => {
   const { tipo_album_id, quantidade, identificador } = req.body;
   let usuarioId = req.body.usuarioId;
   if (!usuarioId && identificador) {
@@ -129,9 +132,9 @@ router.post('/popular-pilha', async (req, res) => {
   });
   await PilhaDaSessao.insertMany(docs);
   res.json({ ok: true, criados: docs.length });
-});
+}));
 
-router.post('/iniciar-alteracao-email', async (req, res) => {
+router.post('/iniciar-alteracao-email', asyncHandler(async (req, res) => {
   const { identificador, email_novo } = req.body;
   const user = await User.findOne({ publicId: identificador });
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
@@ -147,9 +150,9 @@ router.post('/iniciar-alteracao-email', async (req, res) => {
   (user as any).emailPendente = email_novo;
   await user.save();
   res.json({ ok: true });
-});
+}));
 
-router.post('/popular-estoque', async (req, res) => {
+router.post('/popular-estoque', asyncHandler(async (req, res) => {
   const { identificador, figurinha_numero, quantidade = 1 } = req.body;
   const user = await User.findOne({ publicId: identificador }).lean();
   if (!user) { res.status(404).json({ error: 'Usuário não encontrado' }); return; }
@@ -161,22 +164,22 @@ router.post('/popular-estoque', async (req, res) => {
     { upsert: true }
   );
   res.json({ ok: true });
-});
+}));
 
-router.post('/arquivar-album', async (req, res) => {
+router.post('/arquivar-album', asyncHandler(async (req, res) => {
   const { albumId } = req.body;
   if (!albumId) { res.status(400).json({ error: 'albumId obrigatório' }); return; }
   await Album.findByIdAndUpdate(albumId, { arquivadoEm: new Date() });
   res.json({ ok: true });
-});
+}));
 
-router.get('/tipo-album-id', async (_req, res) => {
+router.get('/tipo-album-id', asyncHandler(async (_req, res) => {
   const tipo = await TipoAlbum.findOne().lean();
   if (!tipo) { res.status(404).json({ error: 'Nenhum TipoAlbum encontrado' }); return; }
   res.json({ tipoAlbumId: String((tipo as any)._id) });
-});
+}));
 
-router.post('/criar-tipo-album', async (req, res) => {
+router.post('/criar-tipo-album', asyncHandler(async (req, res) => {
   const { nome, totalFigurinhas } = req.body;
   if (!nome) { res.status(400).json({ error: 'nome obrigatório' }); return; }
   if (totalFigurinhas !== undefined && totalFigurinhas <= 0) {
@@ -185,14 +188,14 @@ router.post('/criar-tipo-album', async (req, res) => {
   }
   const tipo = await TipoAlbum.create({ nome, totalFigurinhas: totalFigurinhas ?? 100 });
   res.json({ tipoAlbumId: String(tipo._id) });
-});
+}));
 
-router.delete('/tipo-album/:id', async (req, res) => {
+router.delete('/tipo-album/:id', asyncHandler(async (req, res) => {
   await TipoAlbum.deleteOne({ _id: req.params.id });
   res.json({ ok: true });
-});
+}));
 
-router.post('/seed', async (_req, res) => {
+router.post('/seed', asyncHandler(async (_req, res) => {
   const seedDir = join(process.cwd(), '..', 'tests', '_seed');
   const { tipo_albums }: { tipo_albums: Array<{ id: number; nome: string; total_figurinhas: number }> } =
     JSON.parse(readFileSync(join(seedDir, 'seed_tipo_album.json'), 'utf-8'));
@@ -261,7 +264,7 @@ router.post('/seed', async (_req, res) => {
   await Sticker.insertMany(stickerDocs, { ordered: false });
 
   res.json({ ok: true, tipos: tipo_albums.length, secoes: secoesData.length, stickers: stickerDocs.length });
-});
+}));
 
 // ── Rate limit test ───────────────────────────────────────────────────────────
 

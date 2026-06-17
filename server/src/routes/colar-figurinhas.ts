@@ -6,10 +6,11 @@ import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { Album } from '../models/Album.js';
 import { Sticker } from '../models/Sticker.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 
-router.get('/estoque', requireAuth, async (req: AuthRequest, res) => {
+router.get('/estoque', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const { albumId, busca } = req.query;
 
@@ -41,15 +42,33 @@ router.get('/estoque', requireAuth, async (req: AuthRequest, res) => {
       return e.figurinha.number.toLowerCase().includes(q) || e.figurinha.subject.toLowerCase().includes(q);
     });
 
+  // Paginação opt-in (B4): sem ?pagina o shape atual {itens} é preservado.
+  // A página é aplicada em memória após o filtro de busca — a elegibilidade
+  // depende do populate, e o catálogo (~1k itens) é pequeno para o servidor;
+  // o ganho da paginação aqui é payload/render no client.
+  if (req.query.pagina !== undefined) {
+    const pagina = Math.max(1, Number(req.query.pagina) || 1);
+    const limite = Math.min(100, Math.max(1, Number(req.query.limite) || 50));
+    const total = itens.length;
+    res.json({
+      itens: itens.slice((pagina - 1) * limite, pagina * limite),
+      pagina,
+      limite,
+      total,
+      totalPaginas: Math.ceil(total / limite),
+    });
+    return;
+  }
+
   res.json({ itens });
-});
+}));
 
 const colarEstoqueSchema = z.object({
   albumId: z.string(),
   estoqueId: z.string(),
 });
 
-router.post('/colar', requireAuth, async (req: AuthRequest, res) => {
+router.post('/colar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = colarEstoqueSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -80,14 +99,14 @@ router.post('/colar', requireAuth, async (req: AuthRequest, res) => {
   await estoqueItem.save();
 
   res.json({ ok: true });
-});
+}));
 
 const colarDiretaSchema = z.object({
   albumId: z.string(),
   figurinhaNumero: z.string().toUpperCase(),
 });
 
-router.post('/colar/direta', requireAuth, async (req: AuthRequest, res) => {
+router.post('/colar/direta', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = colarDiretaSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -115,6 +134,33 @@ router.post('/colar/direta', requireAuth, async (req: AuthRequest, res) => {
   );
 
   res.json({ ok: true });
-});
+}));
+
+const descartarSchema = z.object({ estoqueId: z.string() });
+
+router.post('/estoque/descartar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+  const parsed = descartarSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() });
+    return;
+  }
+  const { estoqueId } = parsed.data;
+  const usuarioId = new Types.ObjectId(req.userId);
+
+  const item = await EstoqueFigurinha.findOne({ _id: estoqueId, usuarioId, quantidade: { $gte: 1 } });
+  if (!item) {
+    res.status(404).json({ error: 'Item de estoque não encontrado' });
+    return;
+  }
+
+  if (item.quantidade <= 1) {
+    await item.deleteOne();
+  } else {
+    item.quantidade -= 1;
+    await item.save();
+  }
+
+  res.json({ ok: true });
+}));
 
 export default router;

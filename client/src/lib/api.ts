@@ -114,26 +114,14 @@ export const albumsApi = {
   desarquivar: (id: string) =>
     request<{ album: Album }>(`/albums/${id}/desarquivar`, { method: 'PATCH' }),
 
-  baixarPdf: async (id: string): Promise<void> => {
-    const BASE_URL = (import.meta.env.VITE_API_URL ?? '') + '/api/v1';
-    const res = await fetch(`${BASE_URL}/albums/${id}/pdf`, { credentials: 'include' });
-    if (!res.ok) throw new ApiError(res.status, 'Erro ao gerar PDF');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'figurinhas-faltantes.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  },
-
   getTipos: () =>
     request<{ tipos: Array<{ _id: string; nome: string; totalFigurinhas: number }> }>('/albums/tipos'),
 
   getFigurinhas: (id: string) =>
     request<{ secoes: SecaoGrid[] }>(`/albums/${id}/figurinhas`),
+
+  removerColada: (albumId: string, numero: string) =>
+    request<{ ok: boolean }>(`/albums/${albumId}/colada/${encodeURIComponent(numero)}`, { method: 'DELETE' }),
 };
 
 export const profileApi = {
@@ -230,6 +218,12 @@ export const colarFigurinhasApi = {
     request<{ ok: boolean }>('/colar/direta', {
       method: 'POST',
       body: JSON.stringify({ figurinhaNumero, albumId }),
+    }),
+
+  descartarRepetida: (estoqueId: string) =>
+    request<{ ok: boolean }>('/estoque/descartar', {
+      method: 'POST',
+      body: JSON.stringify({ estoqueId }),
     }),
 };
 

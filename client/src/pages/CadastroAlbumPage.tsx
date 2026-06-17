@@ -217,7 +217,7 @@ export default function CadastroAlbumPage() {
           Você tem figurinhas no estoque. Deseja colá-las neste álbum agora?
         </p>
         <div className="flex gap-2">
-          <Button onClick={() => navigate(`/colar?albumId=${albumCriadoId}`)}>
+          <Button onClick={() => navigate(`/figurinhas?albumId=${albumCriadoId}`)}>
             Colar figurinhas
           </Button>
           <Button variant="secondary" onClick={() => navigate('/home')}>

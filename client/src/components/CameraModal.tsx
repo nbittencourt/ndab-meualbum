@@ -69,10 +69,11 @@ export function CameraModal({
           stream.getTracks().forEach((t) => t.stop());
           return;
         }
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+        if (!stream.getVideoTracks().length) {
+          setCameraState('camera_error');
+          return;
         }
+        streamRef.current = stream;
         setCameraState('viewfinder');
       })
       .catch(() => {
@@ -87,10 +88,17 @@ export function CameraModal({
     };
   }, [open]);
 
+  // Vincula o stream ao <video> após ele montar (cameraState muda para 'viewfinder')
+  useEffect(() => {
+    if (cameraState !== 'viewfinder' || !videoRef.current || !streamRef.current) return;
+    videoRef.current.srcObject = streamRef.current;
+  }, [cameraState]);
+
   const handleCapture = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
     const video = videoRef.current;
+    if (video.videoWidth === 0) return;
     const canvas = canvasRef.current;
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
@@ -251,7 +259,7 @@ export function CameraModal({
       {/* Estado: OCR não reconheceu o número (RN-AP22) */}
       {cameraState === 'not_recognized' && (
         <div className="flex flex-col gap-3">
-          <p role="alert" className="text-sm font-body text-red font-semibold">
+          <p role="alert" className="text-sm font-body text-red-dark font-semibold">
             Não foi possível reconhecer o número.
           </p>
           <p className="text-xs font-body text-ink/60">
@@ -269,7 +277,7 @@ export function CameraModal({
       {/* Estado: câmera sem permissão ou indisponível */}
       {cameraState === 'camera_error' && (
         <div className="flex flex-col gap-3">
-          <p role="alert" className="text-sm font-body text-red font-semibold">
+          <p role="alert" className="text-sm font-body text-red-dark font-semibold">
             Câmera indisponível
           </p>
           <p className="text-xs font-body text-ink/60">

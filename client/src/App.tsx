@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { SkipLink } from '@/components/ui/SkipLink';
@@ -18,10 +18,16 @@ import AlbumsPage from '@/pages/AlbumsPage';
 import AlbumManagePage from '@/pages/AlbumManagePage';
 import AlbumVisualizarPage from '@/pages/AlbumVisualizarPage';
 import CadastroAlbumPage from '@/pages/CadastroAlbumPage';
-import AbrirPacotinhosPage from '@/pages/AbrirPacotinhosPage';
-import ColarFigurinhasPage from '@/pages/ColarFigurinhasPage';
+import FigurinhasPage from '@/pages/FigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
 import ProfilePage from '@/pages/ProfilePage';
+import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage';
+
+function RedirectFigurinhas() {
+  const [params] = useSearchParams();
+  const albumId = params.get('albumId');
+  return <Navigate to={albumId ? `/figurinhas?albumId=${albumId}` : '/figurinhas'} replace />;
+}
 
 function GlobalLoader() {
   return (
@@ -55,7 +61,7 @@ export default function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(() => !hasValidConsent());
 
   useEffect(() => {
-    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password"];
+    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password", "/politica-de-privacidade"];
     if (noAuthRoutes.some((r) => location.pathname.startsWith(r))) {
       setReady();
     } else {
@@ -76,10 +82,10 @@ export default function App() {
       "/home": "Meus Álbuns — Meu Álbum Copa 2026",
       "/albums": "Álbuns — Meu Álbum Copa 2026",
       "/albums/novo": "Novo Álbum — Meu Álbum Copa 2026",
-      "/abrir": "Abrir Pacotinhos — Meu Álbum Copa 2026",
-      "/colar": "Colar Figurinhas — Meu Álbum Copa 2026",
+      "/figurinhas": "Figurinhas — Meu Álbum Copa 2026",
       "/trocas": "Trocas — Meu Álbum Copa 2026",
       "/perfil": "Perfil — Meu Álbum Copa 2026",
+      "/politica-de-privacidade": "Política de Privacidade — Meu Álbum Copa 2026",
     };
     const title = titleMap[location.pathname] ?? "Meu Álbum Copa 2026";
     document.title = title;
@@ -102,6 +108,7 @@ export default function App() {
             <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
             <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
             <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
+            <Route path="/politica-de-privacidade" element={<PoliticaPrivacidadePage />} />
 
             {/* Protected routes */}
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
@@ -109,8 +116,9 @@ export default function App() {
             <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
             <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
             <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
-            <Route path="/abrir" element={<ProtectedRoute><AbrirPacotinhosPage /></ProtectedRoute>} />
-            <Route path="/colar" element={<ProtectedRoute><ColarFigurinhasPage /></ProtectedRoute>} />
+            <Route path="/figurinhas" element={<ProtectedRoute><FigurinhasPage /></ProtectedRoute>} />
+            <Route path="/abrir" element={<RedirectFigurinhas />} />
+            <Route path="/colar" element={<RedirectFigurinhas />} />
             <Route path="/trocas" element={<ProtectedRoute><SwapsPage /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
@@ -118,6 +126,7 @@ export default function App() {
             <Route path="/profile"         element={<Navigate to="/perfil"      replace />} />
             <Route path="/swaps"           element={<Navigate to="/trocas"      replace />} />
             <Route path="/albums/cadastro" element={<Navigate to="/albums/novo" replace />} />
+            <Route path="/privacidade"     element={<Navigate to="/politica-de-privacidade" replace />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

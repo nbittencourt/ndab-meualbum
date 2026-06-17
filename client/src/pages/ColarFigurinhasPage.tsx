@@ -30,8 +30,6 @@ export default function ColarFigurinhasPage() {
   const [showMfnModal, setShowMfnModal] = useState(false);
   const [mfnNumero, setMfnNumero] = useState('');
   const [mfnError, setMfnError] = useState('');
-  const [mfnPasted, setMfnPasted] = useState(false);
-  const mfnKeepOpenRef = useRef(false);
   const mfnInputRef = useRef<HTMLInputElement>(null);
   /** Modal Câmera no MFN — RN-CF27 */
   const [showMfnCamera, setShowMfnCamera] = useState(false);
@@ -82,14 +80,12 @@ export default function ColarFigurinhasPage() {
       queryClient.invalidateQueries({ queryKey: ['albums'] });
       queryClient.invalidateQueries({ queryKey: ['album', albumId] });
       queryClient.invalidateQueries({ queryKey: ['album-figurinhas', albumId] });
-      mfnKeepOpenRef.current = false;
-      setMfnPasted(true);
       setMfnNumero('');
       setMfnError('');
       showToast('Figurinha colada diretamente!', 'success');
+      mfnInputRef.current?.focus();
     },
     onError: (err) => {
-      mfnKeepOpenRef.current = false;
       setMfnError(err instanceof ApiError ? err.message : 'Erro ao colar.');
     },
   });
@@ -109,7 +105,7 @@ export default function ColarFigurinhasPage() {
             <p className="text-sm font-body text-ink/70">Escolha um álbum</p>
             {ativos.length === 0 ? (
               <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-                <p className="text-sm font-body text-ink/50 mb-3">Nenhum álbum ativo.</p>
+                <p className="text-sm font-body text-ink/70 mb-3">Nenhum álbum ativo.</p>
                 <Button size="sm" onClick={() => navigate('/albums/novo')}>Criar álbum</Button>
               </div>
             ) : (
@@ -124,7 +120,7 @@ export default function ColarFigurinhasPage() {
                       {album.variante && (
                         <span className="block text-xs text-ink/60 mt-0.5">{variantLabel(album.variante)}</span>
                       )}
-                      <span className="block text-xs text-ink/50 mt-0.5">{album.percentualConclusao}% completo</span>
+                      <span className="block text-xs text-ink/70 mt-0.5">{album.percentualConclusao}% completo</span>
                     </button>
                   </li>
                 ))}
@@ -145,7 +141,7 @@ export default function ColarFigurinhasPage() {
       <div className="flex items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-xl font-black text-ink uppercase tracking-wide">Colar Figurinhas</h1>
-          <p className="text-xs font-body text-ink/50 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
+          <p className="text-xs font-body text-ink/70 mt-0.5">{albumSelecionado?.nomePersonalizado || albumSelecionado?.tipoAlbum.nome}</p>
           <p className="text-xs font-mono text-ink/60 mt-0.5">{albumSelecionado?.percentualConclusao ?? 0}% completo</p>
         </div>
         {ativos.length > 1 && (
@@ -190,7 +186,7 @@ export default function ColarFigurinhasPage() {
 
       {!estoqueLoading && filtrado.length === 0 && (
         <div className="border-2 border-dashed border-ink/20 p-6 text-center">
-          <p className="text-sm font-body text-ink/50">
+          <p className="text-sm font-body text-ink/70">
             {busca ? 'Nenhuma figurinha encontrada para essa busca.' : 'Estoque vazio.'}
           </p>
         </div>
@@ -213,7 +209,7 @@ export default function ColarFigurinhasPage() {
 
       <Modal
         open={showMfnModal}
-        onClose={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
+        onClose={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); }}
         title="Colar figurinha não registrada"
       >
         <p className="text-sm font-body text-ink/70 mb-4">
@@ -224,44 +220,46 @@ export default function ColarFigurinhasPage() {
           label="Número da figurinha"
           value={mfnNumero}
           onChange={(e) => { setMfnNumero(e.target.value.toUpperCase()); setMfnError(''); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && mfnNumero.trim() && !mfnMut.isPending) {
+              mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId });
+            }
+          }}
           placeholder="Ex.: 42 ou BR01"
           autoComplete="off"
           error={mfnError || undefined}
           autoFocus
         />
         <div className="flex gap-2 mt-4 flex-wrap">
-          {!mfnPasted ? (
-            <>
-              <Button
-                loading={mfnMut.isPending}
-                disabled={!mfnNumero.trim()}
-                onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
-              >
-                Confirmar
-              </Button>
-              <Button
-                variant="secondary"
-                disabled={mfnMut.isPending}
-                onClick={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
-              >
-                Cancelar
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={() => { setMfnPasted(false); setMfnNumero(''); setMfnError(''); mfnInputRef.current?.focus(); }}
-              >
-                Colar e Outra
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); setMfnPasted(false); }}
-              >
-                Fechar
-              </Button>
-            </>
-          )}
+          <Button
+            loading={mfnMut.isPending}
+            disabled={!mfnNumero.trim() || mfnMut.isPending}
+            onClick={() => mfnMut.mutate({ numero: mfnNumero.trim(), albumIdTarget: albumId })}
+          >
+            Colar
+          </Button>
+          <Button
+            variant="secondary"
+            loading={mfnMut.isPending}
+            disabled={!mfnNumero.trim() || mfnMut.isPending}
+            onClick={async () => {
+              try {
+                await mfnMut.mutateAsync({ numero: mfnNumero.trim(), albumIdTarget: albumId });
+                setShowMfnModal(false);
+              } catch {
+                // erro já tratado em onError
+              }
+            }}
+          >
+            Colar e Fechar
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={mfnMut.isPending}
+            onClick={() => { setShowMfnModal(false); setMfnNumero(''); setMfnError(''); }}
+          >
+            Fechar
+          </Button>
         </div>
         {/* Botão "Abrir câmera" — RN-CF27: ativação explícita, não automática */}
         <div className="mt-3 pt-3 border-t border-ink/10">
@@ -282,10 +280,9 @@ export default function ColarFigurinhasPage() {
         onClose={() => setShowMfnCamera(false)}
         onConfirm={async (numero) => {
           await mfnMut.mutateAsync({ numero, albumIdTarget: albumId });
-          setMfnPasted(true);
+          setShowMfnCamera(false);
         }}
         confirmLoading={mfnMut.isPending}
-        nextLabel="Colar e Outra"
       />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
@@ -325,7 +322,7 @@ function StickerRow({
           <span className="text-xs font-body text-ink/60 flex-1 truncate">{item.figurinha.subject}</span>
         )}
         <StickerStatusBadge status={item.elegibilidade} />
-        <span className="text-xs font-mono text-ink/50 shrink-0">{item.quantidade}</span>
+        <span className="text-xs font-mono text-ink/70 shrink-0">{item.quantidade}</span>
         {canPaste && !confirmar && (
           <Button size="sm" variant="primary" loading={loading} onClick={handleColarClick}>
             Colar

@@ -2,14 +2,15 @@ import { Router } from 'express';
 import { Types } from 'mongoose';
 import { requireAuth, type AuthRequest } from '../middleware/auth.js';
 import { Album } from '../models/Album.js';
-import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
 import { Sticker } from '../models/Sticker.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
+import { contarColadasPorAlbum, percentualConclusao } from '../lib/albumProgress.js';
 
 const router = Router();
 const PAGE_SIZE = 5;
 
-router.get('/', requireAuth, async (req: AuthRequest, res) => {
+router.get('/', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const usuarioId = new Types.ObjectId(req.userId);
   const pagina = Math.max(1, Number(req.query.pagina) || 1);
   const skip = (pagina - 1) * PAGE_SIZE;
@@ -24,12 +25,14 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
       .lean(),
   ]);
 
-  const albumsWithProgress = await Promise.all(
-    albumDocs.map(async (album) => {
+  // Uma única aggregation para todos os álbuns da página (evita N+1)
+  const coladasMap = await contarColadasPorAlbum(albumDocs.map((a) => a._id as Types.ObjectId));
+
+  const albumsWithProgress = albumDocs.map((album) => {
       const tipo = album.tipoAlbumId as any;
-      const coladas = await FigurinhaColada.countDocuments({ albumId: album._id });
+      const coladas = coladasMap.get(String(album._id)) ?? 0;
       const total = tipo?.totalFigurinhas ?? 980;
-      const percentual = total > 0 ? Math.round((coladas / total) * 1000) / 10 : 0;
+      const percentual = percentualConclusao(coladas, total);
 
       return {
         _id: album._id,
@@ -47,8 +50,7 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
         criadoEm: (album as any).criadoEm,
         percentualConclusao: percentual,
       };
-    })
-  );
+    });
 
   // Top 5 figurinhas com mais estoque (RN-H07/08/09)
   const topEstoque = await EstoqueFigurinha.find({
@@ -96,6 +98,6 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
     figurinhasRepetidas,
     totalRepetidas,
   });
-});
+}));
 
 export default router;

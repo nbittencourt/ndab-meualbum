@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Album } from '@meualbum/shared';
 import { VARIANT_STYLES, VARIANT_LABELS } from '@/lib/albumVariant';
 
@@ -7,6 +7,7 @@ interface AlbumCardProps {
 }
 
 export function AlbumCard({ album }: AlbumCardProps) {
+  const navigate = useNavigate();
   const variante = album.variante ?? 'BROCHURA';
   const style = VARIANT_STYLES[variante];
   const pct = album.percentualConclusao;
@@ -20,12 +21,23 @@ export function AlbumCard({ album }: AlbumCardProps) {
 
   return (
     <article
+      role="link"
+      tabIndex={0}
+      aria-label={`Gerenciar álbum ${album.tipoAlbum?.nome ?? 'Álbum'} — ${VARIANT_LABELS[variante]}`}
+      onClick={() => navigate(`/albums/${album._id}`)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          navigate(`/albums/${album._id}`);
+        }
+      }}
       style={{
         background: style.background,
         border: style.border,
         boxShadow: style.shadow,
         padding: '20px',
         transition: 'transform 0.15s ease',
+        cursor: 'pointer',
       }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = ''; }}
@@ -49,7 +61,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
           style={{
             fontFamily: '"Geist Mono", monospace',
             fontSize: 10,
-            color: isPremium ? 'rgba(255,255,255,0.45)' : 'rgba(10,9,7,0.4)',
+            color: isPremium ? 'rgba(255,255,255,0.7)' : 'rgba(10,9,7,0.62)',
             letterSpacing: '0.08em',
           }}
         >
@@ -76,7 +88,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
           style={{
             fontFamily: '"Geist", sans-serif',
             fontSize: 12,
-            color: isPremium ? 'rgba(255,255,255,0.6)' : 'rgba(10,9,7,0.6)',
+            color: isPremium ? 'rgba(255,255,255,0.75)' : 'rgba(10,9,7,0.62)',
             margin: '0 0 16px',
           }}
         >
@@ -93,7 +105,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
               fontSize: 10,
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
-              color: isPremium ? 'rgba(255,255,255,0.45)' : 'rgba(10,9,7,0.45)',
+              color: isPremium ? 'rgba(255,255,255,0.7)' : 'rgba(10,9,7,0.62)',
             }}
           >
             Progresso
@@ -135,7 +147,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
       </div>
 
       {/* CTA — RN-H12 */}
-      <Link to={`/colar?albumId=${album._id}`}>
+      <Link to={`/figurinhas?albumId=${album._id}`} onClick={(e) => e.stopPropagation()}>
         <button
           style={{
             width: '100%',

@@ -3,8 +3,7 @@ import { NavLink } from 'react-router-dom';
 const NAV_LINKS = [
   { to: '/home', label: 'Início' },
   { to: '/albums', label: 'Meus Álbuns' },
-  { to: '/abrir', label: 'Abrir Pacotinhos' },
-  { to: '/colar', label: 'Colar Figurinhas' },
+  { to: '/figurinhas', label: 'Figurinhas' },
   { to: '/trocas', label: 'Trocas' },
   { to: '/perfil', label: 'Perfil' },
 ];
@@ -82,7 +81,7 @@ export function DesktopSidebar() {
               fontFamily: '"Geist", "Geist Mono", sans-serif',
               fontSize: 13,
               fontWeight: 600,
-              color: isActive ? '#E5142A' : '#0A0907',
+              color: isActive ? '#D01122' : '#0A0907',
               background: isActive ? '#F0EDE4' : 'transparent',
               borderLeft: isActive ? '3px solid #E5142A' : '3px solid transparent',
               textDecoration: 'none',

@@ -181,7 +181,8 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await criarAlbum(request, tipoId, 'BROCHURA');
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      await expect(page.getByText(/brochura/i).first()).toBeVisible();
+      // O hero da AL1 tem layouts mobile e desktop no DOM; só um fica visível
+      await expect(page.getByText(/brochura/i).filter({ visible: true }).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /colar figurinhas/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /figurinhas que faltam/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /arquivar/i })).toBeVisible();
@@ -217,7 +218,7 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await page.goto('/albums');
       await page.getByRole('button', { name: /gerenciar/i }).first().click();
       await page.getByRole('button', { name: /colar figurinhas/i }).click();
-      await expect(page).toHaveURL(/\/colar/);
+      await expect(page).toHaveURL(/\/figurinhas/);
     });
 
     test('AL-CACHE-01 — colar figurinha → voltar para AL1 → percentual atualizado sem reload', async ({ page, request }) => {
@@ -227,8 +228,9 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await adicionarEstoque(request, identificador, 'FWC1', 1);
       await page.goto(`/albums/${album._id ?? album.id}`);
       await page.getByRole('button', { name: /colar figurinhas/i }).click();
-      await expect(page).toHaveURL(/\/colar/);
+      await expect(page).toHaveURL(/\/figurinhas/);
       await page.getByText('FWC1').locator('..').getByRole('button', { name: /colar/i }).click();
+      await expect(page.getByText('Figurinha colada!')).toBeVisible(); // aguarda persistência/invalidação
       await page.getByRole('button', { name: /voltar/i }).click();
       await expect(page).toHaveURL(new RegExp(`/albums/${album._id ?? album.id}`));
       const pctText = await page.getByText(/\d+[,.]?\d*\s*%/).first().textContent();
@@ -236,39 +238,60 @@ test.describe('Álbuns (Gerenciamento)', () => {
     });
   });
 
-  // ── PDF de Figurinhas Faltantes ───────────────────────────────────────────────
+  // ── Popup de Lista de Figurinhas (RN-AL19, AL30) — #26 ───────────────────────
 
-  test.describe.skip('PDF de Figurinhas Faltantes (RN-AL19, AL30)', () => {
+  test.describe('Popup de Lista de Figurinhas (#26)', () => {
 
-    test('botão "Figurinhas que faltam" no card da AL0 inicia download sem navegar para AL1 (RN-AL30)', async ({ page, request }) => {
-      test.setTimeout(60_000);
+    test('botão "Figurinhas que faltam" na AL1 abre dialog (sem download, sem navegação)', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
-      await criarAlbum(request, tipoId, 'BROCHURA');
-      await page.goto('/albums');
-      const [download] = await Promise.all([
-        page.waitForEvent('download'),
-        page.getByRole('button', { name: /figurinhas que faltam/i }).first().click(),
-      ]);
-      expect(download.suggestedFilename()).toMatch(/\.pdf$/i);
-      await expect(page).toHaveURL(/\/albums$/);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      const downloadPromise = page.waitForEvent('download', { timeout: 2_000 }).catch(() => null);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      expect(await downloadPromise).toBeNull();
+      await expect(page.getByRole('dialog', { name: /figurinhas/i })).toBeVisible();
+      await expect(page).toHaveURL(new RegExp(`/albums/${albumId}`));
     });
 
-    test('botão "Figurinhas que faltam" na AL1 desabilita outras ações durante geração (RN-AL19)', async ({ page, request }) => {
-      test.setTimeout(60_000);
+    test('popup fecha ao pressionar Esc', async ({ page, request }) => {
       await usuarioAtivo(page, request);
       const tipoId = await getTipoAlbumId(request);
-      await criarAlbum(request, tipoId, 'BROCHURA');
-      await page.goto('/albums');
-      await page.getByRole('button', { name: /gerenciar/i }).first().click();
-      // intercept PDF route to keep loading state visible during assertion
-      await page.route('**/pdf', async (route) => {
-        await new Promise<void>((r) => setTimeout(r, 1500));
-        await route.continue();
-      });
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
       await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
-      await expect(page.getByRole('button', { name: /colar figurinhas/i })).toBeDisabled();
-      await expect(page.getByRole('button', { name: /arquivar/i })).toBeDisabled();
+      await expect(page.getByRole('dialog', { name: /figurinhas/i })).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('dialog', { name: /figurinhas/i })).not.toBeVisible();
+    });
+
+    test('popup fecha pelo botão Fechar interno', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      const dialog = page.getByRole('dialog', { name: /figurinhas/i });
+      await expect(dialog).toBeVisible();
+      await dialog.getByRole('button', { name: /fechar/i }).click();
+      await expect(dialog).not.toBeVisible();
+    });
+
+    test('popup exibe grade por status (colada / faltante) com seções', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await adicionarEstoque(request, identificador, 'FWC1', 1);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      const dialog = page.getByRole('dialog', { name: /figurinhas/i });
+      await expect(dialog).toBeVisible();
+      // Deve haver pelo menos uma seção/grupo visível dentro do dialog
+      await expect(dialog.locator('[data-popup-section], section, h2, h3').first()).toBeVisible();
     });
   });
 

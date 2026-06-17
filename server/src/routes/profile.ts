@@ -12,6 +12,7 @@ import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
 import { PilhaDaSessao } from '../models/PilhaDaSessao.js';
 import { TokenConfirmacaoCadastro } from '../models/TokenConfirmacaoCadastro.js';
+import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
 const COOLDOWN_MINS = 5;
@@ -32,7 +33,7 @@ function issueToken(userId: string, tokenVersao: number, res: import('express').
   });
 }
 
-router.patch('/nome', requireAuth, async (req: AuthRequest, res) => {
+router.patch('/nome', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsed = z.object({ name: z.string().min(2).max(100).trim() }).safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
@@ -51,9 +52,9 @@ router.patch('/nome', requireAuth, async (req: AuthRequest, res) => {
     emailPendente: u.emailPendente ?? null,
     declaracaoMaioridadeEm: u.declaracaoMaioridadeEm ?? null,
   } });
-});
+}));
 
-router.post('/email', requireAuth, async (req: AuthRequest, res) => {
+router.post('/email', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsedEmail = z.object({ email: z.string().email().toLowerCase() }).safeParse(req.body);
   if (!parsedEmail.success) {
     res.status(400).json({ error: parsedEmail.error.flatten() });
@@ -102,9 +103,9 @@ router.post('/email', requireAuth, async (req: AuthRequest, res) => {
 
   logger.info('profile:email-change-requested', { email: maskEmail(email), userId: req.userId });
   res.json({ ok: true, message: 'Email de confirmação enviado.' });
-});
+}));
 
-router.get('/confirmar-email', async (req, res) => {
+router.get('/confirmar-email', asyncHandler(async (req, res) => {
   const { token } = req.query;
   if (!token) {
     res.status(400).json({ error: 'TOKEN_INVALID' });
@@ -135,9 +136,9 @@ router.get('/confirmar-email', async (req, res) => {
   await tokenDoc.save();
   logger.info('profile:email-confirmed', { userId: String(user._id) });
   res.json({ ok: true });
-});
+}));
 
-router.post('/reenviar-email', requireAuth, async (req: AuthRequest, res) => {
+router.post('/reenviar-email', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const user = await User.findById(req.userId);
   if (!user || !(user as any).emailPendente) {
     res.status(400).json({ error: 'Sem alteração de email pendente' });
@@ -166,9 +167,9 @@ router.post('/reenviar-email', requireAuth, async (req: AuthRequest, res) => {
   await sendEmailAlteracaoEmail((user as any).emailPendente, confirmUrl);
 
   res.json({ ok: true });
-});
+}));
 
-router.post('/cancelar-alteracao-email', requireAuth, async (req: AuthRequest, res) => {
+router.post('/cancelar-alteracao-email', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const user = await User.findById(req.userId);
   if (!user) {
     res.status(404).json({ error: 'Usuário não encontrado' });
@@ -181,9 +182,9 @@ router.post('/cancelar-alteracao-email', requireAuth, async (req: AuthRequest, r
   }
   await user.save();
   res.json({ ok: true });
-});
+}));
 
-router.patch('/senha', requireAuth, async (req: AuthRequest, res) => {
+router.patch('/senha', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsedSenha = z.object({
     senhaAtual: z.string(),
     novaSenha: z.string().min(8),
@@ -217,9 +218,9 @@ router.patch('/senha', requireAuth, async (req: AuthRequest, res) => {
   issueToken(user.id as string, (user as any).tokenVersao as number, res);
   logger.info('profile:password-changed', { userId: req.userId });
   res.json({ ok: true });
-});
+}));
 
-router.get('/exportar', requireAuth, async (req: AuthRequest, res) => {
+router.get('/exportar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const userId = req.userId!;
   const user = await User.findById(userId).lean();
   if (!user) {
@@ -300,9 +301,9 @@ router.get('/exportar', requireAuth, async (req: AuthRequest, res) => {
   );
 
   await archive.finalize();
-});
+}));
 
-router.delete('/', requireAuth, async (req: AuthRequest, res) => {
+router.delete('/', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const parsedId = z.object({ identificador: z.string() }).safeParse(req.body);
   if (!parsedId.success) {
     res.status(400).json({ error: parsedId.error.flatten() });
@@ -332,6 +333,6 @@ router.delete('/', requireAuth, async (req: AuthRequest, res) => {
   res.clearCookie('__session', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
   logger.info('profile:account-deleted', { publicId });
   res.json({ ok: true });
-});
+}));
 
 export default router;

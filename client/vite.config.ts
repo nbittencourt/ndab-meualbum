@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -34,5 +35,16 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:3000',
     },
+  },
+  preview: {
+    port: 5173,
+    strictPort: true,
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
+  },
+  test: {
+    environment: 'node',
+    include: ['src/__tests__/**/*.test.ts'],
   },
 });

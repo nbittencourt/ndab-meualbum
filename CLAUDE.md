@@ -6,13 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **MeuAlbum** is a mobile-first progressive web app (PWA) for tracking FIFA World Cup 2026 sticker collection. Users mark which stickers they own, which they need, and manage swaps. The visual design mirrors the feel of a physical sticker album (Copa do Mundo 2026) without using any trademarked Panini branding or official FIFA logos.
 
-## Functional Especification
+## Functional Specification
 
-All businness rules are defined on `.md` files under `/docs`. One file for each functionality.
+All business rules are defined on `.md` files under `/docs`. One file for each functionality.
 
-The `/docs/_hist` folder contais historical specs for comparison purpose. All versions are stored in a separeted folder, usindo `YYYYMMDD` format. When implementing a new version, check the latest historical specification and look for rules changin between versions, before creating the plan.
+The `/docs/_hist` folder contains historical specs for comparison purposes. All versions are stored in a separated folder, using `YYYYMMDD` format. When implementing a new version, check the latest historical specification and look for rules changing between versions, before creating the plan.
 
-Folder `/docs/design_handoff` contains the wireframes, prototypes and others assets to drive the screen definition. You must stick to these definitions, unless any design definition is not supported by the specs files.
+Folder `/docs/design_handoff` contains the wireframes, prototypes and other assets to drive the screen definition. You must stick to these definitions, unless any design definition is not supported by the specs files.
 
 ### Source-of-truth hierarchy
 
@@ -34,28 +34,7 @@ When the design handoff is **silent** about a requirement (e.g. LGPD, WCAG, data
 
 ## Deployment Architecture
 
-Hybrid deployment — frontend and backend are independently deployable:
-
-- **Frontend**: Firebase Hosting — serves `client/dist` via global CDN (`firebase.json`)
-- **Backend**: Cloud Run (`meualbum-api`, region `southamerica-east1`) — Express API in Docker container
-- **Database**: MongoDB (cluster `ndab-meualbum`) — accessed via Mongoose
-- **Communication**: Frontend uses relative `/api/**` URLs. Firebase Hosting rewrites `/api/**` → Cloud Run (same-origin from the browser's perspective). Cookies use `SameSite=None; Secure` in production and `SameSite=Lax` in development (controlled by `NODE_ENV`). This avoids cross-origin cookie blocking (Safari ITP, Chrome third-party cookie phase-out).
-
-Full deployment guide: [`docs/DEPLOY.md`](docs/DEPLOY.md)
-
-## Environment Variables
-
-
-### Backend — runtime (GCP Secret Manager on Cloud Run)
-
-| Variable | Secret | Description |
-|----------|--------|-------------|
-| `MONGODB_URI` | `MONGODB_URI:latest` | MongoDB Atlas connection string |
-| `JWT_SECRET` | `JWT_SECRET:latest` | JWT signing key (min 32 random bytes) |
-| `CLIENT_URL` | `CLIENT_URL:latest` | Firebase Hosting URL — sets allowed CORS origin and is used in email links |
-| `RESEND_API_KEY` | `RESEND_API_KEY:latest` | Resend transactional email key; absent in dev → `logger.debug` fallback |
-| `NODE_ENV` | `production` | Controls cookie `SameSite`, bcrypt rounds, rate limiting |
-| `PORT` | `8080` | Set in Dockerfile; do not override |
+See [`docs/DEPLOY.md`](docs/DEPLOY.md) for full infrastructure, environment variables, and deploy steps.
 
 ## Project Structure
 
@@ -102,9 +81,14 @@ npm run lint
 # Type-check
 npm run typecheck
 
-# Run tests
+# Run tests (Vitest — unit/integration, all workspaces)
 npm test
-npm test -- --testNamePattern="<name>"   # run a single test
+npm test -w server        # server only
+npm test -w client        # client only
+
+# Run E2E suite (Playwright)
+npm run test:e2e
+npm test -- --testNamePattern="<name>"   # filter a single vitest test
 ```
 
 ## Architecture Notes
@@ -141,13 +125,20 @@ Canonical building blocks — **reuse these, do not reimplement locally**:
 
 ### Tests
 
-Tests were built on Playwright and are stored on the following locations:
+The project has two test layers. Choose based on what the test exercises:
 
-You must follow the rules on (tests/TESTS.md).
+| Layer | Tool | Where | Command | Use for |
+|-------|------|--------|---------|---------|
+| Unit / integration | Vitest | `server/src/__tests__/`, `client/src/__tests__/` | `npm test` | Pure logic, business rules, utility functions, API contracts |
+| E2E | Playwright | `tests/` | `npm run test:e2e` | Screen flows, navigation, multi-step UI interactions |
+
+**Rule: reach for Vitest first.** If the rule under test does not require a browser or live server, write a Vitest spec. E2E is environment-sensitive and slow — reserve it for flows that genuinely need a browser.
+
+You must follow the rules on [tests/TESTS.md](tests/TESTS.md).
 
 ```
 /
-├── tests/          # Frontend testing
+├── tests/          # E2E (Playwright)
 │   ├── _seed/      # Data for populating database before testing
 ├── test-results/          # Failed tests reports
 │   ├── [test-name]/       # Test name
@@ -156,18 +147,40 @@ You must follow the rules on (tests/TESTS.md).
 
 Run the full E2E suite with `npm run test:e2e` (`playwright test`). Before running, kill any active dev servers: `npx kill-port 5173` and `npx kill-port 3000`.
 
+#### Anti-subversion rule
+
+**Never modify a test to make it pass.** The test defines the contract; code adapts to the test, never the reverse.
+
+- If a test fails deterministically and cannot pass without modifying the test itself, stop and report which test and why.
+- Permitted edits to test files: (a) fixing selectors/assertions after an intentional UI change, confirmed deterministic; (b) bumping `timeout` on legitimately slow specs (e.g. axe-core). Never soften a business-rule assertion.
+- Commit test files before implementing the corresponding feature — the diff acts as a read-only contract snapshot.
+
+This rule applies to both Vitest and Playwright specs. See [tests/TESTS.md](tests/TESTS.md) — "flakiness" never justifies weakening a business-rule check.
+
 #### Testing conventions
 
 - **Cookie banner suppression**: importing `{ test, expect }` from `tests/support/fixtures.ts` auto-loads a valid cookie consent into `localStorage`, suppressing the banner. Tests that need to exercise the banner itself must import from `@playwright/test` directly.
 - **Policy version sync**: `CURRENT_POLICY_VERSION` in `tests/support/fixtures.ts` must be kept in sync with `client/src/lib/cookieConsent.ts`. If they diverge, the banner reappears in every fixture-based test and breaks unrelated flows.
 
+#### Diagnosing failures: rule out flakiness first
+
+This suite runs on a single Windows machine and is sensitive to load (the `vite dev` server has crashed under sustained runs — `0xC0000409` — and CPU-heavy specs like axe-core a11y can intermittently exceed the 10s global timeout). **Before investigating or "fixing" a failing test, re-run it in isolation to confirm the failure is real and not flakiness:**
+
+```bash
+npx playwright test --project=mobile <file> -g "<test name>"
+```
+
+- If it **passes in isolation** but fails in the full run, treat it as environment flakiness — do **not** change the test's logic. The harness already absorbs this via `retries` in `playwright.config.ts`; if a spec is legitimately slow (e.g. axe-core), bump its timeout (`test.describe.configure({ timeout })`) rather than rewriting assertions.
+- If it **fails deterministically in isolation**, it is a real failure — fix it following the source-of-truth hierarchy (Design › Spec › Implementation).
+- Only edit a test's selectors/assertions once you have confirmed the failure is deterministic. Chasing a flaky failure as if it were a logic bug wastes effort and can mask real regressions.
+
 #### TDD workflow
 
 When implementing a new or changed business rule, follow test-driven development:
 
-1. Write E2E tests that assert the business rules first.
+1. Write tests first (Vitest for pure logic; Playwright for screen flows).
 2. Implement the feature/fix.
-3. Run the full suite (`npm run test:e2e`).
+3. Run the relevant suite (`npm test` or `npm run test:e2e`).
 4. Fix failures while preserving the business rules; repeat from step 3 until green.
 
 ## Design Principles
@@ -179,8 +192,8 @@ When implementing a new or changed business rule, follow test-driven development
 
 ## Legal Requirements
 
-Development must attend [LGPD](docs\legal\lgpd_guia_sistemas.md)
+Development must attend [LGPD](docs/legal/lgpd_guia_sistemas.md)
 
-## Accesibility
+## Accessibility
 
-Development must attend [WCAG 2.0 AA](docs\legal\wcag-2_0-aa-guia-sistemas.md) , but may seek WCAG 2.1 2.2 when possible.
+Development must attend [WCAG 2.0 AA](docs/legal/wcag-2_0-aa-guia-sistemas.md), but may seek WCAG 2.1/2.2 when possible.
