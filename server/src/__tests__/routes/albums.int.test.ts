@@ -176,6 +176,19 @@ describe('Rotas de Álbuns', () => {
     expect(numeros).toContain('FWC10');
   });
 
+  it('GET /:id/figurinhas retorna figurinhas ordenadas pelo sufixo numérico (#33)', async () => {
+    const { user, cookie } = await criarUsuarioAutenticado();
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA' });
+
+    const res = await request(app).get(`/api/v1/albums/${album._id}/figurinhas`).set('Cookie', cookie);
+    expect(res.status).toBe(200);
+
+    // Seção B tem FWC6..FWC10 — na ordenação alfabética, FWC10 viria antes de FWC6
+    const secaoB = res.body.secoes.find((s: any) => s.nome === 'Brasil');
+    const numeros = secaoB.figurinhas.map((f: any) => f.numero);
+    expect(numeros).toEqual(['FWC6', 'FWC7', 'FWC8', 'FWC9', 'FWC10']);
+  });
+
   describe('DELETE /:id/colada/:numero — colagem rápida (remoção) #24', () => {
     it('remove a FigurinhaColada e responde 200', async () => {
       const { user, cookie } = await criarUsuarioAutenticado();

@@ -1,7 +1,7 @@
 import { test, expect } from '../support/fixtures';
 import { usuarioAtivo, criarAlbum, getTipoAlbumId, adicionarEstoque } from '../support/helpers';
 
-test.describe('Colagem rápida na AL1 (#24)', () => {
+test.describe('Colagem rápida na AL1 (#24 + #34)', () => {
 
   async function abrirAl1ComFigurinha(page: any, request: any) {
     const { identificador } = await usuarioAtivo(page, request);
@@ -12,40 +12,27 @@ test.describe('Colagem rápida na AL1 (#24)', () => {
     return { identificador, album, albumId };
   }
 
-  // ── Modo desligado ──────────────────────────────────────────────────────────
+  // ── Colagem sempre ativa (#34) ─────────────────────────────────────────────
 
-  test('modo desligado (padrão): cards sem botão Colar inline nem menu ⋮', async ({ page, request }) => {
-    const { identificador, albumId } = await abrirAl1ComFigurinha(page, request);
-    await adicionarEstoque(request, identificador, 'FWC1', 2);
-    await page.reload();
+  test('botão Colar aparece sem ativação prévia: toggle removido (#34)', async ({ page, request }) => {
+    const { albumId } = await abrirAl1ComFigurinha(page, request);
 
-    // Expandir a primeira seção
+    // O botão toggle "Ativar colagem rápida" não deve existir
+    await expect(page.getByRole('button', { name: /ativar colagem rápida/i })).not.toBeVisible();
+
+    // Expandir a primeira seção — o botão Colar já deve estar visível
     await page.getByTestId('section-toggle').first().click();
 
-    // O toggle não está ativo, portanto não deve existir botão inline de colar nos cards
-    await expect(page.getByRole('button', { name: /^colar$/i }).first()).not.toBeVisible();
-    // Também não deve existir menu de opções nos cards colados
-    await expect(page.getByRole('button', { name: /opções para figurinha/i }).first()).not.toBeVisible();
-    void albumId; // suppress unused warning
-  });
-
-  // ── Ativar modo ─────────────────────────────────────────────────────────────
-
-  test('ativar modo exibe toggle com aria-pressed=true', async ({ page, request }) => {
-    await abrirAl1ComFigurinha(page, request);
-    const toggle = page.getByRole('button', { name: /ativar colagem rápida/i });
-    await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    const btnColar = page.getByRole('button', { name: /^colar figurinha FWC1$/i });
+    await expect(btnColar).toBeVisible();
+    void albumId;
   });
 
   // ── Colar inline: faltante sem estoque (→ colarDireta) ─────────────────────
 
-  test('modo ativo: colar faltante sem estoque usa colagem direta (RN-AL-CR02)', async ({ page, request }) => {
+  test('colar faltante sem estoque usa colagem direta (RN-AL-CR02)', async ({ page, request }) => {
     const { albumId } = await abrirAl1ComFigurinha(page, request);
     // Não adicionamos estoque para FWC1
-    await page.getByRole('button', { name: /ativar colagem rápida/i }).click();
     await page.getByTestId('section-toggle').first().click();
 
     const btnColar = page.getByRole('button', { name: /^colar figurinha FWC1$/i });
@@ -58,12 +45,11 @@ test.describe('Colagem rápida na AL1 (#24)', () => {
 
   // ── Colar inline: repetida com estoque (→ debita estoque) ──────────────────
 
-  test('modo ativo: colar repetida com estoque debita o estoque (RN-AL-CR03)', async ({ page, request }) => {
+  test('colar repetida com estoque debita o estoque (RN-AL-CR03)', async ({ page, request }) => {
     const { identificador, albumId } = await abrirAl1ComFigurinha(page, request);
     await adicionarEstoque(request, identificador, 'FWC1', 2);
     await page.reload();
 
-    await page.getByRole('button', { name: /ativar colagem rápida/i }).click();
     await page.getByTestId('section-toggle').first().click();
 
     const btnColar = page.getByRole('button', { name: /^colar figurinha FWC1$/i });
@@ -76,7 +62,7 @@ test.describe('Colagem rápida na AL1 (#24)', () => {
 
   // ── Remover colagem via menu de contexto ───────────────────────────────────
 
-  test('modo ativo: menu ⋮ em card colado → Remover exige código → remove colagem (RN-AL-CR04)', async ({ page, request }) => {
+  test('menu ⋮ em card colado → Remover exige código → remove colagem (RN-AL-CR04)', async ({ page, request }) => {
     const { albumId } = await abrirAl1ComFigurinha(page, request);
 
     // Colar FWC1 via API antes de navegar
@@ -85,7 +71,6 @@ test.describe('Colagem rápida na AL1 (#24)', () => {
     });
     await page.reload();
 
-    await page.getByRole('button', { name: /ativar colagem rápida/i }).click();
     await page.getByTestId('section-toggle').first().click();
 
     // Menu de opções no card colado

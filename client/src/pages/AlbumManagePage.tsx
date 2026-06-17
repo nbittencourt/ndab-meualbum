@@ -162,7 +162,6 @@ function StickerCardAL1({
   albumId,
   disabled,
   isDesktop,
-  modoColagem,
   estoqueId,
   menuAberto,
   onColar,
@@ -174,7 +173,6 @@ function StickerCardAL1({
   albumId: string;
   disabled: boolean;
   isDesktop: boolean;
-  modoColagem: boolean;
   estoqueId?: string;
   menuAberto?: boolean;
   onColar?: () => void;
@@ -266,33 +264,8 @@ function StickerCardAL1({
 
       {/* Área do botão — altura sempre reservada */}
       <div style={{ flexShrink: 0, height: BTN_H, position: 'relative' }}>
-        {/* Modo OFF: navegar para /figurinhas (só repetidas) */}
-        {isRepetida && !modoColagem && (
-          <button
-            type="button"
-            onClick={() => navigate(`/figurinhas?albumId=${albumId}&figurinhaNumero=${encodeURIComponent(item.numero)}`)}
-            disabled={disabled}
-            style={{
-              width: '100%',
-              height: '100%',
-              background: disabled ? 'rgba(10,9,7,0.4)' : INK,
-              color: '#fff',
-              border: `1.5px solid ${INK}`,
-              boxShadow: disabled ? 'none' : `1px 1px 0 ${RED}`,
-              fontFamily: FONT_D,
-              fontSize: isDesktop ? 9 : 8,
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-            }}
-            aria-label={`Colar figurinha ${item.numero}`}
-          >
-            Colar →
-          </button>
-        )}
-
-        {/* Modo ON: colar inline (faltante e repetida) */}
-        {modoColagem && !isColada && (
+        {/* Colar inline (faltante e repetida) */}
+        {!isColada && (
           <button
             type="button"
             onClick={onColar}
@@ -316,8 +289,8 @@ function StickerCardAL1({
           </button>
         )}
 
-        {/* Modo ON: menu de contexto para figurinha colada */}
-        {modoColagem && isColada && (
+        {/* Menu de contexto para figurinha colada */}
+        {isColada && (
           <div ref={menuRef} style={{ position: 'relative', height: '100%' }}>
             <button
               type="button"
@@ -388,7 +361,6 @@ function SecaoGrid({
   secao,
   albumId,
   actionsDisabled,
-  modoColagem,
   estoqueMap,
   menuAbertoNumero,
   onColar,
@@ -399,7 +371,6 @@ function SecaoGrid({
   secao: { _id: string; nome: string; figurinhas: FigurinhaGridItem[] };
   albumId: string;
   actionsDisabled: boolean;
-  modoColagem: boolean;
   estoqueMap: Map<string, string>;
   menuAbertoNumero: string | null;
   onColar: (numero: string, estoqueId?: string) => void;
@@ -503,7 +474,6 @@ function SecaoGrid({
                   albumId={albumId}
                   disabled={actionsDisabled}
                   isDesktop={false}
-                  modoColagem={modoColagem}
                   estoqueId={estoqueMap.get(f.numero)}
                   menuAberto={menuAbertoNumero === f.numero}
                   onColar={() => onColar(f.numero, estoqueMap.get(f.numero))}
@@ -614,7 +584,6 @@ export default function AlbumManagePage() {
   const [confirmarArquivar, setConfirmarArquivar] = useState(false);
   const [arquivarError, setArquivarError] = useState('');
   const [showListaModal, setShowListaModal] = useState(false);
-  const [modoColagem, setModoColagem] = useState(false);
   const [menuAbertoNumero, setMenuAbertoNumero] = useState<string | null>(null);
   const [removerNumero, setRemoverNumero] = useState<string | null>(null);
   const [codigoDigitado, setCodigoDigitado] = useState('');
@@ -809,27 +778,6 @@ export default function AlbumManagePage() {
           Ver álbum
         </button>
 
-        {/* Ativar colagem rápida — toggle */}
-        <button
-          type="button"
-          aria-pressed={modoColagem}
-          onClick={() => { setModoColagem((v) => !v); setMenuAbertoNumero(null); }}
-          style={{
-            padding: '10px 20px',
-            background: modoColagem ? INK : '#fff',
-            color: modoColagem ? '#fff' : INK,
-            border: `1.5px solid ${INK}`,
-            boxShadow: modoColagem ? `2px 2px 0 ${GREEN}` : 'none',
-            fontFamily: FONT_D,
-            fontSize: 12,
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-            cursor: 'pointer',
-          }}
-        >
-          Ativar colagem rápida
-        </button>
-
         {/* Lista de Figurinhas — popup */}
         <button
           type="button"
@@ -934,7 +882,6 @@ export default function AlbumManagePage() {
             secao={secao}
             albumId={album._id}
             actionsDisabled={actionsDisabled}
-            modoColagem={modoColagem}
             estoqueMap={estoqueMap}
             menuAbertoNumero={menuAbertoNumero}
             onColar={(numero, estoqueId) => colarMut.mutate({ numero, estoqueId })}
