@@ -43,13 +43,24 @@ steps:
   #    .firebaserc → site = projectId). Evita a auto-resolução do site default do
   #    firebase-tools, que falha com "site with no site name or target name" mesmo
   #    havendo um DEFAULT_SITE. Versão fixada para builds reprodutíveis.
+  #    Retry com backoff: a API do Firebase Hosting às vezes derruba a conexão no CI
+  #    ("FetchError: Premature close"); o deploy é idempotente, então re-tentar é seguro.
   - name: 'node:22-alpine'
     entrypoint: sh
     args:
       - -c
       - |
         npm install -g firebase-tools@15.18.0
-        firebase deploy --only hosting:app --project ${_FIREBASE_PROJECT_ID}
+        for i in 1 2 3; do
+          echo "Deploy Firebase Hosting — tentativa $$i/3..."
+          if firebase deploy --only hosting:app --project ${_FIREBASE_PROJECT_ID} --non-interactive; then
+            exit 0
+          fi
+          echo "Tentativa $$i falhou; aguardando 15s antes de re-tentar..." >&2
+          sleep 15
+        done
+        echo "Deploy do Firebase Hosting falhou após 3 tentativas." >&2
+        exit 1
 
 substitutions:
   _REGION: southamerica-east1
