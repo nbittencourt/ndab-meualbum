@@ -229,6 +229,40 @@ Start-Process "https://ndab-meualbum-tst-497511.web.app/"
 Invoke-RestMethod -Uri "https://ndab-meualbum-tst-497511.web.app/api/health"
 ```
 
+### Deploy manual de TST via script (contorno do Cloud Build)
+
+Quando o Firebase Hosting falha pelo Cloud Build (ex.: `FetchError: ... Premature close`),
+use o script [`scripts/deploy-tst.ps1`](../scripts/deploy-tst.ps1), que executa o mesmo
+pipeline **localmente** (onde o deploy é estável). Requer `gcloud auth login` e `firebase login` já feitos.
+
+```powershell
+# Deploy completo (backend Cloud Run + frontend Firebase Hosting)
+./scripts/deploy-tst.ps1
+
+# Só o frontend, sem reinstalar dependências (iteração rápida)
+./scripts/deploy-tst.ps1 -SkipBackend -SkipInstall
+
+# Só o backend
+./scripts/deploy-tst.ps1 -SkipFrontend
+```
+
+O script: faz `docker build`/`push` → `gcloud run deploy` (com `--set-secrets`) →
+`npm ci` → `npm run build -w client` (`NODE_ENV=production`) →
+`firebase deploy --only hosting:app` **com retry (3×, backoff 15s)** → health check.
+Flags: `-SkipBackend`, `-SkipFrontend`, `-SkipInstall`, `-Tag <tag>`. Alvo fixo: **TST**
+(`ndab-meualbum-tst-497511`).
+
+Para **produção**, o equivalente é [`scripts/deploy-prd.ps1`](../scripts/deploy-prd.ps1) (mesma
+estrutura, alvo `ndab-meualbum-prd`). Por segurança ele exige **confirmação interativa**
+(digite `PRD`) e avisa se a branch atual não for `main`; use `-Yes` para pular a confirmação.
+Revise o checklist da seção 13 antes de rodar.
+
+```powershell
+./scripts/deploy-prd.ps1                 # completo, com confirmação
+./scripts/deploy-prd.ps1 -SkipBackend    # só o frontend
+./scripts/deploy-prd.ps1 -Yes            # sem confirmação (automação)
+```
+
 ---
 
 ## 7. Pipeline CI/CD — Como o `cloudbuild.yaml` Funciona
@@ -255,7 +289,7 @@ O pipeline tem **6 steps** executados sequencialmente:
 
 > `_API_URL` foi removido. O frontend usa URLs relativas (`/api/v1`) e o Firebase Hosting faz o rewrite para o Cloud Run.
 
-> **Hosting target no deploy (Step 6):** o comando usa `firebase deploy --only hosting:app` em vez de `--only hosting`. O `firebase.json` declara `"target": "app"` e o `.firebaserc` mapeia esse target para o site de cada projeto (`app → ndab-meualbum-tst-497511` em tst; `app → ndab-meualbum-prd` em prd). Como os mapeamentos estão **commitados** no `.firebaserc`, não é preciso rodar `firebase target:apply` no CI. Isso evita dois erros: `Assertion failed: resolving hosting target of a site with no site name or target name` (auto-resolução do site default falhando sob o service account, mesmo havendo `DEFAULT_SITE`) e `Hosting site or target … not detected in firebase.json` (quando se passa um site ID que não está declarado no `firebase.json`). A versão do firebase-tools é fixada (`@15.18.0`) para builds reprodutíveis. O Step #6 ainda envolve o deploy em um **retry de até 3 tentativas com backoff de 15s**, pois a API do Firebase Hosting ocasionalmente derruba a conexão no CI (`FetchError: ... Premature close`); como o deploy é idempotente, re-tentar é seguro. Se o erro persistir nas 3 tentativas de forma determinística, trocar a base `node:22-alpine` por `node:22` (glibc) no Step #6 — quirks de rede com musl/alpine + undici são uma causa conhecida.
+> **Hosting target no deploy (Step 6):** o comando usa `firebase deploy --only hosting:app` em vez de `--only hosting`. O `firebase.json` declara `"target": "app"` e o `.firebaserc` mapeia esse target para o site de cada projeto (`app → ndab-meualbum-tst-497511` em tst; `app → ndab-meualbum-prd` em prd). Como os mapeamentos estão **commitados** no `.firebaserc`, não é preciso rodar `firebase target:apply` no CI. Isso evita dois erros: `Assertion failed: resolving hosting target of a site with no site name or target name` (auto-resolução do site default falhando sob o service account, mesmo havendo `DEFAULT_SITE`) e `Hosting site or target … not detected in firebase.json` (quando se passa um site ID que não está declarado no `firebase.json`). A versão do firebase-tools é **fixada em `@15.21.0`**: a `15.22.0` introduziu uma regressão que quebra no Cloud Build com `FetchError: Invalid response body ... Premature close` ([firebase/firebase-tools#10684](https://github.com/firebase/firebase-tools/issues/10684)) — a `15.21.0` é a última versão confirmada boa. **Não use `latest`** no Step #6. O deploy ainda é envolvido em um **retry de até 3 tentativas com backoff de 15s** como rede de segurança para flakiness transitória de rede (o deploy é idempotente). Ao atualizar a versão no futuro, evite a 15.22.0 e valide que a issue #10684 foi resolvida na versão escolhida.
 
 ### Criar triggers no Cloud Build
 

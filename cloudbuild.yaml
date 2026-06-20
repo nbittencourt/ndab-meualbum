@@ -43,14 +43,16 @@ steps:
   #    .firebaserc → site = projectId). Evita a auto-resolução do site default do
   #    firebase-tools, que falha com "site with no site name or target name" mesmo
   #    havendo um DEFAULT_SITE. Versão fixada para builds reprodutíveis.
-  #    Retry com backoff: a API do Firebase Hosting às vezes derruba a conexão no CI
-  #    ("FetchError: Premature close"); o deploy é idempotente, então re-tentar é seguro.
+  #    Versão fixada em 15.21.0: a 15.22.0 introduziu uma regressão que quebra no
+  #    Cloud Build com "FetchError: Invalid response body ... Premature close"
+  #    (firebase/firebase-tools#10684). A 15.21.0 é a última versão confirmada boa.
+  #    Retry com backoff mantido como rede de segurança para flakiness transitória.
   - name: 'node:22-alpine'
     entrypoint: sh
     args:
       - -c
       - |
-        npm install -g firebase-tools@15.18.0
+        npm install -g firebase-tools@15.21.0
         for i in 1 2 3; do
           echo "Deploy Firebase Hosting — tentativa $$i/3..."
           if firebase deploy --only hosting:app --project ${_FIREBASE_PROJECT_ID} --non-interactive; then
