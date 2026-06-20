@@ -23,10 +23,10 @@ GCP Secret Manager
 
 | Recurso | TST | PRD |
 |---------|-----|-----|
-| Firebase / GCP project | `ndab-meualbum-tst` | `ndab-meualbum-prd` |
+| Firebase / GCP project | `ndab-meualbum-tst-497511` | `ndab-meualbum-prd` |
 | Cloud Run service | `meualbum-api` | `meualbum-api` |
-| Hosting URL | `ndab-meualbum-tst.web.app` | `ndab-meualbum-prd.web.app` (ou domínio custom) |
-| `CLIENT_URL` (secret) | `https://ndab-meualbum-tst.web.app` | `https://meualbum.com.br` |
+| Hosting URL | `ndab-meualbum-tst-497511.web.app` | `ndab-meualbum-prd.web.app` (ou domínio custom) |
+| `CLIENT_URL` (secret) | `https://ndab-meualbum-tst-497511.web.app` | `https://meualbum.com.br` |
 | `_API_URL` (Cloud Build) | URL do Cloud Run TST | URL do Cloud Run PRD |
 
 > **PowerShell (Windows):** todos os comandos abaixo são para PowerShell e escritos em linha única. Cada bloco define variáveis `$VAR` no início — ajuste os valores antes de executar.
@@ -90,7 +90,7 @@ O arquivo `.firebaserc` já está configurado no repositório com os aliases `ts
 ### 3.3 Configurar Firebase Hosting
 
 ```powershell
-$TST_PROJECT = "ndab-meualbum-tst"
+$TST_PROJECT = "ndab-meualbum-tst-497511"
 firebase init hosting --project $TST_PROJECT
 ```
 
@@ -139,7 +139,7 @@ $bytes = New-Object byte[] 32; [System.Security.Cryptography.RandomNumberGenerat
 gcloud secrets create JWT_SECRET --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 # 3. URL do frontend Firebase Hosting — usada para CORS e links de e-mail
-[System.IO.File]::WriteAllText($TMP, "https://ndab-meualbum-tst.web.app", $utf8NoBom)
+[System.IO.File]::WriteAllText($TMP, "https://ndab-meualbum-tst-497511.web.app", $utf8NoBom)
 gcloud secrets create CLIENT_URL --data-file=$TMP --replication-policy=automatic --project=$PROJECT_ID
 
 # 4. Chave Resend (obter em resend.com)
@@ -172,12 +172,18 @@ O arquivo `.firebaserc` (na raiz do projeto) define os aliases:
 ```json
 {
   "projects": {
-    "tst": "ndab-meualbum-tst",
+    "tst": "ndab-meualbum-tst-497511",
     "prd": "ndab-meualbum-prd",
-    "default": "ndab-meualbum-tst"
+    "default": "ndab-meualbum-tst-497511"
+  },
+  "targets": {
+    "ndab-meualbum-tst-497511": { "hosting": { "app": ["ndab-meualbum-tst-497511"] } },
+    "ndab-meualbum-prd": { "hosting": { "app": ["ndab-meualbum-prd"] } }
   }
 }
 ```
+
+> O bloco `targets` mapeia o Hosting target `app` (declarado em `firebase.json`) para o site de cada projeto. Está commitado para que o CI rode `firebase deploy --only hosting:app` sem `firebase target:apply`.
 
 Para selecionar o ambiente ativo:
 
@@ -208,17 +214,53 @@ gcloud run deploy meualbum-api --image=$IMAGE --region=$REGION --platform=manage
 ### Etapa 2 — Build e deploy do frontend (Firebase Hosting)
 
 ```powershell
+$PROJECT_ID = "ndab-meualbum-prd"   # ou ndab-meualbum-tst-497511
 $env:NODE_ENV = "production"
 npm run build -w client
-firebase use prd
-firebase deploy --only hosting
+firebase deploy --only hosting:app --project $PROJECT_ID
 ```
+
+> Use `--only hosting:app` (Hosting target mapeado no `.firebaserc`) em vez de `--only hosting` para evitar o erro de auto-resolução do site default (ver nota na seção 7).
 
 ### Verificar o deploy
 
 ```powershell
 Start-Process "https://ndab-meualbum-tst-497511.web.app/"
-Invoke-RestMethod -Uri "https://ndab-meualbum-tst.web.app/api/health"
+Invoke-RestMethod -Uri "https://ndab-meualbum-tst-497511.web.app/api/health"
+```
+
+### Deploy manual de TST via script (contorno do Cloud Build)
+
+Quando o Firebase Hosting falha pelo Cloud Build (ex.: `FetchError: ... Premature close`),
+use o script [`scripts/deploy-tst.ps1`](../scripts/deploy-tst.ps1), que executa o mesmo
+pipeline **localmente** (onde o deploy é estável). Requer `gcloud auth login` e `firebase login` já feitos.
+
+```powershell
+# Deploy completo (backend Cloud Run + frontend Firebase Hosting)
+./scripts/deploy-tst.ps1
+
+# Só o frontend, sem reinstalar dependências (iteração rápida)
+./scripts/deploy-tst.ps1 -SkipBackend -SkipInstall
+
+# Só o backend
+./scripts/deploy-tst.ps1 -SkipFrontend
+```
+
+O script: faz `docker build`/`push` → `gcloud run deploy` (com `--set-secrets`) →
+`npm ci` → `npm run build -w client` (`NODE_ENV=production`) →
+`firebase deploy --only hosting:app` **com retry (3×, backoff 15s)** → health check.
+Flags: `-SkipBackend`, `-SkipFrontend`, `-SkipInstall`, `-Tag <tag>`. Alvo fixo: **TST**
+(`ndab-meualbum-tst-497511`).
+
+Para **produção**, o equivalente é [`scripts/deploy-prd.ps1`](../scripts/deploy-prd.ps1) (mesma
+estrutura, alvo `ndab-meualbum-prd`). Por segurança ele exige **confirmação interativa**
+(digite `PRD`) e avisa se a branch atual não for `main`; use `-Yes` para pular a confirmação.
+Revise o checklist da seção 13 antes de rodar.
+
+```powershell
+./scripts/deploy-prd.ps1                 # completo, com confirmação
+./scripts/deploy-prd.ps1 -SkipBackend    # só o frontend
+./scripts/deploy-prd.ps1 -Yes            # sem confirmação (automação)
 ```
 
 ---
@@ -234,7 +276,7 @@ O pipeline tem **6 steps** executados sequencialmente:
 | 3 | Deploy no Cloud Run com `--set-secrets` |
 | 4 | `npm ci` — instala dependências do monorepo |
 | 5 | Build do frontend com `VITE_API_URL=${_API_URL}` e `NODE_ENV=production` |
-| 6 | `firebase deploy --only hosting` autenticado via Cloud Build SA |
+| 6 | `firebase deploy --only hosting:app` autenticado via Cloud Build SA (Hosting target — ver nota abaixo) |
 
 **Substituições disponíveis:**
 
@@ -247,12 +289,14 @@ O pipeline tem **6 steps** executados sequencialmente:
 
 > `_API_URL` foi removido. O frontend usa URLs relativas (`/api/v1`) e o Firebase Hosting faz o rewrite para o Cloud Run.
 
+> **Hosting target no deploy (Step 6):** o comando usa `firebase deploy --only hosting:app` em vez de `--only hosting`. O `firebase.json` declara `"target": "app"` e o `.firebaserc` mapeia esse target para o site de cada projeto (`app → ndab-meualbum-tst-497511` em tst; `app → ndab-meualbum-prd` em prd). Como os mapeamentos estão **commitados** no `.firebaserc`, não é preciso rodar `firebase target:apply` no CI. Isso evita dois erros: `Assertion failed: resolving hosting target of a site with no site name or target name` (auto-resolução do site default falhando sob o service account, mesmo havendo `DEFAULT_SITE`) e `Hosting site or target … not detected in firebase.json` (quando se passa um site ID que não está declarado no `firebase.json`). A versão do firebase-tools é **fixada em `@15.21.0`**: a `15.22.0` introduziu uma regressão que quebra no Cloud Build com `FetchError: Invalid response body ... Premature close` ([firebase/firebase-tools#10684](https://github.com/firebase/firebase-tools/issues/10684)) — a `15.21.0` é a última versão confirmada boa. **Não use `latest`** no Step #6. O deploy ainda é envolvido em um **retry de até 3 tentativas com backoff de 15s** como rede de segurança para flakiness transitória de rede (o deploy é idempotente). Ao atualizar a versão no futuro, evite a 15.22.0 e valide que a issue #10684 foi resolvida na versão escolhida.
+
 ### Criar triggers no Cloud Build
 
 ```powershell
 $REPO_NAME = "SEU_REPO"
 $REPO_OWNER = "SEU_ORG"
-$TST_PROJECT = "ndab-meualbum-tst"
+$TST_PROJECT = "ndab-meualbum-tst-497511"
 gcloud builds triggers create github --name="meualbum-tst" --repo-name=$REPO_NAME --repo-owner=$REPO_OWNER --branch-pattern="^develop$" --build-config="cloudbuild.yaml" --project=$TST_PROJECT --substitutions="_FIREBASE_PROJECT_ID=$TST_PROJECT"
 
 $PRD_PROJECT = "ndab-meualbum-prd"
