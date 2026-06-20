@@ -16,7 +16,6 @@ import ConfirmEmailChangePage from '@/pages/ConfirmEmailChangePage';
 import HomePage from '@/pages/HomePage';
 import AlbumsPage from '@/pages/AlbumsPage';
 import AlbumManagePage from '@/pages/AlbumManagePage';
-import AlbumVisualizarPage from '@/pages/AlbumVisualizarPage';
 import CadastroAlbumPage from '@/pages/CadastroAlbumPage';
 import FigurinhasPage from '@/pages/FigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
@@ -114,7 +113,6 @@ export default function App() {
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/albums" element={<ProtectedRoute><AlbumsPage /></ProtectedRoute>} />
             <Route path="/albums/novo" element={<ProtectedRoute><CadastroAlbumPage /></ProtectedRoute>} />
-            <Route path="/albums/:id/visualizar" element={<ProtectedRoute><AlbumVisualizarPage /></ProtectedRoute>} />
             <Route path="/albums/:id" element={<ProtectedRoute><AlbumManagePage /></ProtectedRoute>} />
             <Route path="/figurinhas" element={<ProtectedRoute><FigurinhasPage /></ProtectedRoute>} />
             <Route path="/abrir" element={<RedirectFigurinhas />} />

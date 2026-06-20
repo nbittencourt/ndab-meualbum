@@ -788,27 +788,6 @@ export default function AlbumManagePage() {
           Colar figurinhas →
         </button>
 
-        {/* Ver Álbum (mantido por D2) */}
-        <button
-          type="button"
-          disabled={actionsDisabled}
-          onClick={() => navigate(`/albums/${album._id}/visualizar`)}
-          style={{
-            padding: '10px 20px',
-            background: '#fff',
-            color: INK,
-            border: `1.5px solid ${INK}`,
-            fontFamily: FONT_D,
-            fontSize: 12,
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-            cursor: actionsDisabled ? 'not-allowed' : 'pointer',
-            opacity: actionsDisabled ? 0.5 : 1,
-          }}
-        >
-          Ver álbum
-        </button>
-
         {/* Ativar colagem rápida — toggle */}
         <button
           type="button"

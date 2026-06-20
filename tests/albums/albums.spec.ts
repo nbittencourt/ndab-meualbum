@@ -392,4 +392,87 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await expect(page.getByText(/álbuns arquivados/i)).not.toBeVisible();
     });
   });
+
+  // ── Issue #29 — Remover "Ver Álbum" ──────────────────────────────────────────
+
+  test.describe('Issue #29 — Remover "Ver Álbum"', () => {
+
+    test('botão "Ver álbum" não está presente na AL1 (#29)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await expect(page.getByRole('button', { name: /ver álbum/i })).not.toBeVisible();
+    });
+
+    test('rota /albums/:id/visualizar não renderiza página (rota removida) (#29)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}/visualizar`);
+      await expect(page).not.toHaveURL(new RegExp(`/albums/${albumId}/visualizar$`));
+    });
+  });
+
+  // ── Issue #30 — Imprimir Figurinhas que Faltam ───────────────────────────────
+
+  test.describe('Issue #30 — Imprimir Figurinhas que Faltam', () => {
+
+    test('popup exibe botão Imprimir (#30)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      const dialog = page.getByRole('dialog', { name: /figurinhas/i });
+      await expect(dialog).toBeVisible();
+      await expect(page.getByRole('button', { name: /imprimir lista de figurinhas/i })).toBeVisible();
+    });
+
+    test('botão Imprimir dispara window.print (#30)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      await expect(page.getByRole('dialog', { name: /figurinhas/i })).toBeVisible();
+      await page.evaluate(() => {
+        (window as any).__printCallCount = 0;
+        window.print = () => { (window as any).__printCallCount++; };
+      });
+      await page.getByRole('button', { name: /imprimir lista de figurinhas/i }).click();
+      const callCount = await page.evaluate(() => (window as any).__printCallCount ?? 0);
+      expect(callCount).toBeGreaterThan(0);
+    });
+
+    test('container .lista-print existe no DOM com cabeçalho (#30)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      await expect(page.getByRole('dialog', { name: /figurinhas/i })).toBeVisible();
+      await expect(page.locator('[data-popup-section]').first()).toBeVisible();
+      await expect(page.locator('.lista-print')).toBeAttached();
+      await expect(page.locator('.lista-print-header')).toBeAttached();
+    });
+
+    test('@media print: #root oculto, .lista-print visível (#30)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      await expect(page.locator('[data-popup-section]').first()).toBeVisible();
+      await page.emulateMedia({ media: 'print' });
+      await expect(page.locator('#root')).not.toBeVisible();
+      await expect(page.locator('.lista-print')).toBeVisible();
+    });
+  });
 });

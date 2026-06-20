@@ -1,0 +1,75 @@
+@page { size: A4 portrait; margin: 7mm; }
+
+.lista-print {
+  display: none;
+}
+
+@media print {
+  #root {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .lista-print {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 210mm;
+    background: #fff;
+    color: #0a0907;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    z-index: 99999;
+  }
+
+  .lista-print-paises {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+  }
+
+  .lista-print-secao {
+    break-inside: avoid;
+  }
+
+  /* Monochromatic cell styles for print */
+  .lista-print-cell {
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 7px;
+  }
+
+  .lista-print-cell--c {
+    background: #1a1a1a !important;
+    border: 1px solid #1a1a1a !important;
+    color: #fff !important;
+  }
+
+  .lista-print-cell--f {
+    background: transparent !important;
+    border: 1.5px dashed rgba(10, 9, 7, 0.4) !important;
+    color: rgba(10, 9, 7, 0.4) !important;
+  }
+
+  .lista-print-cell--r {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(10, 9, 7, 0.18),
+      rgba(10, 9, 7, 0.18) 2px,
+      transparent 2px,
+      transparent 6px
+    ) !important;
+    background-color: transparent !important;
+    border: 1.5px solid #0a0907 !important;
+    color: #0a0907 !important;
+    border-radius: 4px !important;
+  }
+}
