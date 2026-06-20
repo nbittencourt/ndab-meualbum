@@ -159,7 +159,6 @@ function QuantidadeBadge({ quantidade }: { quantidade: number }) {
 // ─── Card individual (Variante B) ─────────────────────────────────────────────
 function StickerCardAL1({
   item,
-  albumId,
   disabled,
   isDesktop,
   estoqueId,
@@ -170,7 +169,6 @@ function StickerCardAL1({
   onRemover,
 }: {
   item: FigurinhaGridItem;
-  albumId: string;
   disabled: boolean;
   isDesktop: boolean;
   estoqueId?: string;
@@ -180,7 +178,6 @@ function StickerCardAL1({
   onFecharMenu?: () => void;
   onRemover?: () => void;
 }) {
-  const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const isColada   = item.colada;
   const isRepetida = !item.colada && item.quantidade >= 2;
@@ -359,7 +356,6 @@ function StickerCardAL1({
 // ─── Seção com grid (Variante B) ──────────────────────────────────────────────
 function SecaoGrid({
   secao,
-  albumId,
   actionsDisabled,
   estoqueMap,
   menuAbertoNumero,
@@ -369,7 +365,6 @@ function SecaoGrid({
   onRemover,
 }: {
   secao: { _id: string; nome: string; figurinhas: FigurinhaGridItem[] };
-  albumId: string;
   actionsDisabled: boolean;
   estoqueMap: Map<string, string>;
   menuAbertoNumero: string | null;
@@ -471,7 +466,6 @@ function SecaoGrid({
                 <StickerCardAL1
                   key={f._id}
                   item={f}
-                  albumId={albumId}
                   disabled={actionsDisabled}
                   isDesktop={false}
                   estoqueId={estoqueMap.get(f.numero)}
@@ -611,7 +605,7 @@ export default function AlbumManagePage() {
   const { data: estoqueData } = useQuery({
     queryKey: ['estoque', id],
     queryFn: () => colarFigurinhasApi.getEstoque(id),
-    enabled: !!id && modoColagem,
+    enabled: !!id,
   });
 
   const estoqueMap = useMemo(() => {
@@ -880,7 +874,6 @@ export default function AlbumManagePage() {
           <SecaoGrid
             key={secao._id}
             secao={secao}
-            albumId={album._id}
             actionsDisabled={actionsDisabled}
             estoqueMap={estoqueMap}
             menuAbertoNumero={menuAbertoNumero}
