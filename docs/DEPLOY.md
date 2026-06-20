@@ -175,9 +175,15 @@ O arquivo `.firebaserc` (na raiz do projeto) define os aliases:
     "tst": "ndab-meualbum-tst-497511",
     "prd": "ndab-meualbum-prd",
     "default": "ndab-meualbum-tst-497511"
+  },
+  "targets": {
+    "ndab-meualbum-tst-497511": { "hosting": { "app": ["ndab-meualbum-tst-497511"] } },
+    "ndab-meualbum-prd": { "hosting": { "app": ["ndab-meualbum-prd"] } }
   }
 }
 ```
+
+> O bloco `targets` mapeia o Hosting target `app` (declarado em `firebase.json`) para o site de cada projeto. Está commitado para que o CI rode `firebase deploy --only hosting:app` sem `firebase target:apply`.
 
 Para selecionar o ambiente ativo:
 
@@ -211,10 +217,10 @@ gcloud run deploy meualbum-api --image=$IMAGE --region=$REGION --platform=manage
 $PROJECT_ID = "ndab-meualbum-prd"   # ou ndab-meualbum-tst-497511
 $env:NODE_ENV = "production"
 npm run build -w client
-firebase deploy --only "hosting:$PROJECT_ID" --project $PROJECT_ID
+firebase deploy --only hosting:app --project $PROJECT_ID
 ```
 
-> Use `--only hosting:<siteId>` (siteId == projectId) em vez de `--only hosting` para evitar o erro de auto-resolução do site default (ver nota na seção 7).
+> Use `--only hosting:app` (Hosting target mapeado no `.firebaserc`) em vez de `--only hosting` para evitar o erro de auto-resolução do site default (ver nota na seção 7).
 
 ### Verificar o deploy
 
@@ -236,7 +242,7 @@ O pipeline tem **6 steps** executados sequencialmente:
 | 3 | Deploy no Cloud Run com `--set-secrets` |
 | 4 | `npm ci` — instala dependências do monorepo |
 | 5 | Build do frontend com `VITE_API_URL=${_API_URL}` e `NODE_ENV=production` |
-| 6 | `firebase deploy --only hosting:${_FIREBASE_PROJECT_ID}` autenticado via Cloud Build SA (site explícito — ver nota abaixo) |
+| 6 | `firebase deploy --only hosting:app` autenticado via Cloud Build SA (Hosting target — ver nota abaixo) |
 
 **Substituições disponíveis:**
 
@@ -249,7 +255,7 @@ O pipeline tem **6 steps** executados sequencialmente:
 
 > `_API_URL` foi removido. O frontend usa URLs relativas (`/api/v1`) e o Firebase Hosting faz o rewrite para o Cloud Run.
 
-> **Site explícito no deploy (Step 6):** o comando usa `firebase deploy --only hosting:${_FIREBASE_PROJECT_ID}` em vez de `--only hosting`. O ID do site de Hosting é igual ao ID do projeto nos dois ambientes (`ndab-meualbum-tst-497511`, `ndab-meualbum-prd`), então a substituição `_FIREBASE_PROJECT_ID` serve para os dois. Isso evita o erro `Assertion failed: resolving hosting target of a site with no site name or target name`, que ocorre quando o firebase-tools tenta auto-resolver o site default e falha — mesmo existindo um `DEFAULT_SITE`. A versão do firebase-tools é fixada (`@15.18.0`) para builds reprodutíveis.
+> **Hosting target no deploy (Step 6):** o comando usa `firebase deploy --only hosting:app` em vez de `--only hosting`. O `firebase.json` declara `"target": "app"` e o `.firebaserc` mapeia esse target para o site de cada projeto (`app → ndab-meualbum-tst-497511` em tst; `app → ndab-meualbum-prd` em prd). Como os mapeamentos estão **commitados** no `.firebaserc`, não é preciso rodar `firebase target:apply` no CI. Isso evita dois erros: `Assertion failed: resolving hosting target of a site with no site name or target name` (auto-resolução do site default falhando sob o service account, mesmo havendo `DEFAULT_SITE`) e `Hosting site or target … not detected in firebase.json` (quando se passa um site ID que não está declarado no `firebase.json`). A versão do firebase-tools é fixada (`@15.18.0`) para builds reprodutíveis.
 
 ### Criar triggers no Cloud Build
 

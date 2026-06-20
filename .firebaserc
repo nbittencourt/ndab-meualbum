@@ -4,6 +4,21 @@
     "prd": "ndab-meualbum-prd",
     "default": "ndab-meualbum-tst-497511"
   },
-  "targets": {},
+  "targets": {
+    "ndab-meualbum-tst-497511": {
+      "hosting": {
+        "app": [
+          "ndab-meualbum-tst-497511"
+        ]
+      }
+    },
+    "ndab-meualbum-prd": {
+      "hosting": {
+        "app": [
+          "ndab-meualbum-prd"
+        ]
+      }
+    }
+  },
   "etags": {}
 }
