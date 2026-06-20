@@ -1,0 +1,70 @@
+@page { size: A4 portrait; margin: 7mm; }
+
+.lista-print {
+  display: none;
+}
+
+@media print {
+  #root {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .lista-print {
+    display: block !important;
+    width: 100%;
+    background: #fff;
+    color: #0a0907;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .lista-print,
+  .lista-print * {
+    box-sizing: border-box;
+  }
+
+  .lista-print-paises {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+  }
+
+  .lista-print-secao {
+    break-inside: avoid;
+  }
+
+  /* Cell styles for print — color (mirrors screen) + shape (B&W legibility) */
+  .lista-print-cell {
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 6.5px;
+    overflow: hidden;
+  }
+
+  .lista-print-cell--c {
+    background: rgba(10, 145, 69, 0.15) !important;
+    border: 1px solid rgba(10, 145, 69, 0.48) !important;
+    color: #0a9145 !important;
+  }
+
+  .lista-print-cell--f {
+    background: transparent !important;
+    border: 1.5px dashed rgba(10, 9, 7, 0.5) !important;
+    color: rgba(10, 9, 7, 0.8) !important;
+  }
+
+  .lista-print-cell--r {
+    background: rgba(229, 20, 42, 0.1) !important;
+    border: 1.5px solid #e5142a !important;
+    color: #e5142a !important;
+    border-radius: 4px !important;
+  }
+}

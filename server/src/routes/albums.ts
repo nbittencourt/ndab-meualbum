@@ -216,11 +216,14 @@ router.get('/:id/figurinhas', requireAuth, asyncHandler(async (req: AuthRequest,
   const secoes = await Secao.find({ tipoAlbumId: tipoId }).sort({ ordem: 1 }).lean();
   const secaoIds = secoes.map((s) => s._id);
 
-  const [todasFigurinhas, coladas, estoqueItens] = await Promise.all([
-    Sticker.find({ secaoId: { $in: secaoIds } }).sort({ number: 1 }).lean(),
+  const numSufixo = (s: string) => parseInt(s.replace(/^[^\d]+/, ''), 10) || 0;
+
+  const [todasFigurinhasBruto, coladas, estoqueItens] = await Promise.all([
+    Sticker.find({ secaoId: { $in: secaoIds } }).lean(),
     FigurinhaColada.find({ albumId: album._id }).lean(),
     EstoqueFigurinha.find({ usuarioId: new Types.ObjectId(req.userId) }).lean(),
   ]);
+  const todasFigurinhas = todasFigurinhasBruto.sort((a: any, b: any) => numSufixo(a.number) - numSufixo(b.number));
 
   const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
   const estoqueMap = new Map(estoqueItens.map((e) => [String(e.figurinhaId), e.quantidade]));
