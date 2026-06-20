@@ -474,5 +474,57 @@ test.describe('Álbuns (Gerenciamento)', () => {
       await expect(page.locator('#root')).not.toBeVisible();
       await expect(page.locator('.lista-print')).toBeVisible();
     });
+
+    test('seção de país usa grade de 10 colunas na impressão (#30)', async ({ page, request }) => {
+      await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      await expect(page.locator('[data-popup-section]').first()).toBeVisible();
+      const grid = page.locator('[data-print-section="pais"] [data-print-cells]').first();
+      await expect(grid).toBeAttached();
+      const cols = await grid.evaluate((el) => getComputedStyle(el).gridTemplateColumns);
+      expect(cols.trim().split(/\s+/)).toHaveLength(10);
+    });
+
+    test('figurinha colada com sobras no bolo aparece como repetida (#30)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      // Cola FWC1 no álbum e mantém cópias no bolo de repetidas
+      await request.post('/api/v1/colar/direta', { data: { albumId, figurinhaNumero: 'FWC1' } });
+      await adicionarEstoque(request, identificador, 'FWC1', 3);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      const dialog = page.getByRole('dialog', { name: /figurinhas/i });
+      await expect(dialog).toBeVisible();
+      // Repetida tem prioridade sobre colada na exibição
+      await expect(dialog.getByLabel(/FWC1 repetida/i)).toBeVisible();
+      await expect(dialog.getByLabel(/FWC1 colada/i)).toHaveCount(0);
+    });
+
+    test('figurinha repetida sai vermelha na impressão (#30)', async ({ page, request }) => {
+      const { identificador } = await usuarioAtivo(page, request);
+      const tipoId = await getTipoAlbumId(request);
+      const album = await criarAlbum(request, tipoId, 'BROCHURA');
+      const albumId = String(album._id ?? album.id);
+      await adicionarEstoque(request, identificador, 'FWC1', 2);
+      await page.goto(`/albums/${albumId}`);
+      await page.getByRole('button', { name: /figurinhas que faltam/i }).click();
+      await expect(page.locator('[data-popup-section]').first()).toBeVisible();
+      await page.emulateMedia({ media: 'print' });
+      const repetida = page.locator('.lista-print-cell--r').first();
+      await expect(repetida).toBeAttached();
+      const cor = await repetida.evaluate((el) => {
+        const s = getComputedStyle(el);
+        return { color: s.color, border: s.borderTopColor };
+      });
+      // #E5142A → rgb(229, 20, 42)
+      expect(cor.color).toMatch(/229,\s*20,\s*42/);
+      expect(cor.border).toMatch(/229,\s*20,\s*42/);
+    });
   });
 });

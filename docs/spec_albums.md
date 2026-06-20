@@ -13,7 +13,7 @@
 | 1.1 | red team | **A1** — RN-AL01 corrigido: acesso permitido também para `EMAIL_PENDENTE`. **A4** — RN-AL18 complementado com comportamento de UX para rejeição de colagem em álbum arquivado (RN-AL18a). **M4** — geração de PDF especificada como síncrona com spinner bloqueante; conteúdo do PDF compactado (RN-AL19). **M8** — política de desnormalização de `Secao.total_figurinhas` explicitada (RN-AL20) |
 | 1.2 | WCAG | RN-AL19 atualizado: PDF DEVE ser tagged (PDF/UA) para acessibilidade de leitores de tela. Requisitos de acessibilidade adicionados (RN-AL21 a RN-AL27). |
 | 1.3 | ajustes UX | **RN-AL28** — acesso à AL1 formalizado via botão "Gerenciar" nos cards da AL0. **RN-AL29** — AL0 recarrega lista ao ser acessada. **RN-AL30** — botão "Baixar PDF" incluído na AL0 (card). **RN-AL31** — botão "Ver Álbum" incluído na AL1 (visualização de figurinhas faltantes por seção). **RN-AL32** — sombra do botão "Arquivar" no modal de confirmação é preta. **RN-AL33** — identidade visual do card reflete a variante (alinhamento com RN-H29). Header e footer globais explicitados em todas as telas. |
-| 1.4 | issues #29/#30 | (a) "Figurinhas que faltam" formalizado como **popup modal** (entregue em #26 — sem download/PDF síncrono); RN-AL19/AL22/AL30 atualizados. (b) Popup oferece botão **Imprimir** (A4 retrato, `window.print`) — substitui geração/download de PDF; RN-AL30 atualizado. (c) Botão "Ver Álbum" e Tela AL2 **removidos** (issue #29) — RN-AL31 depreciado. Adicionado RN-AL36 (layout de impressão A4) e RN-AL37 (diferenciação por forma/padrão para impressão monocromática). |
+| 1.4 | issues #29/#30 | (a) "Figurinhas que faltam" formalizado como **popup modal** (entregue em #26 — sem download/PDF síncrono); RN-AL19/AL22/AL30 atualizados. (b) Popup oferece botão **Imprimir** (A4 retrato, `window.print`) — substitui geração/download de PDF; RN-AL30 atualizado. (c) Botão "Ver Álbum" e Tela AL2 **removidos** (issue #29) — RN-AL31 depreciado. Adicionado RN-AL36 (layout de impressão A4) e RN-AL37 (diferenciação por cor + forma para impressão). |
 
 ---
 
@@ -165,10 +165,12 @@ Aberto ao acionar "Figurinhas que faltam" — disponível na AL0 (card) e na AL1
 - **Agrupamento por colunas:** seção `secoes[0]` em coluna única; `secoes.slice(1, -2)` (países) em duas colunas; `secoes.slice(-2)` em coluna única
 - Legenda com descrição das formas
 
-**Diferenciação por forma/padrão (impressão monocromática — ver RN-AL37):**
-- `colada`: preenchimento sólido (quadrado cheio)
-- `repetida`: cantos arredondados + padrão hachurado (diagonal)
+**Diferenciação por cor + forma (ver RN-AL37):**
+- `colada`: verde (fundo/borda verde), preenchimento sólido
+- `repetida`: vermelho (fundo/borda vermelha), cantos arredondados
 - `faltante`: borda tracejada, fundo transparente
+
+A cor espelha a apresentação da tela; a forma garante a legibilidade mesmo em impressão monocromática (P&B).
 
 ---
 
@@ -257,7 +259,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-AL34 | No popup e na impressão, os indicadores de estado por figurinha DEVEM ser comunicados por rótulo textual/aria-label (no popup) e por forma/padrão (na impressão), nunca apenas por cor |
 | RN-AL35 | O botão "Gerenciar" no card da AL0 DEVE ter `aria-label` que inclua o nome do álbum (ex.: "Gerenciar Copa do Mundo 2026 — Brochura") para distinguir entre múltiplos cards |
 | RN-AL36 | O layout de impressão A4 do popup DEVE usar duas colunas para as seções de países (`secoes.slice(1, -2)`) e coluna única para a primeira seção (`secoes[0]`) e as duas últimas (`secoes.slice(-2)`). O agrupamento é posicional (baseado em índice), não no nome da seção |
-| RN-AL37 | A impressão A4 DEVE diferenciar os três status por **forma/padrão** (não apenas cor), garantindo legibilidade monocromática (WCAG 1.4.1 — não dependência de cor): `colada` = preenchimento sólido; `repetida` = cantos arredondados + padrão hachurado diagonal; `faltante` = borda tracejada, fundo transparente. A legenda de impressão DEVE descrever as formas e informar que "repetida = figurinha no bolo de repetidas (para troca)" |
+| RN-AL37 | A impressão A4 DEVE diferenciar os três status por **cor + forma** (não apenas cor), espelhando a paleta da tela e garantindo legibilidade monocromática (WCAG 1.4.1 — não dependência de cor): `colada` = verde, preenchimento sólido; `repetida` = vermelho, cantos arredondados; `faltante` = tracejada, fundo transparente. A cor reproduz a apresentação da tela; a forma assegura distinção em impressão P&B |
 
 ---
 

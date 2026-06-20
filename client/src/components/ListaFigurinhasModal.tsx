@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
 import { albumsApi } from '@/lib/api';
-import type { SecaoGrid, FigurinhaGridItem } from '@meualbum/shared';
+import type { SecaoGrid } from '@meualbum/shared';
 import { agruparSecoesParaImpressao } from '@/lib/agruparSecoesParaImpressao';
+import { statusFigurinha, isRepetida, type StatusFigurinha } from '@/lib/figurinhaStatus';
 import './listaFigurinhasPrint.css';
 
 interface Props {
@@ -13,13 +14,9 @@ interface Props {
   albumNome?: string;
 }
 
-type Status = 'c' | 'f' | 'r';
+type Status = StatusFigurinha;
 
-function statusCell(f: FigurinhaGridItem): Status {
-  if (f.colada) return 'c';
-  if (f.quantidade >= 2) return 'r';
-  return 'f';
-}
+const statusCell = statusFigurinha;
 
 // ── Screen Cell ──────────────────────────────────────────────────────────────
 
@@ -94,11 +91,15 @@ function PrintCell({ numero, status }: { numero: string; status: Status }) {
   );
 }
 
-function PrintSecaoBlock({ secao }: { secao: SecaoGrid }) {
+function PrintSecaoBlock({ secao, colunas }: { secao: SecaoGrid; colunas?: number }) {
   const coladas = secao.figurinhas.filter((f) => f.colada).length;
   const total = secao.figurinhas.length;
   return (
-    <div className="lista-print-secao" style={{ border: '0.8px solid rgba(10,9,7,0.13)', background: '#fff', marginBottom: 2 }}>
+    <div
+      className="lista-print-secao"
+      data-print-section={colunas ? 'pais' : 'special'}
+      style={{ border: '0.8px solid rgba(10,9,7,0.13)', background: '#fff', marginBottom: 2 }}
+    >
       <div style={{
         padding: '2px 6px',
         background: '#fafafa',
@@ -115,7 +116,15 @@ function PrintSecaoBlock({ secao }: { secao: SecaoGrid }) {
           {coladas}/{total}
         </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(22px, 1fr))', gap: 1, padding: '3px 4px' }}>
+      <div
+        data-print-cells
+        style={{
+          display: 'grid',
+          gridTemplateColumns: colunas ? `repeat(${colunas}, 1fr)` : 'repeat(auto-fill, minmax(20px, 1fr))',
+          gap: 1,
+          padding: '3px 4px',
+        }}
+      >
         {secao.figurinhas.map((f) => (
           <PrintCell key={f._id} numero={f.numero} status={statusCell(f)} />
         ))}
@@ -179,7 +188,7 @@ function PrintContainer({ secoes, albumNome, totalColadas, totalFaltantes, total
         {primeira.map((s) => <PrintSecaoBlock key={s._id} secao={s} />)}
         {paises.length > 0 && (
           <div className="lista-print-paises">
-            {paises.map((s) => <PrintSecaoBlock key={s._id} secao={s} />)}
+            {paises.map((s) => <PrintSecaoBlock key={s._id} secao={s} colunas={10} />)}
           </div>
         )}
         {ultimas.map((s) => <PrintSecaoBlock key={s._id} secao={s} />)}
@@ -224,10 +233,14 @@ export function ListaFigurinhasModal({ open, onClose, albumId, albumNome }: Prop
   if (!open) return null;
 
   const secoes: SecaoGrid[] = data?.secoes ?? [];
-  const totalColadas = secoes.reduce((acc, s) => acc + s.figurinhas.filter((f) => f.colada).length, 0);
-  const totalRepetidas = secoes.reduce((acc, s) => acc + s.figurinhas.filter((f) => !f.colada && f.quantidade >= 2).length, 0);
-  const totalFigs = secoes.reduce((acc, s) => acc + s.figurinhas.length, 0);
-  const totalFaltantes = totalFigs - totalColadas - totalRepetidas;
+  const todas = secoes.flatMap((s) => s.figurinhas);
+  const totalFigs = todas.length;
+  // Coladas: todas as figurinhas no álbum — base do percentual de conclusão.
+  const totalColadas = todas.filter((f) => f.colada).length;
+  // Repetidas: há sobras no bolo (inclui coladas com cópias extras) — espelha as células.
+  const totalRepetidas = todas.filter((f) => isRepetida(f)).length;
+  // Faltantes: não colada e sem sobras.
+  const totalFaltantes = todas.filter((f) => !f.colada && !isRepetida(f)).length;
   const pct = totalFigs > 0 ? Math.round((totalColadas / totalFigs) * 1000) / 10 : 0;
 
   return (
