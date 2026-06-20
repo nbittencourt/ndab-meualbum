@@ -23,7 +23,7 @@ const statusCell = statusFigurinha;
 function Cell({ numero, status }: { numero: string; status: Status }) {
   const styles: Record<Status, React.CSSProperties> = {
     c: { background: 'rgba(10,145,69,0.15)', border: '1px solid rgba(10,145,69,0.48)', color: '#0A9145' },
-    f: { background: 'transparent', border: '1.5px dashed rgba(10,9,7,0.22)', color: 'rgba(10,9,7,0.28)' },
+    f: { background: 'transparent', border: '1.5px dashed rgba(10,9,7,0.5)', color: 'rgba(10,9,7,0.8)' },
     r: { background: 'rgba(229,20,42,0.1)', border: '1.5px solid #E5142A', color: '#E5142A', borderRadius: 4 },
   };
   return (
