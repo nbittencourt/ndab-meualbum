@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Toast';
-import { CameraModal } from '@/components/CameraModal';
 import { StickerStatusBadge } from '@/components/StickerStatusBadge';
 import { VARIANT_LABELS } from '@/lib/albumVariant';
 
@@ -169,7 +168,6 @@ function SecaoRepetidas({ albumIdCtx }: { albumIdCtx: string }) {
   const [mfnNumero, setMfnNumero] = useState('');
   const [mfnError, setMfnError] = useState('');
   const mfnInputRef = useRef<HTMLInputElement>(null);
-  const [showMfnCamera, setShowMfnCamera] = useState(false);
 
   const { data: estoqueData, isLoading: estoqueLoading } = useQuery({
     queryKey: ['estoque', albumIdCtx || 'todos'],
@@ -340,28 +338,7 @@ function SecaoRepetidas({ albumIdCtx }: { albumIdCtx: string }) {
             Fechar
           </Button>
         </div>
-        <div className="mt-3 pt-3 border-t border-ink/10">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setShowMfnCamera(true)}
-            aria-label="Abrir câmera para reconhecer número da figurinha"
-          >
-            Abrir câmera
-          </Button>
-        </div>
       </Modal>
-
-      <CameraModal
-        open={showMfnCamera}
-        onClose={() => setShowMfnCamera(false)}
-        onConfirm={async (numero) => {
-          if (!albumIdCtx) return;
-          await mfnMut.mutateAsync({ numero, target: albumIdCtx });
-          setShowMfnCamera(false);
-        }}
-        confirmLoading={mfnMut.isPending}
-      />
 
       {toast && <Toast message={toast.message} variant={toast.variant} onDismiss={() => setToast(null)} />}
     </section>
@@ -429,8 +406,6 @@ export default function FigurinhasPage() {
 
   const [addError, setAddError] = useState('');
   const [descartarItemId, setDescartarItemId] = useState<string | null>(null);
-  const [mode, setMode] = useState<'DIGITAR' | 'FOTOGRAFAR'>('DIGITAR');
-  const [showCameraModal, setShowCameraModal] = useState(false);
 
   const addMut = useMutation({
     mutationFn: (figurinhaNumero: string) =>
@@ -443,14 +418,6 @@ export default function FigurinhasPage() {
     },
     onError: (err) => {
       setAddError(err instanceof ApiError ? err.message : 'Erro ao adicionar.');
-    },
-  });
-
-  const addCameraMut = useMutation({
-    mutationFn: (figurinhaNumero: string) =>
-      abrirPacotinhosApi.adicionarItem({ tipoAlbumId: tipoId!, figurinhaNumero, origem: 'CAMERA' }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pilha'] });
     },
   });
 
@@ -662,88 +629,41 @@ export default function FigurinhasPage() {
 
         <div ref={statusRef} aria-live="polite" aria-atomic="true" className="sr-only" />
 
-        {/* Seletor de modo de entrada */}
-        <div className="flex gap-1" role="radiogroup" aria-label="Modo de entrada">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={mode === 'DIGITAR'}
-            className={[
-              'px-3 py-1.5 text-xs font-body font-semibold uppercase tracking-wide border-2 transition-colors',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
-              mode === 'DIGITAR'
-                ? 'bg-ink text-white border-ink'
-                : 'bg-white text-ink border-ink/40 hover:border-ink',
-            ].join(' ')}
-            onClick={() => setMode('DIGITAR')}
-          >
-            Digitar
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={mode === 'FOTOGRAFAR'}
-            className={[
-              'px-3 py-1.5 text-xs font-body font-semibold uppercase tracking-wide border-2 transition-colors',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
-              mode === 'FOTOGRAFAR'
-                ? 'bg-ink text-white border-ink'
-                : 'bg-white text-ink border-ink/40 hover:border-ink',
-            ].join(' ')}
-            onClick={() => setMode('FOTOGRAFAR')}
-          >
-            Fotografar
-          </button>
-        </div>
-
-        {mode === 'DIGITAR' && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!numero.trim()) return;
-              setAddError('');
-              if (pendentes.length >= MAX_PENDENTE) {
-                setAddError(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido. Cole ou descarte antes de continuar.`);
-                return;
-              }
-              addMut.mutate(numero.trim());
-            }}
-            className="flex gap-2"
-            noValidate
-          >
-            <div className="flex-1">
-              <Input
-                ref={inputRef}
-                label="Número da figurinha"
-                type="text"
-                inputMode="text"
-                pattern="[0-9A-Za-z]+"
-                value={numero}
-                onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
-                placeholder="Ex.: 42 ou BR01"
-                autoComplete="off"
-                aria-label="Número da figurinha para adicionar à pilha"
-                error={addError || undefined}
-              />
-            </div>
-            <div className="flex items-end pb-0.5">
-              <Button type="submit" loading={addMut.isPending} disabled={!numero.trim()}>
-                +
-              </Button>
-            </div>
-          </form>
-        )}
-
-        {mode === 'FOTOGRAFAR' && (
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-body text-ink/60">
-              Aponte a câmera para o verso da figurinha e fotografe o número.
-            </p>
-            <Button onClick={() => setShowCameraModal(true)} aria-label="Abrir câmera para fotografar figurinha">
-              Abrir câmera
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!numero.trim()) return;
+            setAddError('');
+            if (pendentes.length >= MAX_PENDENTE) {
+              setAddError(`Limite de ${MAX_PENDENTE} figurinhas pendentes atingido. Cole ou descarte antes de continuar.`);
+              return;
+            }
+            addMut.mutate(numero.trim());
+          }}
+          className="flex gap-2"
+          noValidate
+        >
+          <div className="flex-1">
+            <Input
+              ref={inputRef}
+              label="Número da figurinha"
+              type="text"
+              inputMode="text"
+              pattern="[0-9A-Za-z]+"
+              value={numero}
+              onChange={(e) => { setNumero(e.target.value.toUpperCase()); setAddError(''); }}
+              placeholder="Ex.: 42 ou BR01"
+              autoComplete="off"
+              aria-label="Número da figurinha para adicionar à pilha"
+              error={addError || undefined}
+            />
+          </div>
+          <div className="flex items-end pb-0.5">
+            <Button type="submit" loading={addMut.isPending} disabled={!numero.trim()}>
+              +
             </Button>
           </div>
-        )}
+        </form>
 
         {pendentes.length >= MAX_PENDENTE && !addError && (
           <p role="alert" className="text-xs text-red-dark font-body">
@@ -906,13 +826,6 @@ export default function FigurinhasPage() {
             </Button>
           </div>
         </Modal>
-
-        <CameraModal
-          open={showCameraModal}
-          onClose={() => setShowCameraModal(false)}
-          onConfirm={async (num) => { await addCameraMut.mutateAsync(num); }}
-          confirmLoading={addCameraMut.isPending}
-        />
 
         <ColarModal
           item={colarItem}
