@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { albumsApi } from '@/lib/api';
 import type { SecaoGrid } from '@meualbum/shared';
 import { agruparSecoesParaImpressao } from '@/lib/agruparSecoesParaImpressao';
@@ -221,6 +222,8 @@ export function ListaFigurinhasModal({ open, onClose, albumId, albumNome }: Prop
     enabled: open && !!albumId,
   });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(e: KeyboardEvent) {
@@ -230,9 +233,23 @@ export function ListaFigurinhasModal({ open, onClose, albumId, albumNome }: Prop
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
-
   const secoes: SecaoGrid[] = data?.secoes ?? [];
+
+  // Estimate section height: header (29px) + ceil(count / cols) * 22px + 12px padding
+  const estimateSectionHeight = (secao: SecaoGrid) => {
+    const cols = Math.max(1, Math.floor(328 / 38));
+    const rows = Math.ceil(secao.figurinhas.length / cols);
+    return 29 + rows * 22 + 12;
+  };
+
+  const rowVirtualizer = useVirtualizer({
+    count: secoes.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: (i) => estimateSectionHeight(secoes[i]),
+    overscan: 3,
+  });
+
+  if (!open) return null;
   const todas = secoes.flatMap((s) => s.figurinhas);
   const totalFigs = todas.length;
   // Coladas: todas as figurinhas no álbum — base do percentual de conclusão.
@@ -340,16 +357,27 @@ export function ListaFigurinhasModal({ open, onClose, albumId, albumNome }: Prop
             ))}
           </div>
 
-          {/* Sections — scrollable */}
-          <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '8px 4px' }}>
+          {/* Sections — virtualized scrollable */}
+          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '8px 4px' }}>
             {isLoading && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 32 }} aria-busy="true" aria-label="Carregando figurinhas">
                 <div className="w-6 h-6 border-2 border-ink border-t-red rounded-full animate-spin" aria-hidden="true" />
               </div>
             )}
-            {!isLoading && secoes.map((secao) => (
-              <SecaoBlock key={secao._id} secao={secao} />
-            ))}
+            {!isLoading && secoes.length > 0 && (
+              <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
+                {rowVirtualizer.getVirtualItems().map((vRow) => (
+                  <div
+                    key={vRow.key}
+                    data-index={vRow.index}
+                    ref={rowVirtualizer.measureElement}
+                    style={{ position: 'absolute', top: 0, left: 0, right: 0, transform: `translateY(${vRow.start}px)`, paddingBottom: 6 }}
+                  >
+                    <SecaoBlock secao={secoes[vRow.index]} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
