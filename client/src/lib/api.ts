@@ -225,6 +225,12 @@ export const colarFigurinhasApi = {
       method: 'POST',
       body: JSON.stringify({ estoqueId }),
     }),
+
+  adicionarRepetida: (figurinhaNumero: string) =>
+    request<{ ok: boolean }>('/estoque/adicionar', {
+      method: 'POST',
+      body: JSON.stringify({ figurinhaNumero }),
+    }),
 };
 
 export const privacidadeApi = {

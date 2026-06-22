@@ -152,6 +152,32 @@ router.post('/colar/direta', requireAuth, asyncHandler(async (req: AuthRequest, 
   res.json({ ok: true });
 }));
 
+const adicionarRepetidaSchema = z.object({ figurinhaNumero: z.string().toUpperCase() });
+
+router.post('/estoque/adicionar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+  const parsed = adicionarRepetidaSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() });
+    return;
+  }
+  const { figurinhaNumero } = parsed.data;
+  const usuarioId = new Types.ObjectId(req.userId);
+
+  const sticker = await Sticker.findOne({ number: figurinhaNumero }).lean();
+  if (!sticker) {
+    res.status(404).json({ error: `Figurinha ${figurinhaNumero} não encontrada no catálogo.` });
+    return;
+  }
+
+  await EstoqueFigurinha.findOneAndUpdate(
+    { usuarioId, figurinhaId: sticker._id },
+    { $inc: { quantidade: 1 } },
+    { upsert: true, setDefaultsOnInsert: true }
+  );
+
+  res.json({ ok: true });
+}));
+
 const descartarSchema = z.object({ estoqueId: z.string() });
 
 router.post('/estoque/descartar', requireAuth, asyncHandler(async (req: AuthRequest, res) => {

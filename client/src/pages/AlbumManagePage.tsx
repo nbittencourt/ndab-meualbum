@@ -167,6 +167,7 @@ function StickerCardAL1({
   onAbrirMenu,
   onFecharMenu,
   onRemover,
+  onAddRepetida,
 }: {
   item: FigurinhaGridItem;
   disabled: boolean;
@@ -177,6 +178,7 @@ function StickerCardAL1({
   onAbrirMenu?: () => void;
   onFecharMenu?: () => void;
   onRemover?: () => void;
+  onAddRepetida?: () => void;
 }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const isColada   = item.colada;
@@ -288,7 +290,29 @@ function StickerCardAL1({
 
         {/* Menu de contexto para figurinha colada */}
         {isColada && (
-          <div ref={menuRef} style={{ position: 'relative', height: '100%' }}>
+          <div ref={menuRef} style={{ position: 'relative', height: '100%', display: 'flex', gap: 2 }}>
+            <button
+              type="button"
+              onClick={onAddRepetida}
+              disabled={disabled}
+              aria-label={`Adicionar repetida da figurinha ${item.numero}`}
+              style={{
+                flex: 3,
+                height: '100%',
+                background: disabled ? 'rgba(10,9,7,0.05)' : 'rgba(10,9,7,0.06)',
+                border: `1px solid ${LINE}`,
+                fontFamily: FONT_D,
+                fontSize: isDesktop ? 8 : 7,
+                color: disabled ? 'rgba(10,9,7,0.3)' : MUTE,
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+            >
+              + Repetidas
+            </button>
             <button
               type="button"
               onClick={menuAberto ? onFecharMenu : onAbrirMenu}
@@ -296,7 +320,7 @@ function StickerCardAL1({
               aria-haspopup="menu"
               aria-expanded={menuAberto}
               style={{
-                width: '100%',
+                flex: 1,
                 height: '100%',
                 background: menuAberto ? 'rgba(10,9,7,0.08)' : 'transparent',
                 border: `1px solid ${LINE}`,
@@ -363,6 +387,7 @@ function SecaoGrid({
   onAbrirMenu,
   onFecharMenu,
   onRemover,
+  onAddRepetida,
 }: {
   secao: { _id: string; nome: string; figurinhas: FigurinhaGridItem[] };
   actionsDisabled: boolean;
@@ -372,6 +397,7 @@ function SecaoGrid({
   onAbrirMenu: (numero: string) => void;
   onFecharMenu: () => void;
   onRemover: (numero: string) => void;
+  onAddRepetida: (numero: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const total     = secao.figurinhas.length;
@@ -474,6 +500,7 @@ function SecaoGrid({
                   onAbrirMenu={() => onAbrirMenu(f.numero)}
                   onFecharMenu={onFecharMenu}
                   onRemover={() => onRemover(f.numero)}
+                  onAddRepetida={() => onAddRepetida(f.numero)}
                 />
               ))}
             </div>
@@ -648,6 +675,15 @@ export default function AlbumManagePage() {
       setRemoverNumero(null);
       setCodigoDigitado('');
       showToast('Colagem removida.');
+    },
+  });
+
+  const addRepetidaMut = useMutation({
+    mutationFn: (numero: string) => colarFigurinhasApi.adicionarRepetida(numero),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['estoque'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque', id] });
+      showToast('+1 repetida adicionada.');
     },
   });
 
@@ -860,6 +896,7 @@ export default function AlbumManagePage() {
             onAbrirMenu={(numero) => setMenuAbertoNumero(numero)}
             onFecharMenu={() => setMenuAbertoNumero(null)}
             onRemover={(numero) => { setRemoverNumero(numero); setCodigoDigitado(''); }}
+            onAddRepetida={(numero) => addRepetidaMut.mutate(numero)}
           />
         ))}
       </div>
