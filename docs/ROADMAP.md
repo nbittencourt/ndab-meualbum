@@ -62,17 +62,38 @@ Inclui o bug-fix da Issue #23 (limpeza da pilha — RN-AP17). Status final:
 
 ---
 
-### M2 — PWA e Performance (sprint seguinte)
+### M2 — Correções, Compartilhamento e Performance (sprint seguinte)
 
-Foco: experiência offline real e performance com catálogos grandes.
+> Revisado em 2026-06-22. O M2 original ("PWA e Performance", P1–P5) foi reavaliado contra
+> as specs e a implementação atual. Dois itens ficaram **obsoletos** após as issues #29/#30
+> (geração de PDF Puppeteer substituída por impressão client-side `window.print()`), e o
+> escopo de virtualização apontava para código fora de rota. O milestone passa a combinar
+> PWA/performance enxutos + 2 bugs (#3, #35) e 2 features (#39, #43).
+> Plano de implementação detalhado: [`docs/sprint/20260622_plano-m2-issues-3-35-39-43.md`](sprint/20260622_plano-m2-issues-3-35-39-43.md).
 
-| # | Item | Arquivo(s) | Notas |
+**Foco:** descontinuar o OCR, corrigir o status de figurinha colada, compartilhamento de
+faltantes por link público e ganhos de PWA/performance ainda pendentes.
+
+#### Bugs e features (issues)
+
+| # | Item | Arquivo(s) principais | Notas |
 |---|------|-----------|-------|
-| P1 | `runtimeCaching` no Workbox para GETs de catálogo/álbuns (stale-while-revalidate) | `client/vite.config.ts` | RN-AP29-31 já preveem offline |
-| P2 | Background Sync para pilha pendente (fila local offline → sync ao reconectar) | `client/src/pages/AbrirPacotinhosPage.tsx` + SW | RN-AP29-31 |
-| P3 | Virtualização da lista de estoque em `ColarFigurinhasPage` | `client/src/pages/ColarFigurinhasPage.tsx` | Catálogo tem ~994 itens |
-| P4 | Limitar concorrência do Puppeteer no PDF + cache de resultado | `server/src/routes/albums.ts` (rota `/pdf`) | Risco de memória no Cloud Run |
-| P5 | Validar PDF/UA (tagged PDF) na geração de faltantes | RN-AL19 | Acessibilidade do PDF |
+| #3 | **Descontinuar OCR/câmera.** Remover `CameraModal`, dep `tesseract.js`, modo "Fotografar" e botões "Abrir câmera"; MFN passa a ser só digitação | `client/src/components/CameraModal.tsx`, `client/src/pages/FigurinhasPage.tsx`, `client/package.json` | Decisão do dono no issue: OCR não é necessidade; remover, não consertar. Atualizar specs (AP + CF) e `CLAUDE.md` |
+| #35 | **Status de figurinha colada.** `GET /estoque` sem `albumId` marca tudo como "Pode colar"; computar status agregado por tipo de álbum e expor pills "colada" por álbum na seleção | `server/src/routes/colar-figurinhas.ts`, `client/src/pages/FigurinhasPage.tsx`, `shared/src/types/sticker.ts` | Botão "Colar" permanece (colar por cima — RN-CF08/CF09); só o status textual é corrigido |
+| #43 | **"+ Repetidas" rápido.** Card colado no grid AL1 ganha botão "+ Repetidas" (3/4) à esquerda do menu `⋮` (1/4); incrementa o bolo de repetidas | `client/src/pages/AlbumManagePage.tsx`, `server/src/routes/colar-figurinhas.ts` (novo endpoint, espelho de `estoque/descartar`) | Reusa padrão de mutation/invalidations de `['estoque']` |
+| #39 | **Compartilhar faltantes por link.** Botão gera link único (UUID **persistido/reutilizado**) → página pública sem auth com a lista de faltantes (layout de impressão) | `server/src/models/Album.ts` (`shareToken`), nova rota pública `GET /public/faltantes/:token`, `App.tsx` (rota pública), `ListaFigurinhasModal` (extrair layout) | **Pré-requisito LGPD:** página pública sem PII + token revogável; decisão registrada na spec antes de codar |
+
+#### PWA / Performance (reavaliados)
+
+| # | Item | Arquivo(s) | Status |
+|---|------|-----------|-------|
+| P1 | `runtimeCaching` no Workbox para GETs de catálogo/álbuns (stale-while-revalidate) | `client/vite.config.ts` | **Mantido** — hoje só há `globPatterns` (precache de assets), sem cache de API |
+| P2 | Background Sync para pilha pendente (fila offline → sync ao reconectar) | `client/src/pages/FigurinhasPage.tsx` + SW | **Opcional** — pilha já persiste no backend (`pilha/sincronizar`); ganho incremental menor |
+| P3 | Virtualização de lista longa (~994 itens) | `client/src/components/ListaFigurinhasModal.tsx`, `client/src/pages/AlbumManagePage.tsx` | **Re-escopado** — `ColarFigurinhasPage` está fora de rota (`/colar` redireciona); a lista pesada é o catálogo no popup/grid |
+| ~~P4~~ | ~~Limitar concorrência do Puppeteer no PDF~~ | — | **Obsoleto** — não há Puppeteer nem rota de PDF; PDF foi substituído por `window.print()` (#29/#30) |
+| ~~P5~~ | ~~Validar PDF/UA (tagged PDF)~~ | — | **Obsoleto** — sem geração de PDF server-side; acessibilidade da impressão já coberta por `window.print` + `aria-hidden` (RN-AL27) |
+
+**Sequenciamento sugerido:** #3 → #35 → #43 → #39 → P1/P3.
 
 ---
 
