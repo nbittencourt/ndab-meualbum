@@ -106,24 +106,32 @@ function RepetidaRow({
           <p className="text-sm font-body text-red-dark">Nenhum álbum ativo.</p>
         ) : (
           <div className="flex flex-col gap-2 mb-4" role="radiogroup" aria-label="Selecionar álbum">
-            {ativos.map((a) => (
-              <button
-                key={a._id}
-                role="radio"
-                aria-checked={albumId === a._id}
-                className={`text-left p-3 border-2 font-body text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
-                  albumId === a._id ? 'border-ink bg-ink text-white' : 'border-ink/30 bg-white text-ink hover:border-ink'
-                }`}
-                onClick={() => setAlbumId(a._id)}
-              >
-                <span>{a.nomePersonalizado || a.tipoAlbum.nome}</span>
-                {a.variante && (
-                  <span className="block text-xs opacity-70">
-                    {VARIANT_LABELS[a.variante as keyof typeof VARIANT_LABELS] ?? a.variante}
+            {ativos.map((a) => {
+              const jaColada = item.coladaEm?.includes(a._id);
+              return (
+                <button
+                  key={a._id}
+                  role="radio"
+                  aria-checked={albumId === a._id}
+                  className={`text-left p-3 border-2 font-body text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
+                    albumId === a._id ? 'border-ink bg-ink text-white' : 'border-ink/30 bg-white text-ink hover:border-ink'
+                  }`}
+                  onClick={() => setAlbumId(a._id)}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{a.nomePersonalizado || a.tipoAlbum.nome}</span>
+                    {jaColada && (
+                      <PilhaTag bg="rgba(232,155,12,0.15)" color="#E89B0C">colada</PilhaTag>
+                    )}
                   </span>
-                )}
-              </button>
-            ))}
+                  {a.variante && (
+                    <span className="block text-xs opacity-70">
+                      {VARIANT_LABELS[a.variante as keyof typeof VARIANT_LABELS] ?? a.variante}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
         <div className="flex gap-2">

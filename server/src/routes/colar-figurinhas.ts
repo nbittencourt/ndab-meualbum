@@ -18,22 +18,38 @@ router.get('/estoque', requireAuth, asyncHandler(async (req: AuthRequest, res) =
     .populate({ path: 'figurinhaId', model: Sticker })
     .lean();
 
-  let coladas: Set<string> = new Set();
+  // coladaMap: figurinhaId → albumId[]
+  const coladaMap = new Map<string, string[]>();
   if (albumId && Types.ObjectId.isValid(albumId as string)) {
     const docs = await FigurinhaColada.find({ albumId: new Types.ObjectId(albumId as string) }).lean();
-    coladas = new Set(docs.map((d) => String(d.figurinhaId)));
+    docs.forEach((d) => coladaMap.set(String(d.figurinhaId), [albumId as string]));
+  } else {
+    const albums = await Album.find({ usuarioId, arquivadoEm: null }).lean();
+    if (albums.length > 0) {
+      const docs = await FigurinhaColada.find({ albumId: { $in: albums.map((a) => a._id) } }).lean();
+      docs.forEach((d) => {
+        const key = String(d.figurinhaId);
+        const aId = String(d.albumId);
+        const list = coladaMap.get(key);
+        if (list) list.push(aId);
+        else coladaMap.set(key, [aId]);
+      });
+    }
   }
 
   const itens = estoque
     .filter((e) => e.figurinhaId)
     .map((e) => {
       const fig = e.figurinhaId as any;
-      const elegibilidade = coladas.has(String(fig._id)) ? 'JA_COLADA' : 'PODE_COLAR';
+      const figId = String(fig._id);
+      const albumsColados = coladaMap.get(figId) ?? [];
+      const elegibilidade = albumsColados.length > 0 ? 'JA_COLADA' : 'PODE_COLAR';
       return {
         _id: String(e._id),
-        figurinha: { _id: String(fig._id), number: fig.number, subject: fig.subject, secaoId: String(fig.secaoId) },
+        figurinha: { _id: figId, number: fig.number, subject: fig.subject, secaoId: String(fig.secaoId) },
         quantidade: e.quantidade,
         elegibilidade,
+        coladaEm: albumsColados,
       };
     })
     .filter((e) => {
