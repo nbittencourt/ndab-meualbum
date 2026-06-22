@@ -12,10 +12,12 @@ const albumSchema = new Schema(
     },
     nomePersonalizado: { type: String, trim: true, default: null, maxlength: 60 },
     arquivadoEm: { type: Date, default: null },
+    shareToken: { type: String, default: null },
   },
   { timestamps: { createdAt: 'criadoEm', updatedAt: false } }
 );
 
 albumSchema.index({ usuarioId: 1, arquivadoEm: 1 });
+albumSchema.index({ shareToken: 1 }, { unique: true, sparse: true });
 
 export const Album = model('Album', albumSchema);

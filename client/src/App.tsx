@@ -21,6 +21,7 @@ import FigurinhasPage from '@/pages/FigurinhasPage';
 import SwapsPage from '@/pages/SwapsPage';
 import ProfilePage from '@/pages/ProfilePage';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage';
+import FaltantesPublicaPage from '@/pages/FaltantesPublicaPage';
 
 function RedirectFigurinhas() {
   const [params] = useSearchParams();
@@ -60,7 +61,7 @@ export default function App() {
   const [showCookieBanner, setShowCookieBanner] = useState(() => !hasValidConsent());
 
   useEffect(() => {
-    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password", "/politica-de-privacidade"];
+    const noAuthRoutes = ["/redefinir-senha", "/confirmar-cadastro", "/confirmar-email", "/register", "/forgot-password", "/politica-de-privacidade", "/faltam/"];
     if (noAuthRoutes.some((r) => location.pathname.startsWith(r))) {
       setReady();
     } else {
@@ -108,6 +109,7 @@ export default function App() {
             <Route path="/confirmar-cadastro" element={<EmailConfirmationPage />} />
             <Route path="/confirmar-email" element={<ConfirmEmailChangePage />} />
             <Route path="/politica-de-privacidade" element={<PoliticaPrivacidadePage />} />
+            <Route path="/faltam/:token" element={<FaltantesPublicaPage />} />
 
             {/* Protected routes */}
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

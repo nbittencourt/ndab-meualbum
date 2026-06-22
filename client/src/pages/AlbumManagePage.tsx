@@ -687,6 +687,14 @@ export default function AlbumManagePage() {
     },
   });
 
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const compartilharMut = useMutation({
+    mutationFn: () => albumsApi.compartilhar(id!),
+    onSuccess: ({ token }) => {
+      setShareUrl(`${window.location.origin}/faltam/${token}`);
+    },
+  });
+
   useEffect(() => {
     if (!data?.album) return;
     const nome = (data.album as any).nomePersonalizado || (data.album as any).tipoAlbum?.nome;
@@ -808,6 +816,27 @@ export default function AlbumManagePage() {
           Figurinhas que faltam
         </button>
 
+        {/* Compartilhar faltantes — gera link público */}
+        <button
+          type="button"
+          disabled={actionsDisabled || compartilharMut.isPending}
+          onClick={() => compartilharMut.mutate()}
+          style={{
+            padding: '10px 20px',
+            background: '#fff',
+            color: INK,
+            border: `1.5px solid ${INK}`,
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: (actionsDisabled || compartilharMut.isPending) ? 'not-allowed' : 'pointer',
+            opacity: (actionsDisabled || compartilharMut.isPending) ? 0.5 : 1,
+          }}
+        >
+          {compartilharMut.isPending ? 'Gerando…' : 'Compartilhar'}
+        </button>
+
         {/* Arquivar — empurrado à direita no desktop */}
         {!confirmarArquivar && (
           <button
@@ -854,6 +883,42 @@ export default function AlbumManagePage() {
           </button>
         )}
       </div>
+
+      {/* Painel de link compartilhado */}
+      {shareUrl && (
+        <div className="px-4 lg:px-6 pt-3">
+          <div style={{ border: `1.5px solid ${INK}`, background: '#FBF8EE', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontFamily: FONT_M, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: MUTE }}>
+              Link de compartilhamento
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <input
+                readOnly
+                value={shareUrl}
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+                style={{ flex: 1, minWidth: 0, padding: '6px 10px', border: `1px solid ${LINE}`, fontFamily: FONT_M, fontSize: 11, color: INK, background: '#fff', outline: 'none' }}
+              />
+              <button
+                type="button"
+                onClick={() => { navigator.clipboard.writeText(shareUrl); showToast('Link copiado!'); }}
+                style={{ padding: '7px 14px', background: INK, color: '#fff', border: `1.5px solid ${INK}`, fontFamily: FONT_D, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', cursor: 'pointer', flexShrink: 0 }}
+              >
+                Copiar
+              </button>
+              <button
+                type="button"
+                onClick={() => setShareUrl(null)}
+                style={{ padding: '7px 14px', background: '#fff', color: MUTE, border: `1px solid ${LINE}`, fontFamily: FONT_D, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', cursor: 'pointer', flexShrink: 0 }}
+              >
+                Fechar
+              </button>
+            </div>
+            <p style={{ fontFamily: FONT_M, fontSize: 9, color: MUTE, letterSpacing: '0.06em' }}>
+              Qualquer pessoa com este link pode ver sua lista de faltantes. Não inclui dados pessoais.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Painel de confirmação de arquivamento (separado da barra) */}
       {confirmarArquivar && (

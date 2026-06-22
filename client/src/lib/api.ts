@@ -122,6 +122,12 @@ export const albumsApi = {
 
   removerColada: (albumId: string, numero: string) =>
     request<{ ok: boolean }>(`/albums/${albumId}/colada/${encodeURIComponent(numero)}`, { method: 'DELETE' }),
+
+  compartilhar: (albumId: string) =>
+    request<{ token: string }>(`/albums/${albumId}/share`, { method: 'POST' }),
+
+  revogarCompartilhamento: (albumId: string) =>
+    request<{ ok: boolean }>(`/albums/${albumId}/share`, { method: 'DELETE' }),
 };
 
 export const profileApi = {
@@ -246,6 +252,14 @@ export const privacidadeApi = {
       body: JSON.stringify(prefs),
       skipAuthRedirect: true,
     }),
+};
+
+export const publicApi = {
+  getFaltantes: (token: string) =>
+    request<{ albumNome: string; secoes: Array<{ _id: string; nome: string; figurinhas: Array<{ _id: string; numero: string; colada: boolean }> }> }>(
+      `/public/faltantes/${encodeURIComponent(token)}`,
+      { skipAuthRedirect: true }
+    ),
 };
 
 export { ApiError };
