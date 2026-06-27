@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { publicApi } from '@/lib/api';
+import { statusFigurinha } from '@/lib/figurinhaStatus';
 
 const INK  = '#0A0907';
 const RED  = '#E5142A';
@@ -10,14 +11,21 @@ const MUTE = 'rgba(10,9,7,0.55)';
 const FONT_D = '"Archivo Black", sans-serif';
 const FONT_M = '"Geist Mono", "Courier New", monospace';
 
-function Cell({ numero, colada }: { numero: string; colada: boolean }) {
-  const style: React.CSSProperties = colada
-    ? { background: 'rgba(10,145,69,0.15)', border: '1px solid rgba(10,145,69,0.48)', color: GREEN }
-    : { background: 'transparent', border: '1.5px dashed rgba(10,9,7,0.5)', color: 'rgba(10,9,7,0.8)' };
+type FigPublica = { _id: string; numero: string; colada: boolean; quantidade: number };
+
+function Cell({ fig }: { fig: FigPublica }) {
+  const status = statusFigurinha({ ...fig, _id: fig._id, nome: '' });
+  const style: React.CSSProperties =
+    status === 'r'
+      ? { background: 'rgba(229,20,42,0.15)', border: '1px solid rgba(229,20,42,0.48)', color: RED, borderRadius: 3 }
+      : status === 'c'
+      ? { background: 'rgba(10,145,69,0.15)', border: '1px solid rgba(10,145,69,0.48)', color: GREEN }
+      : { background: 'transparent', border: '1.5px dashed rgba(10,9,7,0.5)', color: 'rgba(10,9,7,0.8)' };
+  const label = status === 'r' ? 'repetida' : status === 'c' ? 'colada' : 'faltante';
   return (
     <div
-      title={`${numero} — ${colada ? 'colada' : 'faltante'}`}
-      aria-label={`${numero} ${colada ? 'colada' : 'faltante'}`}
+      title={`${fig.numero} — ${label}`}
+      aria-label={`${fig.numero} ${label}`}
       style={{
         height: 20,
         display: 'flex',
@@ -28,13 +36,13 @@ function Cell({ numero, colada }: { numero: string; colada: boolean }) {
         ...style,
       }}
     >
-      {numero}
+      {fig.numero}
     </div>
   );
 }
 
-function SecaoBlock({ secao }: { secao: { _id: string; nome: string; figurinhas: Array<{ _id: string; numero: string; colada: boolean }> } }) {
-  const coladas = secao.figurinhas.filter((f) => f.colada).length;
+function SecaoBlock({ secao }: { secao: { _id: string; nome: string; figurinhas: FigPublica[] } }) {
+  const coladas = secao.figurinhas.filter((f) => statusFigurinha({ ...f, _id: f._id, nome: '' }) === 'c').length;
   const total = secao.figurinhas.length;
   return (
     <section aria-label={secao.nome}>
@@ -62,7 +70,7 @@ function SecaoBlock({ secao }: { secao: { _id: string; nome: string; figurinhas:
         background: '#fff',
       }}>
         {secao.figurinhas.map((f) => (
-          <Cell key={f._id} numero={f.numero} colada={f.colada} />
+          <Cell key={f._id} fig={f} />
         ))}
       </div>
     </section>
@@ -102,8 +110,10 @@ export default function FaltantesPublicaPage() {
 
   const { albumNome, secoes } = data;
   const todas = secoes.flatMap((s) => s.figurinhas);
-  const totalColadas = todas.filter((f) => f.colada).length;
-  const totalFaltantes = todas.length - totalColadas;
+  const statusDeCada = todas.map((f) => statusFigurinha({ ...f, _id: f._id, nome: '' }));
+  const totalColadas = statusDeCada.filter((s) => s === 'c').length;
+  const totalRepetidas = statusDeCada.filter((s) => s === 'r').length;
+  const totalFaltantes = statusDeCada.filter((s) => s === 'f').length;
   const pct = todas.length > 0 ? Math.round((totalColadas / todas.length) * 1000) / 10 : 0;
 
   return (
@@ -128,6 +138,12 @@ export default function FaltantesPublicaPage() {
           <span style={{ color: GREEN, fontSize: 11 }}>■</span>
           <strong style={{ color: '#fff' }}>{totalColadas}</strong> coladas
         </span>
+        {totalRepetidas > 0 && (
+          <span style={{ fontFamily: FONT_M, fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ color: RED, fontSize: 11, borderRadius: 2 }}>■</span>
+            <strong style={{ color: '#fff' }}>{totalRepetidas}</strong> repetidas
+          </span>
+        )}
         <span style={{ fontFamily: FONT_M, fontSize: 10, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 4 }}>
           <span style={{ fontSize: 11 }}>□</span>
           <strong style={{ color: '#fff' }}>{totalFaltantes}</strong> faltantes

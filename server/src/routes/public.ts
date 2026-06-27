@@ -3,6 +3,7 @@ import { Album } from '../models/Album.js';
 import { Secao } from '../models/Secao.js';
 import { Sticker } from '../models/Sticker.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
+import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
@@ -31,19 +32,26 @@ router.get('/faltantes/:token', asyncHandler(async (req, res) => {
 
   const numSufixo = (s: string) => parseInt(s.replace(/^[^\d]+/, ''), 10) || 0;
 
-  const [figurinhasBruto, coladas] = await Promise.all([
+  const [figurinhasBruto, coladas, estoqueItens] = await Promise.all([
     Sticker.find({ secaoId: { $in: secaoIds } }).lean(),
     FigurinhaColada.find({ albumId: album._id }).lean(),
+    EstoqueFigurinha.find({ usuarioId: (album as any).usuarioId }).lean(),
   ]);
   const figurinhas = figurinhasBruto.sort((a: any, b: any) => numSufixo(a.number) - numSufixo(b.number));
 
   const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
+  const estoqueMap = new Map(estoqueItens.map((e) => [String(e.figurinhaId), e.quantidade]));
 
   const figurinhasPorSecao = new Map<string, any[]>();
   for (const f of figurinhas) {
     const key = String(f.secaoId);
     const arr = figurinhasPorSecao.get(key) ?? [];
-    arr.push({ _id: String(f._id), numero: f.number, colada: coladasSet.has(String(f._id)) });
+    arr.push({
+      _id: String(f._id),
+      numero: f.number,
+      colada: coladasSet.has(String(f._id)),
+      quantidade: estoqueMap.get(String(f._id)) ?? 0,
+    });
     figurinhasPorSecao.set(key, arr);
   }
 

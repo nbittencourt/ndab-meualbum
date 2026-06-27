@@ -683,6 +683,7 @@ export default function AlbumManagePage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['estoque'] });
       queryClient.invalidateQueries({ queryKey: ['estoque', id] });
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', id] });
       showToast('+1 repetida adicionada.');
     },
   });

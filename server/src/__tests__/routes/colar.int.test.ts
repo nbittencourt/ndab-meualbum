@@ -164,6 +164,42 @@ describe('Rotas de Colar Figurinhas (estoque)', () => {
     expect(res.status).toBe(404);
   });
 
+  it('colar/direta depois +Repetidas reflete quantidade=1 em GET /albums/:id/figurinhas — Bug1', async () => {
+    const { user, cookie } = await criarUsuarioAutenticado();
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA' });
+    const figurinha = seed.stickers[0]; // FWC1
+
+    // Passo 1: colar figurinha diretamente (sem estoque)
+    await request(app)
+      .post('/api/v1/colar/direta')
+      .set('Cookie', cookie)
+      .send({ albumId: String(album._id), figurinhaNumero: figurinha.number })
+      .expect(200);
+
+    // Passo 2: GET /figurinhas deve retornar colada=true, quantidade=0 ("0×")
+    const antes = await request(app)
+      .get(`/api/v1/albums/${album._id}/figurinhas`)
+      .set('Cookie', cookie)
+      .expect(200);
+    const gridAntes = antes.body.secoes[0].figurinhas.find((f: any) => f.numero === figurinha.number);
+    expect(gridAntes).toMatchObject({ colada: true, quantidade: 0 });
+
+    // Passo 3: adicionar 1 repetida ao estoque
+    await request(app)
+      .post('/api/v1/estoque/adicionar')
+      .set('Cookie', cookie)
+      .send({ figurinhaNumero: figurinha.number })
+      .expect(200);
+
+    // Passo 4: GET /figurinhas deve refletir quantidade=1 ("1×")
+    const depois = await request(app)
+      .get(`/api/v1/albums/${album._id}/figurinhas`)
+      .set('Cookie', cookie)
+      .expect(200);
+    const gridDepois = depois.body.secoes[0].figurinhas.find((f: any) => f.numero === figurinha.number);
+    expect(gridDepois).toMatchObject({ colada: true, quantidade: 1 });
+  });
+
   describe('POST /estoque/descartar — #25', () => {
     it('decrementa a quantidade do item de estoque', async () => {
       const { user, cookie } = await criarUsuarioAutenticado();

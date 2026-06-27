@@ -18,6 +18,12 @@ const albumSchema = new Schema(
 );
 
 albumSchema.index({ usuarioId: 1, arquivadoEm: 1 });
-albumSchema.index({ shareToken: 1 }, { unique: true, sparse: true });
+// Partial em vez de sparse: o campo tem `default: null`, então existe em todos
+// os documentos e um índice sparse ainda indexaria as chaves null (E11000 em
+// múltiplos álbuns). O partial indexa apenas tokens reais (string).
+albumSchema.index(
+  { shareToken: 1 },
+  { unique: true, partialFilterExpression: { shareToken: { $type: 'string' } } }
+);
 
 export const Album = model('Album', albumSchema);
