@@ -32,4 +32,5 @@ export type ElegibilidadeStatus = 'PODE_COLAR' | 'JA_COLADA' | 'FORA_CATALOGO';
 export interface EstoqueItem extends EstoqueFigurinha {
   figurinha: Sticker;
   elegibilidade: ElegibilidadeStatus;
+  coladaEm?: string[];
 }

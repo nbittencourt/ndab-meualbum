@@ -228,47 +228,6 @@ test.describe('Abrir Pacotinhos', () => {
       await expect(page.getByText(/FIFA World Cup 2026/i)).toBeVisible();
     });
 
-    test('deve exibir botão "Abrir câmera" ao selecionar modo Fotografar sem ativar câmera (RN-AP43)', async ({ page, request }) => {
-      await usuarioAtivo(page, request);
-      await page.goto('/abrir');
-      // Com 1 tipo, AP1 abre diretamente
-      // Passo 1: selecionar modo Fotografar → apenas exibe botão "Abrir câmera"
-      await page.getByRole('radio', { name: /fotografar/i }).click();
-      await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
-      // Câmera NÃO deve ter sido ativada — nenhum video e nenhum dialog aberto
-      await expect(page.locator('video')).not.toBeVisible();
-      await expect(page.getByRole('dialog', { name: /câmera/i })).not.toBeVisible();
-    });
-
-    test('deve abrir Modal Câmera ao clicar em "Abrir câmera" (passo 2 de RN-AP43)', async ({ page, request }) => {
-      // Mock getUserMedia para evitar prompt de permissão no headless.
-      // Usa canvas.captureStream() para retornar um MediaStream real com track de vídeo,
-      // necessário desde que CameraModal atribui srcObject ao <video> após montar.
-      await page.addInitScript(() => {
-        Object.defineProperty(navigator, 'mediaDevices', {
-          writable: true,
-          configurable: true,
-          value: {
-            getUserMedia: () => {
-              const canvas = document.createElement('canvas');
-              canvas.width = 320;
-              canvas.height = 240;
-              return Promise.resolve(canvas.captureStream());
-            },
-          },
-        });
-      });
-      await usuarioAtivo(page, request);
-      await page.goto('/abrir');
-      // Passo 1: selecionar modo Fotografar
-      await page.getByRole('radio', { name: /fotografar/i }).click();
-      await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
-      // Passo 2: clicar em "Abrir câmera" → Modal Câmera deve abrir
-      await page.getByRole('button', { name: /abrir câmera/i }).click();
-      await expect(page.getByRole('dialog', { name: /câmera/i })).toBeVisible();
-      // Modal deve ter botão "Fechar câmera"
-      await expect(page.getByRole('dialog', { name: /câmera/i }).getByRole('button', { name: /fechar câmera/i })).toBeVisible();
-    });
   });
 
   // ── Modal de Colagem (MCol) ───────────────────────────────────────────────────

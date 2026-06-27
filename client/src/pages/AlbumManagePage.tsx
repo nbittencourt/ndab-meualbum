@@ -167,6 +167,7 @@ function StickerCardAL1({
   onAbrirMenu,
   onFecharMenu,
   onRemover,
+  onAddRepetida,
 }: {
   item: FigurinhaGridItem;
   disabled: boolean;
@@ -177,6 +178,7 @@ function StickerCardAL1({
   onAbrirMenu?: () => void;
   onFecharMenu?: () => void;
   onRemover?: () => void;
+  onAddRepetida?: () => void;
 }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const isColada   = item.colada;
@@ -288,7 +290,29 @@ function StickerCardAL1({
 
         {/* Menu de contexto para figurinha colada */}
         {isColada && (
-          <div ref={menuRef} style={{ position: 'relative', height: '100%' }}>
+          <div ref={menuRef} style={{ position: 'relative', height: '100%', display: 'flex', gap: 2 }}>
+            <button
+              type="button"
+              onClick={onAddRepetida}
+              disabled={disabled}
+              aria-label={`Adicionar repetida da figurinha ${item.numero}`}
+              style={{
+                flex: 3,
+                height: '100%',
+                background: disabled ? 'rgba(10,9,7,0.05)' : 'rgba(10,9,7,0.06)',
+                border: `1px solid ${LINE}`,
+                fontFamily: FONT_D,
+                fontSize: isDesktop ? 8 : 7,
+                color: disabled ? 'rgba(10,9,7,0.3)' : MUTE,
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+            >
+              + Repetidas
+            </button>
             <button
               type="button"
               onClick={menuAberto ? onFecharMenu : onAbrirMenu}
@@ -296,7 +320,7 @@ function StickerCardAL1({
               aria-haspopup="menu"
               aria-expanded={menuAberto}
               style={{
-                width: '100%',
+                flex: 1,
                 height: '100%',
                 background: menuAberto ? 'rgba(10,9,7,0.08)' : 'transparent',
                 border: `1px solid ${LINE}`,
@@ -363,6 +387,7 @@ function SecaoGrid({
   onAbrirMenu,
   onFecharMenu,
   onRemover,
+  onAddRepetida,
 }: {
   secao: { _id: string; nome: string; figurinhas: FigurinhaGridItem[] };
   actionsDisabled: boolean;
@@ -372,6 +397,7 @@ function SecaoGrid({
   onAbrirMenu: (numero: string) => void;
   onFecharMenu: () => void;
   onRemover: (numero: string) => void;
+  onAddRepetida: (numero: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const total     = secao.figurinhas.length;
@@ -474,6 +500,7 @@ function SecaoGrid({
                   onAbrirMenu={() => onAbrirMenu(f.numero)}
                   onFecharMenu={onFecharMenu}
                   onRemover={() => onRemover(f.numero)}
+                  onAddRepetida={() => onAddRepetida(f.numero)}
                 />
               ))}
             </div>
@@ -651,6 +678,24 @@ export default function AlbumManagePage() {
     },
   });
 
+  const addRepetidaMut = useMutation({
+    mutationFn: (numero: string) => colarFigurinhasApi.adicionarRepetida(numero),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['estoque'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque', id] });
+      queryClient.invalidateQueries({ queryKey: ['album-figurinhas', id] });
+      showToast('+1 repetida adicionada.');
+    },
+  });
+
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const compartilharMut = useMutation({
+    mutationFn: () => albumsApi.compartilhar(id!),
+    onSuccess: ({ token }) => {
+      setShareUrl(`${window.location.origin}/faltam/${token}`);
+    },
+  });
+
   useEffect(() => {
     if (!data?.album) return;
     const nome = (data.album as any).nomePersonalizado || (data.album as any).tipoAlbum?.nome;
@@ -772,6 +817,27 @@ export default function AlbumManagePage() {
           Figurinhas que faltam
         </button>
 
+        {/* Compartilhar faltantes — gera link público */}
+        <button
+          type="button"
+          disabled={actionsDisabled || compartilharMut.isPending}
+          onClick={() => compartilharMut.mutate()}
+          style={{
+            padding: '10px 20px',
+            background: '#fff',
+            color: INK,
+            border: `1.5px solid ${INK}`,
+            fontFamily: FONT_D,
+            fontSize: 12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            cursor: (actionsDisabled || compartilharMut.isPending) ? 'not-allowed' : 'pointer',
+            opacity: (actionsDisabled || compartilharMut.isPending) ? 0.5 : 1,
+          }}
+        >
+          {compartilharMut.isPending ? 'Gerando…' : 'Compartilhar'}
+        </button>
+
         {/* Arquivar — empurrado à direita no desktop */}
         {!confirmarArquivar && (
           <button
@@ -819,6 +885,42 @@ export default function AlbumManagePage() {
         )}
       </div>
 
+      {/* Painel de link compartilhado */}
+      {shareUrl && (
+        <div className="px-4 lg:px-6 pt-3">
+          <div style={{ border: `1.5px solid ${INK}`, background: '#FBF8EE', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontFamily: FONT_M, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: MUTE }}>
+              Link de compartilhamento
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <input
+                readOnly
+                value={shareUrl}
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+                style={{ flex: 1, minWidth: 0, padding: '6px 10px', border: `1px solid ${LINE}`, fontFamily: FONT_M, fontSize: 11, color: INK, background: '#fff', outline: 'none' }}
+              />
+              <button
+                type="button"
+                onClick={() => { navigator.clipboard.writeText(shareUrl); showToast('Link copiado!'); }}
+                style={{ padding: '7px 14px', background: INK, color: '#fff', border: `1.5px solid ${INK}`, fontFamily: FONT_D, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', cursor: 'pointer', flexShrink: 0 }}
+              >
+                Copiar
+              </button>
+              <button
+                type="button"
+                onClick={() => setShareUrl(null)}
+                style={{ padding: '7px 14px', background: '#fff', color: MUTE, border: `1px solid ${LINE}`, fontFamily: FONT_D, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', cursor: 'pointer', flexShrink: 0 }}
+              >
+                Fechar
+              </button>
+            </div>
+            <p style={{ fontFamily: FONT_M, fontSize: 9, color: MUTE, letterSpacing: '0.06em' }}>
+              Qualquer pessoa com este link pode ver sua lista de faltantes. Não inclui dados pessoais.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Painel de confirmação de arquivamento (separado da barra) */}
       {confirmarArquivar && (
         <div className="px-4 lg:px-6 pt-3">
@@ -860,6 +962,7 @@ export default function AlbumManagePage() {
             onAbrirMenu={(numero) => setMenuAbertoNumero(numero)}
             onFecharMenu={() => setMenuAbertoNumero(null)}
             onRemover={(numero) => { setRemoverNumero(numero); setCodigoDigitado(''); }}
+            onAddRepetida={(numero) => addRepetidaMut.mutate(numero)}
           />
         ))}
       </div>
