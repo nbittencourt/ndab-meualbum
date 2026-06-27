@@ -121,7 +121,6 @@ Canonical building blocks — **reuse these, do not reimplement locally**:
 
 - **Album variant styling**: `client/src/lib/albumVariant.ts` is the single source for `VARIANT_STYLES` and `VARIANT_LABELS`. Any component rendering an album card/badge must import from `@/lib/albumVariant` — never copy the tables locally.
 - **Cookie consent**: read/write consent only through `client/src/lib/cookieConsent.ts` (`getConsent()`, `hasValidConsent()`, `saveConsent()`). Bump `CURRENT_POLICY_VERSION` manually when the privacy policy changes materially.
-- **Camera capture + OCR**: use the reusable `client/src/components/CameraModal.tsx`. It takes `onConfirm(numero): Promise<void>` and a customizable `nextLabel`. OCR runs **client-side** (Tesseract.js via dynamic `import()` to keep the initial bundle clean); never send camera frames or images to the backend.
 
 ### Tests
 

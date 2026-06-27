@@ -110,16 +110,6 @@ test.describe('Colar Figurinhas (migrado para /figurinhas)', () => {
     await expect(page.getByRole('dialog').getByRole('button').filter({ hasText: /^Fechar$/ })).toBeVisible();
   });
 
-  test('câmera não ativa automaticamente ao abrir MFN — requer ação explícita (RN-CF27)', async ({ page, request }) => {
-    await usuarioAtivo(page, request);
-    const tipoId = await getTipoAlbumId(request);
-    const album = await criarAlbum(request, tipoId, 'BROCHURA');
-    await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
-    await page.getByRole('button', { name: /figurinha não registrada/i }).click();
-    await expect(page.getByRole('button', { name: /abrir câmera/i })).toBeVisible();
-    await expect(page.locator('video')).not.toBeVisible();
-  });
-
   test('não deve alterar estoque ao colar via MFN (RN-CF11)', async ({ page, request }) => {
     const { identificador } = await usuarioAtivo(page, request);
     const tipoId = await getTipoAlbumId(request);

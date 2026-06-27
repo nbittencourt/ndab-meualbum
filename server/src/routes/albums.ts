@@ -299,6 +299,44 @@ router.patch('/:id/desarquivar', requireAuth, asyncHandler(async (req: AuthReque
   res.json({ album: serializeAlbum(album, tipo, percent) });
 }));
 
+router.post('/:id/share', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+  const id = req.params.id as string;
+  if (!Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: 'ID inválido' });
+    return;
+  }
+  const album = await Album.findOne({ _id: id, usuarioId: new Types.ObjectId(req.userId) }).lean();
+  if (!album) {
+    res.status(404).json({ error: 'Álbum não encontrado' });
+    return;
+  }
+  if ((album as any).shareToken) {
+    res.json({ token: (album as any).shareToken });
+    return;
+  }
+  const { randomUUID } = await import('crypto');
+  const token = randomUUID();
+  await Album.updateOne({ _id: album._id }, { shareToken: token });
+  res.json({ token });
+}));
+
+router.delete('/:id/share', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
+  const id = req.params.id as string;
+  if (!Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: 'ID inválido' });
+    return;
+  }
+  const result = await Album.updateOne(
+    { _id: id, usuarioId: new Types.ObjectId(req.userId) },
+    { shareToken: null }
+  );
+  if (result.matchedCount === 0) {
+    res.status(404).json({ error: 'Álbum não encontrado' });
+    return;
+  }
+  res.json({ ok: true });
+}));
+
 router.delete('/:id/colada/:numero', requireAuth, asyncHandler(async (req: AuthRequest, res) => {
   const id = req.params.id as string;
   const numero = req.params.numero as string;

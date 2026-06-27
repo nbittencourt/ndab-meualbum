@@ -12,6 +12,7 @@ import colarFigurinhasRouter from './routes/colar-figurinhas.js';
 import profileRouter from './routes/profile.js';
 import privacidadeRouter from './routes/privacidade.js';
 import adminRouter from './routes/admin.js';
+import publicRouter from './routes/public.js';
 import seedRouter from './routes/seed.js';
 import testRouter from './routes/test.routes.js';
 
@@ -46,6 +47,7 @@ export function createApp(): express.Express {
   app.use('/api/v1/profile', profileRouter);
   app.use('/api/v1', privacidadeRouter);
   app.use('/api/v1/admin', adminRouter);
+  app.use('/api/v1/public', publicRouter);
   if (process.env.NODE_ENV !== 'production') {
     app.use('/api/v1/seed', seedRouter);
   }
