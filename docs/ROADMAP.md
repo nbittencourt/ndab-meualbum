@@ -1,64 +1,57 @@
 # Roadmap de Produto — MeuAlbum Copa 2026
 
-> Documento vivo. Atualizado em 2026-06-13 com base em deep dive completo da aplicação.
-> Inclui também o tratamento da Issue #23 (pilha do Abrir Pacotinhos nunca limpa — RN-AP17), resolvida no M1.
+> Documento vivo. Atualizado em 2026-06-21 com base no roadmap anterior (2026-06-13) e nas issues abertas no GitHub (#3, #35, #38, #39).
+> Versão anterior arquivada em [`_hist/20260621/ROADMAP.md`](_hist/20260621/ROADMAP.md).
 > Hierarquia de fontes: design handoff > specs canônicas > implementação atual.
+> Cada milestone acionável tem um plano de sprint detalhado em [`docs/sprint/`](sprint/).
 
 ---
 
 ## Estado atual
 
-A aplicação cobre os fluxos principais: autenticação completa (cadastro com confirmação de e-mail, login, recuperação e alteração de senha/e-mail), gestão de álbuns (CRUD, variantes, arquivamento, PDF), Abrir Pacotinhos (pilha persistida no backend, câmera OCR client-side), Colar Figurinhas (estoque, colagem direta MFN), perfil (exportação LGPD, exclusão de conta) e consentimento de cookies. Cobertura de testes: 171 testes E2E em 11 specs Playwright.
+A aplicação cobre os fluxos principais: autenticação completa (cadastro com confirmação de e-mail, login, recuperação e alteração de senha/e-mail), gestão de álbuns (CRUD, variantes, arquivamento, popup de figurinhas que faltam com impressão A4), Abrir Pacotinhos (pilha persistida no backend, câmera OCR client-side), Colar Figurinhas (estoque, colagem direta, colagem rápida na AL1), perfil (exportação LGPD, exclusão de conta) e consentimento de cookies. O M1 (Qualidade e Conformidade) foi concluído em 2026-06-13.
+
+Quatro issues abertas no GitHub orientam o foco de curto prazo: dois bugs em funcionalidades já lançadas (câmera #3 e status de colagem #35), uma melhoria de compartilhamento (#39) e um item de higiene de build (#38).
 
 ---
 
-## Milestones
+## Visão geral dos milestones
 
-### M1 — Qualidade e Conformidade ✅ CONCLUÍDO (2026-06-13)
+| Milestone | Foco | Status | Sprint |
+|---|---|---|---|
+| M1 | Qualidade e Conformidade | ✅ Concluído (2026-06-13) | — |
+| M2 | Correção de Bugs Críticos (#3, #35) | 🔴 Prioridade máxima | [`20260621_plano-issues-3-35.md`](sprint/20260621_plano-issues-3-35.md) |
+| M3 | PWA, Performance & Higiene de Build (P1–P5, #38) | ⏳ Planejado | [`20260621_plano-pwa-performance.md`](sprint/20260621_plano-pwa-performance.md) |
+| M4 | Compartilhamento (#39) | ⏳ Planejado | [`20260621_plano-issue-39.md`](sprint/20260621_plano-issue-39.md) |
+| M5 | Sistema de Trocas (TR1–TR6) | 🔒 Bloqueado por spec + handoff | [`20260621_plano-sistema-trocas.md`](sprint/20260621_plano-sistema-trocas.md) |
+| M6 | Backlog de Novas Funcionalidades | 💤 Backlog | — |
+
+---
+
+## M1 — Qualidade e Conformidade ✅ CONCLUÍDO (2026-06-13)
 
 Foco: eliminar dívidas técnicas bloqueantes e garantir conformidade legal.
-Inclui o bug-fix da Issue #23 (limpeza da pilha — RN-AP17). Status final:
+Incluiu o bug-fix da Issue #23 (limpeza da pilha — RN-AP17). Status final:
 87 testes de integração no servidor + suíte E2E completa verdes.
 
-#### 1.1 — Dívidas de alta prioridade
+**Dívidas de alta prioridade:** N+1 query na Home/Álbuns → aggregation única (`server/src/lib/albumProgress.ts`); `VARIANT_STYLES` consolidado em `client/src/lib/albumVariant.ts`; `asyncHandler` em todas as rotas; paginação opt-in em `GET /albums` e `GET /estoque`; remoção de código morto (`PasswordResetToken`, `Collection`, `AlbumPage.tsx`).
 
-| # | Item | Status |
-|---|------|--------|
-| B1 | N+1 query na Home/Álbuns → aggregation única (`server/src/lib/albumProgress.ts`) | ✅ |
-| B2 | `VARIANT_STYLES` consolidado em `client/src/lib/albumVariant.ts` (+ gradiente prata alinhado ao handoff) | ✅ |
-| B3 | `asyncHandler` (`server/src/lib/asyncHandler.ts`) em todas as ~38 rotas | ✅ |
-| B4 | Paginação opt-in retrocompatível em `GET /albums` e `GET /estoque` | ✅ |
-| B5 | Validação de ObjectId — verificado: já presente em todas as rotas; sem ação | ✅ |
-| B6 | Código morto removido: `PasswordResetToken`, `Collection` (model+rota+tipos), `AlbumPage.tsx` | ✅ |
+**Conformidade LGPD:** purga com registro de eliminação (`POST /api/v1/admin/purga` + `server/src/lib/purga.ts`, `RegistroEliminacao`); página `/politica-de-privacidade`; documento LIA em `docs/legal/lia_analytics_logs.md`.
 
-#### 1.2 — Conformidade LGPD
+**Conformidade WCAG:** `tests/a11y/axe.spec.ts` sem violações AA; `tests/a11y/teclado.spec.ts` (skip link, foco em modal, banner); CTAs da Home como links estilizados.
 
-| # | Item | Status |
-|---|------|--------|
-| L1 | Purga com registro de eliminação: `POST /api/v1/admin/purga` + Cloud Scheduler (`server/src/lib/purga.ts`, `RegistroEliminacao`) | ✅ |
-| L2 | Página `/politica-de-privacidade` (`PoliticaPrivacidadePage.tsx`) com conteúdo mínimo da spec §7.2 | ✅ |
-| L3 | Documento LIA em `docs/legal/lia_analytics_logs.md` | ✅ |
+**Testes de integração do backend:** supertest + mongodb-memory-server; `createApp()` extraído; edge cases de exclusão/exportação LGPD.
 
-#### 1.3 — Conformidade WCAG
+---
 
-| # | Item | Status |
-|---|------|--------|
-| W1 | `tests/a11y/axe.spec.ts` (`@axe-core/playwright`) sem violações AA nas páginas principais + correções de contraste | ✅ |
-| W2 | `tests/a11y/teclado.spec.ts` — skip link, login, navegação, Esc/foco em modal, banner | ✅ |
-| W3 | CTAs da Home convertidos de `<Link><button>` para links estilizados | ✅ |
+## M2 — Correção de Bugs Críticos (NOVO — prioridade máxima)
 
-#### 1.4 — Testes de integração do backend
+Foco: corrigir bugs em funcionalidades já lançadas que quebram fluxos core de captura e colagem. Detalhamento em [`sprint/20260621_plano-issues-3-35.md`](sprint/20260621_plano-issues-3-35.md).
 
-| # | Item | Status |
-|---|------|--------|
-| T1 | supertest + mongodb-memory-server; `createApp()` extraído; rotas pilha/colar/álbuns/profile | ✅ |
-| T2 | Edge cases de exclusão de conta e exportação LGPD em `profile.int.test.ts` | ✅ |
-
-#### 1.0 — Bug Issue #23 (pilha nunca limpa)
-
-| # | Item | Status |
-|---|------|--------|
-| #23 | RN-AP17: pilha finalizada removida na reentrada; descarte explícito limpa COLADA/REPETIDA | ✅ |
+| # | Item | Arquivo(s) | Notas |
+|---|------|-----------|-------|
+| #3 | **Câmera não abre / OCR inválido** — vídeo preto após autorização e leitura fantasma (`"2"`) | `client/src/components/CameraModal.tsx` | `video.play()` explícito + gate por `loadedmetadata`; validar confiança/formato do Tesseract |
+| #35 | **Figurinha colada não reconhecida** — status "Pode colar" devendo ser "Colada"; pills por álbum | `server/src/routes/colar-figurinhas.ts`, `client/src/pages/ColarFigurinhasPage.tsx`, `client/src/components/StickerStatusBadge.tsx` | Estado de colagem agregado multi-álbum + pill por card na seleção |
 
 ---
 
@@ -95,16 +88,24 @@ faltantes por link público e ganhos de PWA/performance ainda pendentes.
 
 ---
 
-### M3 — Sistema de Trocas (feature principal pendente)
+## M4 — Compartilhamento
 
-Foco: única funcionalidade core faltando — já está no menu de navegação como "EM BREVE".
+Foco: compartilhar a lista de figurinhas que faltam por link público. É a **primeira fatia entregável do item N2** (compartilhamento social) — o restante de N2 (progresso público + imagem OG) segue no backlog M6. Detalhamento em [`sprint/20260621_plano-issue-39.md`](sprint/20260621_plano-issue-39.md).
 
-**Pré-requisitos antes de codar:**
+| # | Item | Notas |
+|---|------|-------|
+| #39 | **Compartilhar lista de faltantes** — botão gera link único (UUID) para página pública sem auth, como a lista de impressão; token **persistido** para reuso | `shareToken` em `Album`; `POST /albums/:id/share` + `GET /public/share/:token`; LGPD: expõe só faltantes, sem PII |
+
+---
+
+## M5 — Sistema de Trocas (feature principal pendente)
+
+Foco: única funcionalidade core faltando — já está no menu de navegação como "EM BREVE". Detalhamento em [`sprint/20260621_plano-sistema-trocas.md`](sprint/20260621_plano-sistema-trocas.md).
+
+**Pré-requisitos antes de codar (bloqueantes):**
 - Escrever `docs/spec_trocas.md` com regras de negócio
 - Criar design handoff em `docs/design_handoff/`
 - Definir modelo de dados (matching entre `EstoqueFigurinha` de dois usuários)
-
-**Escopo esperado:**
 
 | # | Item | Notas |
 |---|------|-------|
@@ -112,20 +113,20 @@ Foco: única funcionalidade core faltando — já está no menu de navegação c
 | TR2 | Busca de parceiro por `publicId` | Usuário informa o ID público do outro |
 | TR3 | Visualização de figurinhas que o parceiro precisa vs. o que você tem | Cross-query estoque × faltantes |
 | TR4 | Fluxo de proposta e aceite/recusa | Modal bilateral |
-| TR5 | Notificação de match (in-app inicialmente; Web Push no M4) | Toast / badge |
+| TR5 | Notificação de match (in-app inicialmente; Web Push no M6/N3) | Toast / badge |
 | TR6 | Testes E2E completos | `tests/trocas/trocas.spec.ts` |
 
 ---
 
-### M4 — Novas Funcionalidades (backlog)
+## M6 — Backlog de Novas Funcionalidades
 
-Itens a serem detalhados em spec antes de implementar.
+Itens a serem detalhados em spec antes de implementar. Cada um ganhará seu próprio plano de sprint quando tiver spec + handoff.
 
 | # | Item | Valor | Dependência |
 |---|------|-------|-------------|
 | N1 | **Estatísticas de progresso** — histórico de colagens/dia, projeção de conclusão, gráfico por seção | Alto | Dados já existem em `FigurinhaColada.coladaEm` |
-| N2 | **Compartilhamento social** — link público read-only do progresso (usa `publicId`), imagem OG gerada | Médio | — |
-| N3 | **Notificações push (Web Push)** — avisar match de troca, lembrete de sessão pendente | Médio | Requer M3 |
+| N2 | **Compartilhamento social (restante)** — progresso público read-only (usa `publicId`), imagem OG gerada | Médio | Link de faltantes já entregue em M4 |
+| N3 | **Notificações push (Web Push)** — avisar match de troca, lembrete de sessão pendente | Médio | Requer M5 |
 | N4 | **Busca/filtros avançados** — filtrar estoque e álbum por seção, país, raridade | Médio | Campos já existem em `Sticker` |
 | N5 | **Imagens de figurinhas** — avaliar CDN e implicações de licença antes de qualquer implementação | Alto (UX) | Decisão de produto + licenciamento |
 
@@ -133,12 +134,14 @@ Itens a serem detalhados em spec antes de implementar.
 
 ## Convenções para implementação
 
-- **TDD**: escrever/ajustar testes E2E antes de implementar (`tests/TESTS.md`)
+- **TDD**: escrever/ajustar testes antes de implementar — Vitest para lógica pura; Playwright para fluxos de tela (`tests/TESTS.md`)
+- **Planos de sprint**: cada bloco acionável tem um arquivo `docs/sprint/YYYYMMDD_plano-*.md` com diagnóstico, passos, testes e verificação
 - **Hierarquia de fontes**: design handoff > spec canônica > implementação
-- **Antes de codar nova feature**: spec em `/docs/spec_*.md` + design handoff
+- **Antes de codar nova feature**: spec em `/docs/spec_*.md` + design handoff; ao alterar regra, arquivar a spec anterior em `docs/_hist/AAAAMMDD/`
 - **Antes de rodar testes**: `npx kill-port 5173 && npx kill-port 3000`
 - **Policy version sync**: manter `CURRENT_POLICY_VERSION` em sync entre `client/src/lib/cookieConsent.ts` e `tests/support/fixtures.ts`
 - **VARIANT_STYLES**: sempre importar de `client/src/lib/albumVariant.ts` — nunca copiar localmente
+- **Câmera + OCR**: sempre via `client/src/components/CameraModal.tsx`; OCR roda client-side (Tesseract.js) — nunca enviar frames ao backend
 
 ---
 
