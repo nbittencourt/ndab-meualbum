@@ -69,4 +69,24 @@ describe('Rota pública GET /public/faltantes/:token — #39', () => {
     // Deve expor quantidade para que o cliente calcule statusFigurinha() corretamente
     expect(fig).toMatchObject({ colada: true, quantidade: 2 });
   });
+
+  it('percentual conta figurinhas coladas-com-repetidas — #47', async () => {
+    // 3 coladas (FWC1, FWC2, FWC3); FWC1 também tem repetidas no estoque
+    // Esperado: percentual = 3/10 = 30.0, não 2/10=20 (excluindo a colada-com-repetida)
+    const { user } = await criarUsuarioAutenticado();
+    const token = 'tok-pct-47';
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA', shareToken: token });
+    await FigurinhaColada.create([
+      { albumId: album._id, figurinhaId: seed.stickers[0]._id, origem: 'DIRETA' },
+      { albumId: album._id, figurinhaId: seed.stickers[1]._id, origem: 'DIRETA' },
+      { albumId: album._id, figurinhaId: seed.stickers[2]._id, origem: 'DIRETA' },
+    ]);
+    // FWC1 colada + 2 no estoque (= repetida)
+    await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: seed.stickers[0]._id, quantidade: 2 });
+
+    const res = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res.status).toBe(200);
+    // Todas as 3 coladas devem contar no percentual, inclusive a colada-com-repetida
+    expect(res.body.percentual).toBe(30.0);
+  });
 });
