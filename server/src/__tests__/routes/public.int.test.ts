@@ -69,4 +69,65 @@ describe('Rota pública GET /public/faltantes/:token — #39', () => {
     // Deve expor quantidade para que o cliente calcule statusFigurinha() corretamente
     expect(fig).toMatchObject({ colada: true, quantidade: 2 });
   });
+
+  it('cenário 1 — figurinha colada após gerar o link aparece colada ao reabrir — #47', async () => {
+    const { user } = await criarUsuarioAutenticado();
+    const token = 'tok-c1-47';
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA', shareToken: token });
+    await FigurinhaColada.create({ albumId: album._id, figurinhaId: seed.stickers[0]._id, origem: 'DIRETA' });
+
+    const res1 = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res1.status).toBe(200);
+    const fwc1_antes = res1.body.secoes[0].figurinhas.find((f: any) => f.numero === 'FWC1');
+    expect(fwc1_antes).toMatchObject({ colada: true });
+
+    // Cola FWC2 DEPOIS de ter gerado o link
+    await FigurinhaColada.create({ albumId: album._id, figurinhaId: seed.stickers[1]._id, origem: 'DIRETA' });
+
+    const res2 = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res2.status).toBe(200);
+    const fwc2_depois = res2.body.secoes[0].figurinhas.find((f: any) => f.numero === 'FWC2');
+    expect(fwc2_depois).toMatchObject({ colada: true });
+  });
+
+  it('cenário 2 — figurinha adicionada ao bolo de repetidas após gerar o link aparece repetida ao reabrir — #47', async () => {
+    const { user } = await criarUsuarioAutenticado();
+    const token = 'tok-c2-47';
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA', shareToken: token });
+    await FigurinhaColada.create({ albumId: album._id, figurinhaId: seed.stickers[0]._id, origem: 'DIRETA' });
+
+    const res1 = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res1.status).toBe(200);
+    const fwc1_antes = res1.body.secoes[0].figurinhas.find((f: any) => f.numero === 'FWC1');
+    expect(fwc1_antes).toMatchObject({ colada: true, quantidade: 0 });
+
+    // Adiciona FWC1 ao bolo de repetidas DEPOIS de ter gerado o link
+    await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: seed.stickers[0]._id, quantidade: 1 });
+
+    const res2 = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res2.status).toBe(200);
+    const fwc1_depois = res2.body.secoes[0].figurinhas.find((f: any) => f.numero === 'FWC1');
+    // colada=true + quantidade>=1 → cliente renderiza como "repetida"
+    expect(fwc1_depois).toMatchObject({ colada: true, quantidade: 1 });
+  });
+
+  it('percentual conta figurinhas coladas-com-repetidas — #47', async () => {
+    // 3 coladas (FWC1, FWC2, FWC3); FWC1 também tem repetidas no estoque
+    // Esperado: percentual = 3/10 = 30.0, não 2/10=20 (excluindo a colada-com-repetida)
+    const { user } = await criarUsuarioAutenticado();
+    const token = 'tok-pct-47';
+    const album = await Album.create({ usuarioId: user._id, tipoAlbumId: seed.tipo._id, variante: 'BROCHURA', shareToken: token });
+    await FigurinhaColada.create([
+      { albumId: album._id, figurinhaId: seed.stickers[0]._id, origem: 'DIRETA' },
+      { albumId: album._id, figurinhaId: seed.stickers[1]._id, origem: 'DIRETA' },
+      { albumId: album._id, figurinhaId: seed.stickers[2]._id, origem: 'DIRETA' },
+    ]);
+    // FWC1 colada + 2 no estoque (= repetida)
+    await EstoqueFigurinha.create({ usuarioId: user._id, figurinhaId: seed.stickers[0]._id, quantidade: 2 });
+
+    const res = await request(app).get(`/api/v1/public/faltantes/${token}`);
+    expect(res.status).toBe(200);
+    // Todas as 3 coladas devem contar no percentual, inclusive a colada-com-repetida
+    expect(res.body.percentual).toBe(30.0);
+  });
 });
