@@ -81,6 +81,71 @@ test.describe('Colar Figurinhas (migrado para /figurinhas)', () => {
     await expect(page.getByText('×1')).toBeVisible();
   });
 
+  // ── Stepper +/− de repetidas (Issue #46) ──────────────────────────────────────
+
+  test('deve incrementar quantidade ao acionar "+ Repetida" (RN-CF30)', async ({ page, request }) => {
+    const { identificador } = await usuarioAtivo(page, request);
+    const tipoId = await getTipoAlbumId(request);
+    const album = await criarAlbum(request, tipoId, 'BROCHURA');
+    await adicionarEstoque(request, identificador, 'FWC1', 2);
+    await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
+    await expect(page.getByText('×2')).toBeVisible();
+    await page.getByRole('button', { name: /adicionar repetida/i }).click();
+    await expect(page.getByText('×3')).toBeVisible();
+  });
+
+  test('deve decrementar direto (sem modal) quando quantidade > 1 (RN-CF31)', async ({ page, request }) => {
+    const { identificador } = await usuarioAtivo(page, request);
+    const tipoId = await getTipoAlbumId(request);
+    const album = await criarAlbum(request, tipoId, 'BROCHURA');
+    await adicionarEstoque(request, identificador, 'FWC1', 2);
+    await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
+    await expect(page.getByText('×2')).toBeVisible();
+    await page.getByRole('button', { name: /descartar uma unidade/i }).click();
+    await expect(page.getByText('×1')).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('deve confirmar via modal ao descartar a última unidade (RN-CF31)', async ({ page, request }) => {
+    const { identificador } = await usuarioAtivo(page, request);
+    const tipoId = await getTipoAlbumId(request);
+    const album = await criarAlbum(request, tipoId, 'BROCHURA');
+    await adicionarEstoque(request, identificador, 'FWC1', 1);
+    await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
+    await expect(page.getByText('FWC1')).toBeVisible();
+    await page.getByRole('button', { name: /descartar uma unidade/i }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText(/será removido do estoque/i)).toBeVisible();
+    await dialog.getByRole('button', { name: /^descartar$/i }).click();
+    await expect(page.getByText('FWC1')).toHaveCount(0);
+  });
+
+  test('deve reduzir rótulos para "+"/"−" em telas estreitas, preservando aria-label (RN-WG18)', async ({ page, request }) => {
+    const { identificador } = await usuarioAtivo(page, request);
+    const tipoId = await getTipoAlbumId(request);
+    const album = await criarAlbum(request, tipoId, 'BROCHURA');
+    await adicionarEstoque(request, identificador, 'FWC1', 2);
+    await page.goto(`/figurinhas?albumId=${album._id ?? album.id}`);
+
+    const addBtn = page.getByRole('button', { name: /adicionar repetida/i });
+    const descartarBtn = page.getByRole('button', { name: /descartar uma unidade/i });
+    // O botão é localizado pelo aria-label fixo nos dois viewports; só o rótulo
+    // textual visível muda. Asserts via visibilidade do span de texto completo.
+    const addFullLabel = addBtn.getByText('+ Repetida', { exact: true });
+    const descartarFullLabel = descartarBtn.getByText('Descartar', { exact: true });
+
+    // Tela estreita: texto completo oculto (exibe "+"/"−").
+    await page.setViewportSize({ width: 360, height: 780 });
+    await expect(addFullLabel).toBeHidden();
+    await expect(descartarFullLabel).toBeHidden();
+
+    // Tela larga: rótulos completos visíveis.
+    await page.setViewportSize({ width: 1024, height: 800 });
+    await expect(addFullLabel).toBeVisible();
+    await expect(descartarFullLabel).toBeVisible();
+  });
+
   // ── Modal de Figurinha Não Registrada (MFN) ───────────────────────────────────
 
   test('deve exibir mensagem amigável para figurinha não encontrada (RN-CF25)', async ({ page, request }) => {

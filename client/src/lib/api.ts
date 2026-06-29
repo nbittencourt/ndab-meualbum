@@ -256,7 +256,7 @@ export const privacidadeApi = {
 
 export const publicApi = {
   getFaltantes: (token: string) =>
-    request<{ albumNome: string; secoes: Array<{ _id: string; nome: string; figurinhas: Array<{ _id: string; numero: string; colada: boolean; quantidade: number }> }> }>(
+    request<{ albumNome: string; percentual: number; secoes: Array<{ _id: string; nome: string; figurinhas: Array<{ _id: string; numero: string; colada: boolean; quantidade: number }> }> }>(
       `/public/faltantes/${encodeURIComponent(token)}`,
       { skipAuthRedirect: true }
     ),

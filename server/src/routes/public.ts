@@ -4,6 +4,7 @@ import { Secao } from '../models/Secao.js';
 import { Sticker } from '../models/Sticker.js';
 import { FigurinhaColada } from '../models/FigurinhaColada.js';
 import { EstoqueFigurinha } from '../models/EstoqueFigurinha.js';
+import { percentualConclusao } from '../lib/albumProgress.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 
 const router = Router();
@@ -41,6 +42,7 @@ router.get('/faltantes/:token', asyncHandler(async (req, res) => {
 
   const coladasSet = new Set(coladas.map((c) => String(c.figurinhaId)));
   const estoqueMap = new Map(estoqueItens.map((e) => [String(e.figurinhaId), e.quantidade]));
+  const percentual = percentualConclusao(coladas.length, tipo?.totalFigurinhas ?? 0);
 
   const figurinhasPorSecao = new Map<string, any[]>();
   for (const f of figurinhas) {
@@ -61,7 +63,8 @@ router.get('/faltantes/:token', asyncHandler(async (req, res) => {
     figurinhas: figurinhasPorSecao.get(String(s._id)) ?? [],
   }));
 
-  res.json({ albumNome, secoes: result });
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ albumNome, percentual, secoes: result });
 }));
 
 export default router;

@@ -42,7 +42,7 @@ function Cell({ fig }: { fig: FigPublica }) {
 }
 
 function SecaoBlock({ secao }: { secao: { _id: string; nome: string; figurinhas: FigPublica[] } }) {
-  const coladas = secao.figurinhas.filter((f) => statusFigurinha({ ...f, _id: f._id, nome: '' }) === 'c').length;
+  const coladas = secao.figurinhas.filter((f) => f.colada).length;
   const total = secao.figurinhas.length;
   return (
     <section aria-label={secao.nome}>
@@ -85,6 +85,8 @@ export default function FaltantesPublicaPage() {
     queryFn: () => publicApi.getFaltantes(token!),
     enabled: !!token,
     retry: false,
+    staleTime: 0,
+    refetchOnMount: 'always' as const,
   });
 
   if (isLoading) {
@@ -108,13 +110,13 @@ export default function FaltantesPublicaPage() {
     );
   }
 
-  const { albumNome, secoes } = data;
+  const { albumNome, percentual, secoes } = data;
   const todas = secoes.flatMap((s) => s.figurinhas);
   const statusDeCada = todas.map((f) => statusFigurinha({ ...f, _id: f._id, nome: '' }));
-  const totalColadas = statusDeCada.filter((s) => s === 'c').length;
+  const totalColadas = todas.filter((f) => f.colada).length;
   const totalRepetidas = statusDeCada.filter((s) => s === 'r').length;
   const totalFaltantes = statusDeCada.filter((s) => s === 'f').length;
-  const pct = todas.length > 0 ? Math.round((totalColadas / todas.length) * 1000) / 10 : 0;
+  const pct = percentual ?? 0;
 
   return (
     <div style={{ minHeight: '100dvh', background: '#FBF8EE' }}>
