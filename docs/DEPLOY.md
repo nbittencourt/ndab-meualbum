@@ -5,9 +5,12 @@
 ```
 Browser
   └── Firebase Hosting (CDN global)
-        ├── /assets/**  →  estáticos (long-lived cache)
-        ├── /index.html →  SPA entry point (no-cache)
-        └── /api/**     →  rewrite (proxy) → Cloud Run  ← same-origin, sem cross-origin
+        ├── /assets/**           →  estáticos (long-lived cache, imutáveis — hash no nome)
+        ├── /index.html          →  SPA entry point (no-cache)
+        ├── /sw.js               →  Service Worker (no-cache — crítico para PWA update)
+        ├── /registerSW.js       →  SW registration shim (no-cache)
+        ├── /manifest.webmanifest→  PWA manifest (no-cache)
+        └── /api/**              →  rewrite (proxy) → Cloud Run  ← same-origin, sem cross-origin
 
 Cloud Run (meualbum-api, southamerica-east1)
   └── Express API → MongoDB Atlas (cluster ndab-meualbum)
@@ -30,6 +33,20 @@ GCP Secret Manager
 | `_API_URL` (Cloud Build) | URL do Cloud Run TST | URL do Cloud Run PRD |
 
 > **PowerShell (Windows):** todos os comandos abaixo são para PowerShell e escritos em linha única. Cada bloco define variáveis `$VAR` no início — ajuste os valores antes de executar.
+
+### Cabeçalhos de cache (Firebase Hosting)
+
+Os cabeçalhos estão definidos em `firebase.json` (campo `headers`) e são aplicados pelo Firebase Hosting automaticamente em cada deploy. A estratégia é:
+
+| Arquivo | Cache-Control | Motivo |
+|---------|---------------|--------|
+| `/sw.js` | `no-cache` | O browser deve re-buscar a cada navegação para detectar nova versão do SW |
+| `/registerSW.js` | `no-cache` | Mesmo motivo — shim de registro do SW |
+| `/manifest.webmanifest` | `no-cache` | Mudanças de manifest devem ser percebidas imediatamente |
+| `/index.html` | `no-cache` | Entry point da SPA — sempre buscar a versão mais recente |
+| `/assets/**` | `public, max-age=31536000, immutable` | Arquivos com hash no nome — cache longo seguro |
+
+> **Atenção ao fazer rollback:** ao reverter para uma versão anterior, o `sw.js` com `no-cache` garante que os clientes recebam o SW da versão alvo imediatamente, sem aguardar expiração de cache.
 
 ---
 

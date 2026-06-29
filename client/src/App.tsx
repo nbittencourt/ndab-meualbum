@@ -51,6 +51,9 @@ function Footer() {
           <span className="sr-only"> (abre em nova aba)</span>
         </a>
       </nav>
+      <p className="mt-1 text-center text-[10px] font-body text-ink/30" aria-hidden="true">
+        v{__APP_VERSION__}
+      </p>
     </footer>
   );
 }
