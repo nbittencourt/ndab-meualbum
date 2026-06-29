@@ -13,6 +13,7 @@
 | 1.1 | correções + WCAG/LGPD | **Conflito A corrigido:** RN-CF01 atualizado para incluir `EMAIL_PENDENTE` (alinhamento com demais specs). **Conflito B corrigido:** Seção 2.1 corrigida — `origem = DIRETA` para colagens via MCol de Abrir Pacotinhos (que não passam por EstoqueFigurinha). Requisitos de acessibilidade adicionados (RN-CF19 a RN-CF24). |
 | 1.2 | ajustes UX | Header e footer globais tornados obrigatórios em todas as telas. Mensagem de erro para figurinha não encontrada no MFN substituída por texto amigável (RN-CF25). Botão "Colar e Outra" adicionado ao MFN (RN-CF26). Ativação do modo câmera no MFN explicitada (RN-CF27). |
 | 1.3 | 2026-06-10 | **DEC-1** — Botões do MFN substituídos por 3 botões fixos: "Colar", "Colar e Fechar", "Fechar". Tecla Enter aciona "Colar". §6.1 e RN-CF26 e RN-CF28 atualizados. (Issues #14) |
+| 1.4 | 2026-06-28 | Stepper +/− de repetidas na lista de estoque (Tela CF1): botão "+ Repetida" (incremento manual) e "Descartar" (decremento manual). §5.1 atualizado; RN-CF30 e RN-CF31 adicionados. Em telas estreitas os rótulos reduzem a "+"/"−". (Issue #46) |
 
 ---
 
@@ -130,7 +131,7 @@ Tela principal do fluxo. O usuário permanece aqui durante toda a sessão de col
 
 **Zona principal — estoque:**
 3. Campo de busca/filtro: filtra a lista por número ou nome da figurinha em tempo real.
-4. Lista do estoque do usuário, com todos os itens de `EstoqueFigurinha` com `quantidade ≥ 1`. Cada item exibe: número da figurinha, nome do jogador/item, quantidade disponível no estoque e indicador de elegibilidade (ver 5.2).
+4. Lista do estoque do usuário, com todos os itens de `EstoqueFigurinha` com `quantidade ≥ 1`. Cada item exibe: número da figurinha, nome do jogador/item, quantidade disponível no estoque, indicador de elegibilidade (ver 5.2) e os controles de ajuste de quantidade (ver 5.7).
 5. Estado vazio do estoque: exibido quando `EstoqueFigurinha` não possui nenhuma figurinha com `quantidade ≥ 1`. O botão "Figurinha não registrada" permanece disponível.
 
 ### 5.2 Indicadores de elegibilidade
@@ -203,6 +204,19 @@ Acionada pelo seletor de álbum ativo na zona superior.
 - Após seleção: atualiza o contexto da Tela CF1 — recarrega os indicadores de elegibilidade de todos os itens do estoque para o novo álbum. Nenhum dado de colagem é perdido ou revertido.
 - Não há confirmação de troca; a operação é imediata.
 
+### 5.7 Ajuste manual de quantidade no estoque (stepper +/−)
+
+Cada item da lista de estoque oferece dois controles para ajustar diretamente a `EstoqueFigurinha.quantidade`, independentemente da colagem:
+
+- **"+ Repetida"** — incrementa a quantidade do item em 1. Operação imediata e persistida; o item permanece na lista com a quantidade atualizada. Não exige confirmação.
+- **"Descartar"** — decrementa a quantidade do item em 1.
+  - Quando `quantidade > 1`, o decremento é imediato, sem confirmação (o item permanece na lista).
+  - Quando `quantidade == 1`, o decremento removeria o item do estoque; portanto exige confirmação explícita (alerta "O item será removido do estoque"). Confirmado, o item deixa de aparecer na lista.
+
+**Rótulos responsivos:** em telas de resolução limitada (largura estreita), os rótulos "+ Repetida" e "Descartar" são reduzidos a **"+"** e **"−"**, respectivamente. O propósito acessível dos botões é preservado por `aria-label` fixo e descritivo, independentemente do rótulo visível (ver RN-CF32).
+
+> Esses controles não substituem nem alteram a semântica da colagem: incrementar/decrementar manualmente atua apenas sobre `EstoqueFigurinha.quantidade` e não cria/atualiza registros `FigurinhaColada`.
+
 ---
 
 ## 6. Modal de Figurinha Não Registrada (MFN)
@@ -259,6 +273,8 @@ O número reconhecido (por OCR) ou digitado é validado contra o catálogo do `t
 | RN-CF25 | Quando o número informado no MFN não for encontrado no catálogo do álbum ativo, a mensagem de erro exibida é: "Figurinha [número] não encontrada neste álbum. Verifique o número e tente novamente." O número digitado é mantido no campo para correção; o campo permanece editável; o modal permanece aberto |
 | RN-CF26 | O MFN oferece sempre os botões fixos **"Colar"**, **"Colar e Fechar"** e **"Fechar"**, sem alternância de estado. "Colar": a colagem é persistida, o modal permanece aberto, o campo de número é limpo e o foco retorna ao input para a próxima entrada. "Colar e Fechar": a colagem é persistida e o modal é fechado. "Fechar": fecha o modal sem persistir colagem. A tecla **Enter**, quando o campo não estiver vazio e não houver operação em andamento, aciona "Colar". (Issue #14 · DEC-1) |
 | RN-CF27 | No MFN, o modo câmera é ativado exclusivamente pelo toque/clique no botão "Abrir câmera". A câmera não é ativada automaticamente ao abrir o modal; requer ação explícita do usuário. Esse comportamento é consistente com RN-AP43 de spec_abrir_pacotinhos |
+| RN-CF30 | Cada item da lista de estoque oferece a ação "+ Repetida", que incrementa `EstoqueFigurinha.quantidade` do item em 1 (operação de upsert no estoque do usuário). A operação é imediata, persistida e não exige confirmação; o item permanece na lista com a quantidade atualizada. Não cria nem altera registros `FigurinhaColada` |
+| RN-CF31 | Cada item da lista de estoque oferece a ação "Descartar", que decrementa `EstoqueFigurinha.quantidade` do item em 1. Quando `quantidade > 1`, o decremento é imediato e sem confirmação; quando `quantidade == 1`, a ação removeria o item do estoque e DEVE exigir confirmação explícita antes de qualquer alteração. Ao atingir 0, o item deixa de aparecer na lista. Não cria nem altera registros `FigurinhaColada` |
 
 ---
 
@@ -276,6 +292,7 @@ As regras globais constam em `spec_privacidade_lgpd` (Seção 9). As regras abai
 | RN-CF24 | Itens desabilitados ("Fora do catálogo") DEVEM ser `aria-disabled="true"` (e não `disabled`) para permanecerem anunciáveis por leitores de tela com a indicação de que estão indisponíveis |
 | RN-CF28 | O MFN DEVE ser implementado como `role="dialog"` com focus trap, `aria-modal="true"` e `aria-labelledby`; ao fechar (por "Fechar" ou cancelamento), o foco DEVE retornar ao botão "Figurinha não registrada" da Tela CF1; ao acionar "Colar", o foco DEVE ir para o campo de número |
 | RN-CF29 | A mensagem de erro de figurinha não encontrada (RN-CF25) DEVE ser anunciada via `role="alert"` ao ser exibida, sem que o foco seja movido do campo de número |
+| RN-CF32 | Os controles de stepper "+ Repetida" e "Descartar" (§5.7) DEVEM ter `aria-label` fixo e descritivo (ex.: "Adicionar repetida", "Descartar uma unidade"), preservado mesmo quando o rótulo visível é reduzido a "+"/"−" em telas estreitas; o glifo reduzido DEVE ser `aria-hidden`. Os alvos de toque DEVEM respeitar o mínimo de 24×24 CSS px (recomendado 44×44) conforme RN-WG11 |
 
 ---
 

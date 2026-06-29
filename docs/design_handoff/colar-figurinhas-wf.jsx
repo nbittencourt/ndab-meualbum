@@ -293,6 +293,14 @@ function StockItem({ item, withAnn, confirming = false }) {
           <button style={{ padding: "10px 12px", background: canColar ? CF.ink : CF.line, color: canColar ? "#fff" : CF.mute, border: `2px solid ${canColar ? CF.ink : CF.line}`, boxShadow: canColar ? `2px 2px 0 ${CF.red}` : "none", fontFamily: CF.fontD, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", cursor: disabled ? "not-allowed" : "pointer" }}>
             Colar
           </button>
+          {/* Stepper +/− de quantidade (§5.7 · RN-CF30/CF31). Em telas estreitas
+              os rótulos reduzem a "+"/"−"; aria-label fixo preserva o propósito (RN-CF32). */}
+          <button aria-label="Adicionar repetida" style={{ padding: "10px 12px", background: "#fff", color: CF.ink, border: `2px solid ${CF.ink}`, boxShadow: `2px 2px 0 ${CF.ink}`, fontFamily: CF.fontD, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", cursor: "pointer" }}>
+            + Repetida
+          </button>
+          <button aria-label="Descartar uma unidade" style={{ padding: "10px 12px", background: "#fff", color: CF.ink, border: `2px solid ${CF.ink}`, boxShadow: `2px 2px 0 ${CF.ink}`, fontFamily: CF.fontD, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", cursor: "pointer" }}>
+            Descartar
+          </button>
         </div>
       </div>
       {/* Confirmação inline "colar por cima" */}
@@ -323,6 +331,8 @@ const ANN_CF1 = [
   [7, "RN-CF11 / RN-CF12", "Colar do estoque: FigurinhaColada.origem = ESTOQUE · colar via MFN: origem = DIRETA · estoque não alterado no caso DIRETA"],
   [8, "RN-CF17",  "Sem operação em lote; sem pilha de sessão (RN-CF18) · cada colagem é individual e persistida imediatamente"],
   [9, "RN-CF14",  "Trocar álbum: imediato, sem confirmação · recarrega indicadores de elegibilidade para o novo álbum · colagens já realizadas não são afetadas"],
+  [10, "RN-CF30 / RN-CF31", "Stepper de quantidade (§5.7): '+ Repetida' incrementa EstoqueFigurinha.quantidade +1 (imediato, sem confirmação); 'Descartar' decrementa -1, com confirmação apenas na última unidade (quantidade == 1, removeria o item)"],
+  [11, "RN-CF32",  "Rótulos responsivos: '+ Repetida' e 'Descartar' reduzem a '+' e '−' em telas estreitas; aria-label fixo preserva o propósito; glifo reduzido é aria-hidden; alvo de toque ≥ 24×24 (rec. 44×44) por RN-WG11"],
 ];
 
 function CF1Mobile({ state = "normal", showAnnotations = true }) {

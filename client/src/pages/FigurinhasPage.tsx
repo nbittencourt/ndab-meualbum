@@ -46,6 +46,8 @@ function RepetidaRow({
   colarLoading,
   onDescartar,
   descartarLoading,
+  onAdicionar,
+  adicionarLoading,
 }: {
   item: EstoqueItem;
   preAlbumId: string;
@@ -53,6 +55,8 @@ function RepetidaRow({
   colarLoading: boolean;
   onDescartar: (estoqueId: string) => void;
   descartarLoading: boolean;
+  onAdicionar: (figurinhaNumero: string) => void;
+  adicionarLoading: boolean;
 }) {
   const [showColarModal, setShowColarModal] = useState(false);
   const [showDescartarModal, setShowDescartarModal] = useState(false);
@@ -75,6 +79,16 @@ function RepetidaRow({
     }
   }
 
+  // RN-CF31: decremento direto quando há mais de uma unidade; a confirmação só
+  // é exigida na última unidade, pois a ação removeria o item do estoque.
+  function handleDescartar() {
+    if (item.quantidade > 1) {
+      onDescartar(item._id as string);
+    } else {
+      setShowDescartarModal(true);
+    }
+  }
+
   return (
     <article
       className="bg-white border-2 border-ink p-3"
@@ -92,8 +106,27 @@ function RepetidaRow({
             Colar
           </Button>
         )}
-        <Button size="sm" variant="secondary" loading={descartarLoading} onClick={() => setShowDescartarModal(true)}>
-          Descartar
+        {/* RN-CF30 — incrementa a quantidade (estoque) reutilizando /estoque/adicionar.
+            RN-WG18: aria-label fixo e descritivo; o rótulo textual reduz a "+" em telas estreitas. */}
+        <Button
+          size="sm"
+          variant="secondary"
+          loading={adicionarLoading}
+          onClick={() => onAdicionar(item.figurinha.number)}
+          aria-label="Adicionar repetida"
+        >
+          <span className="hidden sm:inline">+ Repetida</span>
+          <span className="sm:hidden" aria-hidden="true">+</span>
+        </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          loading={descartarLoading}
+          onClick={handleDescartar}
+          aria-label="Descartar uma unidade"
+        >
+          <span className="hidden sm:inline">Descartar</span>
+          <span className="sm:hidden" aria-hidden="true">−</span>
         </Button>
       </div>
 
@@ -213,6 +246,15 @@ function SecaoRepetidas({ albumIdCtx }: { albumIdCtx: string }) {
     onError: (err) => setToast({ message: err instanceof ApiError ? err.message : 'Erro ao descartar.', variant: 'error' }),
   });
 
+  const adicionarMut = useMutation({
+    mutationFn: (numero: string) => colarFigurinhasApi.adicionarRepetida(numero),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['estoque'] });
+      setToast({ message: '+1 repetida adicionada.', variant: 'success' });
+    },
+    onError: (err) => setToast({ message: err instanceof ApiError ? err.message : 'Erro ao adicionar.', variant: 'error' }),
+  });
+
   const mfnMut = useMutation({
     mutationFn: ({ numero, target }: { numero: string; target: string }) =>
       colarFigurinhasApi.colarDireta(numero, target),
@@ -286,6 +328,8 @@ function SecaoRepetidas({ albumIdCtx }: { albumIdCtx: string }) {
               colarLoading={colarMut.isPending}
               onDescartar={(estoqueId) => descartarMut.mutate(estoqueId)}
               descartarLoading={descartarMut.isPending}
+              onAdicionar={(numero) => adicionarMut.mutate(numero)}
+              adicionarLoading={adicionarMut.isPending}
             />
           ))}
         </div>
