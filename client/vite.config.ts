@@ -4,13 +4,24 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')) as { version: string };
+// CI can inject BUILD_SHA (short commit hash) for a more specific version string.
+const appVersion = process.env.BUILD_SHA
+  ? `${pkg.version}+${process.env.BUILD_SHA.slice(0, 7)}`
+  : pkg.version;
 
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion),
+  },
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: null,
       manifest: {
         name: 'Meu Álbum Copa 2026',
         short_name: 'MeuÁlbum',
